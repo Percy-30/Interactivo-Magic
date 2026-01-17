@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
 import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
 import { isNativePlatform, shareContent } from './utils/platformUtils';
+import { initializeAdMob, showBannerAd, showRewardedInterstitial } from './utils/admobUtils';
 import './styles/index.css';
 
 const TEMPLATES = [
@@ -132,7 +133,16 @@ function App() {
   // Check platform and viewer mode on load
   useEffect(() => {
     // Detect if running in native mobile app
-    setIsMobileApp(isNativePlatform());
+    const isNative = isNativePlatform();
+    setIsMobileApp(isNative);
+
+    // Initialize AdMob and show banner if on mobile
+    if (isNative) {
+      initializeAdMob().then(() => {
+        // Show banner ad at bottom of screen
+        showBannerAd();
+      });
+    }
 
     // Check for viewer mode
     const params = new URLSearchParams(window.location.search);
@@ -441,7 +451,31 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.15 }}
                 className="glass card template-card"
-                onClick={() => setSelectedTemplate(tpl)}
+                onClick={async () => {
+                  // Show rewarded interstitial ad in mobile app before selecting template
+                  if (isMobileApp) {
+                    await showRewardedInterstitial(
+                      // onReward callback
+                      () => {
+                        console.log('User earned reward, proceeding to template');
+                        setSelectedTemplate(tpl);
+                      },
+                      // onDismiss callback
+                      (rewarded) => {
+                        if (rewarded) {
+                          console.log('Ad watched, template unlocked');
+                        } else {
+                          console.log('Ad dismissed without reward');
+                          // Still allow access since rewarded interstitial is optional
+                          setSelectedTemplate(tpl);
+                        }
+                      }
+                    );
+                  } else {
+                    // On web, just select template directly
+                    setSelectedTemplate(tpl);
+                  }
+                }}
                 style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem' }}
               >
                 <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'white' }}>{tpl.icon}</div>
