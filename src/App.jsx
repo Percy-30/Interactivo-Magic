@@ -3,6 +3,7 @@ import { Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, Use
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
 import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
+import { isNativePlatform, shareContent } from './utils/platformUtils';
 import './styles/index.css';
 
 const TEMPLATES = [
@@ -116,6 +117,7 @@ function App() {
   const [generatedUrl, setGeneratedUrl] = useState('');
   const [legalModal, setLegalModal] = useState(null); // 'privacy', 'terms'
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobileApp, setIsMobileApp] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     sender: '',
@@ -127,8 +129,12 @@ function App() {
     audioFile: null
   });
 
-  // Check for viewer mode on load
+  // Check platform and viewer mode on load
   useEffect(() => {
+    // Detect if running in native mobile app
+    setIsMobileApp(isNativePlatform());
+
+    // Check for viewer mode
     const params = new URLSearchParams(window.location.search);
     const data = params.get('msg');
     if (data) {
@@ -309,11 +315,11 @@ function App() {
         </AnimatePresence>
       </header>
 
-      {/* SLOT A: Header Ad - Display */}
-      <AdSlot label="Banner Superior" adSlot="4095225502" />
+      {/* SLOT A: Header Ad - Display (Web only) */}
+      {!isMobileApp && <AdSlot label="Banner Superior" adSlot="4095225502" />}
 
-      {/* Hero Section */}
-      {!selectedTemplate && (
+      {/* Hero Section (Web only) */}
+      {!selectedTemplate && !isMobileApp && (
         <section className="hero-section container" style={{ textAlign: 'center', paddingTop: '6rem', paddingBottom: '4rem' }}>
 
           <motion.div
@@ -332,41 +338,60 @@ function App() {
             }}>
               Crea mensajes interactivos
               <br />
-              <span style={{
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                únicos para sorprender
-              </span>
+              <span style={{ color: 'white', fontSize: '0.7em' }}>que enamoren</span>
             </h1>
-            <p style={{
-              color: 'var(--text-muted)',
-              fontSize: 'clamp(1.1rem, 2.5vw, 1.3rem)',
-              maxWidth: '700px',
-              margin: '0 auto 3rem',
-              lineHeight: '1.6'
-            }}>
-              Transforma tus mensajes en experiencias mágicas e interactivas.
-              Desde propuestas de amor hasta felicitaciones de cumpleaños.
+            <p style={{ fontSize: 'clamp(1rem, 3vw, 1.3rem)', color: 'var(--text-muted)', marginBottom: '2.5rem', maxWidth: '700px', margin: '0 auto 2.5rem' }}>
+              Sorprende a quien más amas con mensajes animados, interactivos y llenos de magia. 100% personalizables y fáciles de compartir.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button className="btn btn-primary" onClick={scrollToTemplates} style={{ fontSize: '1.15rem', padding: '1.2rem 2.5rem' }}>
-                <Sparkles size={22} /> Generar ahora
-              </button>
-              <button className="btn glass" onClick={() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' })} style={{ fontSize: '1.15rem', padding: '1.2rem 2.5rem' }}>
-                Ver demo
-              </button>
-            </div>
+            <button className="btn btn-primary" onClick={scrollToTemplates} style={{ fontSize: '1.2rem', padding: '1.2rem 2.5rem' }}>
+              <Sparkles size={24} /> Comenzar ahora
+            </button>
           </motion.div>
 
-          {/* Features */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginTop: '5rem' }}>
-            {FEATURES.map((feature, idx) => (
+          {/* SLOT B: Mid Landing Ad - In-article */}
+          <div style={{ marginTop: '4rem' }}>
+            <AdSlot label="Publicidad" adSlot="5051701068" adFormat="fluid" adLayout="in-article" />
+          </div>
+
+          {/* Animated Icons */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            style={{ marginTop: '4rem', display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}
+          >
+            {[Heart, Send, Gift].map((Icon, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ y: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 2, delay: idx * 0.3 }}
+                className="glass"
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '50',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: `linear-gradient(135deg, ${TEMPLATES[idx].color}20, ${TEMPLATES[idx].color}10)`
+                }}
+              >
+                <Icon size={40} color={TEMPLATES[idx].color} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </section>
+      )}
+
+      {/* Features Grid (Web only) */}
+      {!selectedTemplate && !isMobileApp && (
+        <section className="container" style={{ marginBottom: '6rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            {FEATURES.map((feat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.2 }}
                 className="glass feature-card"
                 style={{ padding: '2rem', textAlign: 'center' }}
@@ -381,33 +406,32 @@ function App() {
                   {feature.icon}
                 </div>
                 <h3 style={{ marginBottom: '0.75rem', fontSize: '1.25rem' }}>{feature.title}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>{feature.description}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>{feat.description}</p>
               </motion.div>
             ))}
           </div>
-
-          {/* SLOT B: Mid Landing Ad - In-Article */}
-          <AdSlot label="Contenido Patrocinado" adSlot="5051701068" adFormat="fluid" adLayout="in-article" />
         </section>
       )}
 
       {/* Templates Section */}
       {!selectedTemplate ? (
-        <section id="templates-section" style={{ marginTop: '6rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{
-              fontSize: 'clamp(2rem, 5vw, 3rem)',
-              marginBottom: '1rem',
-              background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              Explora nuestras plantillas mágicas
-            </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-              Elige la plantilla perfecta para tu ocasión especial y personalízala en segundos
-            </p>
-          </div>
+        <section id="templates-section" style={{ marginTop: isMobileApp ? '2rem' : '6rem' }}>
+          {!isMobileApp && (
+            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+              <h2 style={{
+                fontSize: 'clamp(2rem, 5vw, 3rem)',
+                marginBottom: '1rem',
+                background: 'linear-gradient(135deg, var(--primary), var(--accent))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                Explora nuestras plantillas mágicas
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+                Elige la plantilla perfecta para tu ocasión especial y personalízala en segundos
+              </p>
+            </div>
+          )}
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
             {TEMPLATES.map((tpl, idx) => (
@@ -704,12 +728,12 @@ function App() {
                 </div>
               </motion.div>
             )}
-
-            {/* Ad Lateral Derecho (Desktop) */}
-            <div className="side-ad-form right-ad" style={{ display: 'none' }}>
-              <AdSlot label="Sponsor" adSlot="4095225502" adFormat="vertical" fullWidthResponsive="false" />
-            </div>
           </motion.div>
+
+          {/* Ad Lateral Derecho (Desktop) */}
+          <div className="side-ad-form right-ad" style={{ display: 'none' }}>
+            <AdSlot label="Sponsor" adSlot="4095225502" adFormat="vertical" fullWidthResponsive="false" />
+          </div>
         </div>
       )}
 

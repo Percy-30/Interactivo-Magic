@@ -7,9 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:mobile": "vite build && npx cap sync",
+    "android": "npx cap open android",
+    "sync:android": "npx cap sync android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/share": "^8.0.0",
     "canvas-confetti": "^1.9.4",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.26.2",
