@@ -1,22 +1,6 @@
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, AdMobRewardItem, RewardAdOptions, AdLoadInfo, AdMobError } from '@capacitor-community/admob';
 import { isNativePlatform } from './platformUtils';
-
-// AdMob Ad Unit IDs
-const AD_UNITS = {
-    APP_ID: 'ca-app-pub-5414009811868137~3729869080',
-    BANNER: 'ca-app-pub-5414009811868137/4899674043',
-    INTERSTITIAL: 'ca-app-pub-5414009811868137/6291635005',
-    REWARDED_INTERSTITIAL: 'ca-app-pub-5414009811868137/3586592379',
-};
-
-// Test Ad Unit IDs (use during development)
-const TEST_AD_UNITS = {
-    BANNER: 'ca-app-pub-3940256099942544/6300978111',
-    REWARDED_INTERSTITIAL: 'ca-app-pub-3940256099942544/5354046379',
-};
-
-// Set to true for development testing
-const USE_TEST_ADS = false;
+import { ADMOB_CONFIG, USE_TEST_ADS, getAdId } from '../config/admobConfig';
 
 /**
  * Initialize AdMob SDK
@@ -33,7 +17,7 @@ export const initializeAdMob = async () => {
             testingDevices: USE_TEST_ADS ? ['YOUR_DEVICE_ID_HERE'] : [],
             initializeForTesting: USE_TEST_ADS,
         });
-        console.log('AdMob initialized successfully');
+        console.log(`AdMob initialized successfully (${USE_TEST_ADS ? 'TEST MODE' : 'PRODUCTION MODE'})`);
     } catch (error) {
         console.error('AdMob initialization error:', error);
     }
@@ -50,7 +34,7 @@ export const showBannerAd = async () => {
 
     try {
         const options = {
-            adId: USE_TEST_ADS ? TEST_AD_UNITS.BANNER : AD_UNITS.BANNER,
+            adId: getAdId('BANNER'),
             adSize: BannerAdSize.BANNER,
             position: BannerAdPosition.BOTTOM_CENTER,
             margin: 0,
@@ -108,7 +92,7 @@ export const showRewardedInterstitial = async (onReward, onDismiss) => {
 
     try {
         const options = {
-            adId: USE_TEST_ADS ? TEST_AD_UNITS.REWARDED_INTERSTITIAL : AD_UNITS.REWARDED_INTERSTITIAL,
+            adId: getAdId('REWARDED_INTERSTITIAL'),
             isTesting: USE_TEST_ADS,
         };
 
