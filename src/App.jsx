@@ -5,6 +5,7 @@ import TemplateEngine from './utils/TemplateEngine';
 import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
 import { isNativePlatform, shareContent } from './utils/platformUtils';
 import { initializeAdMob, showBannerAd, showRewardedInterstitial } from './utils/admobUtils';
+import { getAdSenseClientId } from './config/adsenseConfig';
 import './styles/index.css';
 
 const TEMPLATES = [
@@ -100,7 +101,7 @@ const AdSlot = ({ label = 'Publicidad', adSlot, adFormat = 'auto', adLayout, ful
       }}>
         <ins className="adsbygoogle"
           style={{ display: 'block', width: '100%', minWidth: '160px' }}
-          data-ad-client="ca-pub-5414009811868137"
+          data-ad-client={getAdSenseClientId()}
           data-ad-slot={adSlot}
           data-ad-format={adFormat}
           data-ad-layout={adLayout}
