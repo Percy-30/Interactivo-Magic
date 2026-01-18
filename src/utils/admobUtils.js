@@ -76,60 +76,81 @@ export const removeBannerAd = async () => {
     }
 };
 
+// Track ad state to avoid redundant calls
+let isRewardedAdPreparing = false;
+let isRewardedAdReady = false;
+
 /**
- * Show rewarded interstitial ad (e.g., when selecting a template)
- * @param {Function} onReward - Callback when user earns reward
- * @param {Function} onDismiss - Callback when ad is dismissed
- * @returns {Promise<boolean>} - Returns true if user watched ad and got reward
+ * Pre-load a rewarded interstitial ad
+ * Recommended to call this a few seconds before you need to show it
  */
-export const showRewardedInterstitial = async (onReward, onDismiss) => {
-    if (!isNativePlatform()) {
-        console.log('AdMob: Not on native platform, proceeding without ad');
-        if (onReward) onReward();
-        return true;
-    }
+export const prepareRewardedAd = async () => {
+    if (!isNativePlatform() || isRewardedAdPreparing || isRewardedAdReady) return;
 
     try {
+        isRewardedAdPreparing = true;
         const options = {
             adId: getAdId('REWARDED_INTERSTITIAL'),
             isTesting: USE_TEST_ADS,
         };
 
-        console.log(`AdMob: Preparing Rewarded Interstitial (${options.adId})...`);
-
-        // Prepare the ad
+        console.log(`AdMob: Pre-loading Rewarded Interstitial (${options.adId})...`);
         await AdMob.prepareRewardVideoAd(options);
+
+        isRewardedAdReady = true;
+        isRewardedAdPreparing = false;
+        console.log('AdMob: Rewarded ad is READY and cached');
+    } catch (error) {
+        console.error('AdMob: Error preparing rewarded ad:', error);
+        isRewardedAdPreparing = false;
+        isRewardedAdReady = false;
+    }
+};
+
+/**
+ * Show the pre-loaded rewarded interstitial ad
+ * @param {Function} onReward - Callback when user earns reward
+ */
+export const showRewardedAd = async (onReward) => {
+    if (!isNativePlatform()) {
+        if (onReward) onReward();
+        return true;
+    }
+
+    try {
+        // If not ready, try one last quick preparation
+        if (!isRewardedAdReady) {
+            console.warn('AdMob: Ad not ready yet, attempting quick preparation...');
+            await prepareRewardedAd();
+        }
 
         let rewarded = false;
 
         // Set up event listeners
         const rewardListener = await AdMob.addListener('onRewardedVideoAdRewarded', (reward) => {
-            console.log('AdMob: User earned reward!', reward);
+            console.log('AdMob: Reward earned!');
             rewarded = true;
             if (onReward) onReward(reward);
         });
 
         const dismissListener = await AdMob.addListener('onRewardedVideoAdDismissed', () => {
             console.log('AdMob: Ad dismissed');
-            if (onDismiss) onDismiss(rewarded);
-
-            // Clean up
+            isRewardedAdReady = false; // Need to load a new one for next time
             rewardListener.remove();
             dismissListener.remove();
+            // Start preparing the next ad immediately for future use
+            prepareRewardedAd();
         });
-
-        // Small delay to ensure prep is handled by OS
-        await new Promise(resolve => setTimeout(resolve, 500));
 
         // Show the ad
         await AdMob.showRewardVideoAd();
-        console.log('AdMob: showRewardVideoAd called');
+        console.log('AdMob: showRewardVideoAd executed');
 
         return true;
     } catch (error) {
         console.error('AdMob: Error showing rewarded ad:', error);
-        // Fallback: if ad fails, still allow user to proceed
-        if (onReward) onReward();
+        isRewardedAdReady = false;
+        if (onReward) onReward(); // Don't block user if ad fails
         return false;
     }
 };

@@ -6,7 +6,7 @@ import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
 import { isNativePlatform, shareContent } from './utils/platformUtils';
 import { getBaseUrl } from './config/appConfig';
 import { shortenUrl } from './utils/urlShortener';
-import { initializeAdMob, showBannerAd, showRewardedInterstitial, showInterstitial } from './utils/admobUtils';
+import { initializeAdMob, showBannerAd, showRewardedAd, showInterstitial, prepareRewardedAd } from './utils/admobUtils';
 import { getAdSenseClientId } from './config/adsenseConfig';
 import './styles/index.css';
 
@@ -186,6 +186,8 @@ function App() {
         showBannerAd();
         // Show startup interstitial ad
         showInterstitial();
+        // Pre-load rewarded ad for later
+        prepareRewardedAd();
       });
     }
 
@@ -263,7 +265,7 @@ function App() {
     // Show Rewarded Interstitial ad in mobile app before generating result
     if (isMobileApp) {
       try {
-        await showRewardedInterstitial();
+        await showRewardedAd();
       } catch (e) {
         console.error("Ad error, proceeding anyway:", e);
       }
@@ -514,6 +516,10 @@ function App() {
                 onClick={() => {
                   // Simply select template (ads moved to Generate button for better UX)
                   setSelectedTemplate(tpl);
+                  // Pre-load rewarded ad while user fills the form
+                  if (isMobileApp) {
+                    prepareRewardedAd();
+                  }
                 }}
                 style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem' }}
               >
