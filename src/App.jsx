@@ -935,9 +935,11 @@ function App() {
                     ← Editar mensaje
                   </button>
 
-                  <div style={{ marginTop: '2rem' }}>
-                    <AdSlot label="Publicidad" adSlot="9155980495" adFormat="autorelaxed" />
-                  </div>
+                  {!isMobileApp && (
+                    <div style={{ marginTop: '2rem' }}>
+                      <AdSlot label="Publicidad" adSlot="9155980495" adFormat="autorelaxed" />
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
