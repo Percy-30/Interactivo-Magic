@@ -162,6 +162,7 @@ function App() {
   const [legalModal, setLegalModal] = useState(null); // 'privacy', 'terms'
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileApp, setIsMobileApp] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false); // New loading state
   const [formData, setFormData] = useState({
     name: '',
     sender: '',
@@ -240,16 +241,15 @@ function App() {
     return `${baseUrl}/?msg=${encoded}`;
   };
 
-  const handleCopyLink = async () => {
-    const url = getShareUrl();
-    const shortUrl = await shortenUrl(url);
-    navigator.clipboard.writeText(shortUrl).then(() => {
+  const handleCopyLink = () => {
+    // generatedUrl is already shortened now
+    navigator.clipboard.writeText(generatedUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!formData.name || !formData.sender || !formData.message) {
       alert('Por favor, completa todos los campos.');
       return;
@@ -266,7 +266,23 @@ function App() {
         return;
       }
     }
-    setShowResult(true);
+
+    setIsGenerating(true);
+    try {
+      const url = getShareUrl();
+      const shortUrl = await shortenUrl(url);
+      setGeneratedUrl(shortUrl);
+      setShowResult(true);
+
+      // Load and show interstitial ad on mobile or AdSense on web
+      if (isMobileApp) {
+        await showRewardedInterstitial();
+      }
+    } catch (error) {
+      console.error("Error generating message:", error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const scrollToTemplates = () => {
@@ -702,8 +718,32 @@ function App() {
                     )}
                   </div>
 
-                  <button className="btn btn-primary" onClick={handleGenerate} style={{ justifyContent: 'center', marginTop: '1rem' }}>
-                    <Sparkles size={20} /> Generar Mensaje Mágico
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleGenerate}
+                    disabled={isGenerating}
+                    style={{
+                      width: '100%',
+                      padding: '1.2rem',
+                      fontSize: '1.1rem',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: '0.8rem',
+                      marginBottom: '1rem',
+                      boxShadow: '0 8px 25px rgba(255, 0, 255, 0.3)',
+                      opacity: isGenerating ? 0.7 : 1
+                    }}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <div className="loader-small"></div>
+                        <span>Generando Magia...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={22} /> Generar Mensaje Mágico
+                      </>
+                    )}
                   </button>
                 </div>
               </>
@@ -780,12 +820,10 @@ function App() {
                       <button
                         className="btn glass"
                         onClick={async () => {
-                          const url = getShareUrl();
-                          const shortUrl = await shortenUrl(url);
                           await shareContent({
                             title: 'InteractivoMagic',
                             text: `${formData.sender} te ha enviado un mensaje mágico ✨`,
-                            url: shortUrl
+                            url: generatedUrl
                           });
                         }}
                         style={{
