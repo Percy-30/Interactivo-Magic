@@ -206,7 +206,7 @@ function App() {
     const data = params.get('msg');
     if (data) {
       try {
-        const decodedString = atob(data);
+        const decodedString = decodeURIComponent(escape(atob(data)));
         const decoded = JSON.parse(decodedString);
         const tpl = TEMPLATES.find(t => t.id === decoded.t);
         if (tpl) {
