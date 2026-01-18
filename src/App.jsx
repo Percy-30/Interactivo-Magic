@@ -205,7 +205,8 @@ function App() {
   }, []);
 
   const handleDownload = () => {
-    TemplateEngine.generate(selectedTemplate.content, formData);
+    const shareUrl = getShareUrl();
+    TemplateEngine.generate(shareUrl, formData);
   };
 
   const extractSocialId = (url, type) => {
