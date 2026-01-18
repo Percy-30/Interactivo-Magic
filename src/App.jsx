@@ -298,8 +298,9 @@ function App() {
         }
       }
 
-      const url = getShareUrl();
-      setGeneratedUrl(url);
+      const longUrl = getShareUrl();
+      const shortUrl = await shortenUrl(longUrl);
+      setGeneratedUrl(shortUrl);
       setShowResult(true);
     } catch (err) {
       console.error("Generation error:", err);
@@ -568,7 +569,7 @@ function App() {
           {isMobileApp && (
             <div style={{ textAlign: 'center', marginTop: '3rem', opacity: 0.6 }}>
               <button
-                onClick={() => setLegalModal('privacy')}
+                onClick={() => window.open('https://interactivomagic.ftydownloader.com/politica-privacidad.html', '_blank')}
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.85rem', textDecoration: 'underline', cursor: 'pointer' }}
               >
                 Política de Privacidad
@@ -1111,7 +1112,7 @@ function App() {
               <div>
                 <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Compañía</h4>
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <li><a href="#" onClick={(e) => { e.preventDefault(); setLegalModal('privacy'); }} style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Privacidad</a></li>
+                  <li><a href="https://interactivomagic.ftydownloader.com/politica-privacidad.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Privacidad</a></li>
                   <li><a href="#" onClick={(e) => { e.preventDefault(); setLegalModal('terms'); }} style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Términos</a></li>
                   <li><a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Contacto</a></li>
                 </ul>
