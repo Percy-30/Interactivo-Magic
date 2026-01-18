@@ -320,7 +320,16 @@ function App() {
       {/* Header Navigation */}
       <header className="site-header">
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem' }}>
-          <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            className="logo"
+            onClick={() => {
+              setSelectedTemplate(null);
+              setShowResult(false);
+              setViewData(null);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
+          >
             <Sparkles size={28} color="#ff00ff" />
             <span style={{ fontSize: '1.5rem', fontWeight: '800', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               InteractivoMagic
@@ -329,10 +338,10 @@ function App() {
 
           {/* Desktop Navigation */}
           <nav className="desktop-nav" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <a href="#inicio" onClick={(e) => { e.preventDefault(); setSelectedTemplate(null); setShowResult(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ color: 'white', textDecoration: 'none', fontWeight: '500', transition: 'color 0.3s' }}>Inicio</a>
-            <a href="#plantillas" onClick={(e) => { e.preventDefault(); setSelectedTemplate(null); setShowResult(false); setTimeout(scrollToTemplates, 50); }} style={{ color: 'white', textDecoration: 'none', fontWeight: '500', transition: 'color 0.3s' }}>Plantillas</a>
-            <a href="#como-funciona" onClick={(e) => { e.preventDefault(); setSelectedTemplate(null); setShowResult(false); setTimeout(() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' }), 50); }} style={{ color: 'white', textDecoration: 'none', fontWeight: '500', transition: 'color 0.3s' }}>Cómo funciona</a>
-            <button className="btn btn-primary" onClick={() => { setSelectedTemplate(null); setShowResult(false); setTimeout(scrollToTemplates, 50); }} style={{ padding: '0.7rem 1.5rem', fontSize: '0.95rem' }}>
+            <a href="#inicio" onClick={(e) => { e.preventDefault(); setSelectedTemplate(null); setShowResult(false); setViewData(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ color: 'white', textDecoration: 'none', fontWeight: '500', transition: 'color 0.3s' }}>Inicio</a>
+            <a href="#plantillas" onClick={(e) => { e.preventDefault(); setSelectedTemplate(null); setShowResult(false); setViewData(null); setTimeout(scrollToTemplates, 50); }} style={{ color: 'white', textDecoration: 'none', fontWeight: '500', transition: 'color 0.3s' }}>Plantillas</a>
+            <a href="#como-funciona" onClick={(e) => { e.preventDefault(); setSelectedTemplate(null); setShowResult(false); setViewData(null); setTimeout(() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' }), 50); }} style={{ color: 'white', textDecoration: 'none', fontWeight: '500', transition: 'color 0.3s' }}>Cómo funciona</a>
+            <button className="btn btn-primary" onClick={() => { setSelectedTemplate(null); setShowResult(false); setViewData(null); setTimeout(scrollToTemplates, 50); }} style={{ padding: '0.7rem 1.5rem', fontSize: '0.95rem' }}>
               Comenzar
             </button>
           </nav>
@@ -354,10 +363,10 @@ function App() {
               style={{ overflow: 'hidden' }}
             >
               <nav style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <a href="#inicio" onClick={() => { setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ color: 'white', textDecoration: 'none', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>Inicio</a>
-                <a href="#plantillas" onClick={(e) => { e.preventDefault(); setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setTimeout(scrollToTemplates, 50); }} style={{ color: 'white', textDecoration: 'none', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>Plantillas</a>
-                <a href="#como-funciona" onClick={(e) => { e.preventDefault(); setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setTimeout(() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' }), 50); }} style={{ color: 'white', textDecoration: 'none', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>Cómo funciona</a>
-                <button className="btn btn-primary" onClick={() => { setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setTimeout(scrollToTemplates, 50); }} style={{ width: '100%' }}>
+                <a href="#inicio" onClick={() => { setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setViewData(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ color: 'white', textDecoration: 'none', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>Inicio</a>
+                <a href="#plantillas" onClick={(e) => { e.preventDefault(); setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setViewData(null); setTimeout(scrollToTemplates, 50); }} style={{ color: 'white', textDecoration: 'none', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>Plantillas</a>
+                <a href="#como-funciona" onClick={(e) => { e.preventDefault(); setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setViewData(null); setTimeout(() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' }), 50); }} style={{ color: 'white', textDecoration: 'none', padding: '0.75rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)' }}>Cómo funciona</a>
+                <button className="btn btn-primary" onClick={() => { setMenuOpen(false); setSelectedTemplate(null); setShowResult(false); setViewData(null); setTimeout(scrollToTemplates, 50); }} style={{ width: '100%' }}>
                   Comenzar
                 </button>
               </nav>
