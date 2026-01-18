@@ -132,6 +132,33 @@ export const showRewardedInterstitial = async (onReward, onDismiss) => {
 };
 
 /**
+ * Show standard interstitial ad (e.g., on app startup)
+ */
+export const showInterstitial = async () => {
+    if (!isNativePlatform()) {
+        console.log('AdMob: Not on native platform, skipping interstitial');
+        return;
+    }
+
+    try {
+        const options = {
+            adId: getAdId('INTERSTITIAL'),
+            isTesting: USE_TEST_ADS,
+        };
+
+        // Prepare
+        await AdMob.prepareInterstitial(options);
+        console.log('Interstitial prepared');
+
+        // Show
+        await AdMob.showInterstitial();
+        console.log('Interstitial shown');
+    } catch (error) {
+        console.error('Error showing interstitial:', error);
+    }
+};
+
+/**
  * Check if AdMob is available
  */
 export const isAdMobAvailable = () => {

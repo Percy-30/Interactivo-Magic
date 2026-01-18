@@ -6,7 +6,7 @@ import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
 import { isNativePlatform, shareContent } from './utils/platformUtils';
 import { getBaseUrl } from './config/appConfig';
 import { shortenUrl } from './utils/urlShortener';
-import { initializeAdMob, showBannerAd, showRewardedInterstitial } from './utils/admobUtils';
+import { initializeAdMob, showBannerAd, showRewardedInterstitial, showInterstitial } from './utils/admobUtils';
 import { getAdSenseClientId } from './config/adsenseConfig';
 import './styles/index.css';
 
@@ -179,11 +179,13 @@ function App() {
     const isNative = isNativePlatform();
     setIsMobileApp(isNative);
 
-    // Initialize AdMob and show banner if on mobile
+    // Initialize AdMob and show ads if on mobile
     if (isNative) {
       initializeAdMob().then(() => {
-        // Show banner ad at bottom of screen
+        // Show banner ad at bottom
         showBannerAd();
+        // Show startup interstitial ad
+        showInterstitial();
       });
     }
 
