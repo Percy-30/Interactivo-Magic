@@ -617,6 +617,8 @@ function App() {
                       name="name"
                       placeholder="Ej: Mi Amor"
                       value={formData.name}
+                      onFocus={() => isMobileApp && hideBannerAd()}
+                      onBlur={() => isMobileApp && showBannerAd()}
                       onChange={(e) => {
                         setFormData({ ...formData, name: e.target.value });
                         if (errors.name) setErrors({ ...errors, name: null });
@@ -634,6 +636,8 @@ function App() {
                       name="sender"
                       placeholder="Tu nombre"
                       value={formData.sender}
+                      onFocus={() => isMobileApp && hideBannerAd()}
+                      onBlur={() => isMobileApp && showBannerAd()}
                       onChange={(e) => {
                         setFormData({ ...formData, sender: e.target.value });
                         if (errors.sender) setErrors({ ...errors, sender: null });
@@ -652,6 +656,8 @@ function App() {
                       rows="4"
                       placeholder="Escribe algo lindo...."
                       value={formData.message}
+                      onFocus={() => isMobileApp && hideBannerAd()}
+                      onBlur={() => isMobileApp && showBannerAd()}
                       onChange={(e) => {
                         setFormData({ ...formData, message: e.target.value });
                         if (errors.message) setErrors({ ...errors, message: null });
@@ -789,6 +795,8 @@ function App() {
                           <input
                             placeholder="Link de YouTube (ej. https://youtube.com/...)"
                             value={formData.youtubeUrl}
+                            onFocus={() => isMobileApp && hideBannerAd()}
+                            onBlur={() => isMobileApp && showBannerAd()}
                             onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
                             style={{ fontSize: '0.9rem', padding: '0.9rem' }}
                           />
@@ -856,6 +864,25 @@ function App() {
                 </p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <button
+                    onClick={() => setShowResult(false)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--text-muted)',
+                      marginBottom: '0.5rem',
+                      cursor: 'pointer',
+                      fontSize: '0.95rem',
+                      textDecoration: 'underline',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    ← Volver a editar mensaje
+                  </button>
+
                   <button
                     onClick={() => setViewData({ ...formData, html: selectedTemplate.content, t: selectedTemplate.id })}
                     className="btn btn-primary"
@@ -936,30 +963,6 @@ function App() {
                       </button>
                     )}
                   </div>
-
-                  <button
-                    onClick={() => setShowResult(false)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--text-muted)',
-                      marginTop: '1rem',
-                      cursor: 'pointer',
-                      fontSize: '0.95rem',
-                      textDecoration: 'underline',
-                      transition: 'color 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.color = 'white'}
-                    onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}
-                  >
-                    ← Editar mensaje
-                  </button>
-
-                  {!isMobileApp && (
-                    <div style={{ marginTop: '2rem' }}>
-                      <AdSlot label="Publicidad" adSlot="9155980495" adFormat="autorelaxed" />
-                    </div>
-                  )}
                 </div>
               </motion.div>
             )}
@@ -970,101 +973,107 @@ function App() {
             <AdSlot label="Sponsor" adSlot="4095225502" adFormat="vertical" fullWidthResponsive="false" />
           </div>
         </div>
-      )}
+      )
+      }
 
       {/* How It Works Section */}
-      {!selectedTemplate && (
-        <section id="como-funciona" style={{ marginTop: '8rem', marginBottom: '6rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{
-              fontSize: 'clamp(2rem, 5vw, 3rem)',
-              marginBottom: '1rem',
-              background: 'linear-gradient(135deg, var(--secondary), var(--accent))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              ¿Cómo funciona la magia?
-            </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-              Crear mensajes interactivos nunca fue tan fácil. Solo sigue estos 3 simples pasos
-            </p>
-          </div>
+      {
+        !selectedTemplate && (
+          <section id="como-funciona" style={{ marginTop: '8rem', marginBottom: '6rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+              <h2 style={{
+                fontSize: 'clamp(2rem, 5vw, 3rem)',
+                marginBottom: '1rem',
+                background: 'linear-gradient(135deg, var(--secondary), var(--accent))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                ¿Cómo funciona la magia?
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+                Crear mensajes interactivos nunca fue tan fácil. Solo sigue estos 3 simples pasos
+              </p>
+            </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-            {STEPS.map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.2 }}
-                className="glass"
-                style={{ padding: '2.5rem', position: 'relative', textAlign: 'center' }}
-              >
-                <div style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  background: `linear-gradient(135deg, ${TEMPLATES[idx % 3].color}, ${TEMPLATES[(idx + 1) % 3].color})`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.8rem',
-                  fontWeight: '800',
-                  margin: '0 auto 1.5rem',
-                  boxShadow: `0 8px 25px ${TEMPLATES[idx % 3].color}40`
-                }}>
-                  {step.number}
-                </div>
-                <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>{step.title}</h3>
-                <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>{step.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      )}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+              {STEPS.map((step, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.2 }}
+                  className="glass"
+                  style={{ padding: '2.5rem', position: 'relative', textAlign: 'center' }}
+                >
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${TEMPLATES[idx % 3].color}, ${TEMPLATES[(idx + 1) % 3].color})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.8rem',
+                    fontWeight: '800',
+                    margin: '0 auto 1.5rem',
+                    boxShadow: `0 8px 25px ${TEMPLATES[idx % 3].color}40`
+                  }}>
+                    {step.number}
+                  </div>
+                  <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>{step.title}</h3>
+                  <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>{step.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )
+      }
 
       {/* Final CTA */}
-      {!selectedTemplate && (
-        <section style={{ marginBottom: '6rem' }}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="glass"
-            style={{
-              padding: 'clamp(3rem, 6vw, 5rem)',
-              textAlign: 'center',
-              background: 'linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 242, 255, 0.1))',
-              border: '2px solid rgba(255, 0, 255, 0.3)'
-            }}
-          >
-            <h2 style={{
-              fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
-              marginBottom: '1.5rem',
-              background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              ¿Listo para crear tu primera experiencia?
-            </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
-              Únete a miles de usuarios que ya están sorprendiendo a sus seres queridos con mensajes únicos e interactivos.
-            </p>
-            <button className="btn btn-primary" onClick={scrollToTemplates} style={{ fontSize: '1.2rem', padding: '1.3rem 3rem' }}>
-              <Sparkles size={24} /> Comenzar Gratis
-            </button>
-          </motion.div>
-        </section>
-      )}
+      {
+        !selectedTemplate && (
+          <section style={{ marginBottom: '6rem' }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="glass"
+              style={{
+                padding: 'clamp(3rem, 6vw, 5rem)',
+                textAlign: 'center',
+                background: 'linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 242, 255, 0.1))',
+                border: '2px solid rgba(255, 0, 255, 0.3)'
+              }}
+            >
+              <h2 style={{
+                fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
+                marginBottom: '1.5rem',
+                background: 'linear-gradient(135deg, var(--primary), var(--accent))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                ¿Listo para crear tu primera experiencia?
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '2.5rem', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
+                Únete a miles de usuarios que ya están sorprendiendo a sus seres queridos con mensajes únicos e interactivos.
+              </p>
+              <button className="btn btn-primary" onClick={scrollToTemplates} style={{ fontSize: '1.2rem', padding: '1.3rem 3rem' }}>
+                <Sparkles size={24} /> Comenzar Gratis
+              </button>
+            </motion.div>
+          </section>
+        )
+      }
 
       {/* Ad Placeholder Section */}
-      {!selectedTemplate && !isMobileApp && (
-        <div className="container" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
-          <div className="glass" style={{ padding: '1rem', textAlign: 'center', borderStyle: 'dashed', background: 'rgba(255,255,255,0.02)' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>Publicidad</p>
-            <div style={{ minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {/* 
+      {
+        !selectedTemplate && !isMobileApp && (
+          <div className="container" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
+            <div className="glass" style={{ padding: '1rem', textAlign: 'center', borderStyle: 'dashed', background: 'rgba(255,255,255,0.02)' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>Publicidad</p>
+              <div style={{ minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* 
                   Actual AdSense Unit:
                   <ins className="adsbygoogle"
                        style={{ display: 'block' }}
@@ -1074,71 +1083,76 @@ function App() {
                        data-full-width-responsive="true"></ins>
                   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                 */}
-              <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.9rem' }}>Anuncio Horizontal (FTY Style)</span>
+                <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.9rem' }}>Anuncio Horizontal (FTY Style)</span>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* SLOT D: Footer Ad - Display */}
-      {!selectedTemplate && !isMobileApp && (
-        <AdSlot label="Recomendado para ti" adSlot="4095225502" />
-      )}
+      {
+        !selectedTemplate && !isMobileApp && (
+          <AdSlot label="Recomendado para ti" adSlot="4095225502" />
+        )
+      }
 
       {/* Footer */}
-      {!selectedTemplate && !isMobileApp && (
-        <footer style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', marginTop: '4rem' }}>
-          <div className="container">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <Sparkles size={24} color="#ff00ff" />
-                  <span style={{ fontSize: '1.3rem', fontWeight: '800' }}>InteractivoMagic</span>
+      {
+        !selectedTemplate && !isMobileApp && (
+          <footer style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', marginTop: '4rem' }}>
+            <div className="container">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                    <Sparkles size={24} color="#ff00ff" />
+                    <span style={{ fontSize: '1.3rem', fontWeight: '800' }}>InteractivoMagic</span>
+                  </div>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
+                    Transforma mensajes simples en experiencias mágicas e interactivas. Hecho con ❤️ para compartir.
+                  </p>
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                  Transforma mensajes simples en experiencias mágicas e interactivas. Hecho con ❤️ para compartir.
-                </p>
-              </div>
 
-              <div>
-                <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Producto</h4>
-                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <li><a href="#plantillas" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Plantillas</a></li>
-                  <li><a href="#como-funciona" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Cómo funciona</a></li>
-                  <li><a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Precios</a></li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Compañía</h4>
-                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <li><a href="https://interactivomagic.ftydownloader.com/politica-privacidad.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Privacidad</a></li>
-                  <li><a href="#" onClick={(e) => { e.preventDefault(); setLegalModal('terms'); }} style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Términos</a></li>
-                  <li><a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Contacto</a></li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Síguenos</h4>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <a href="#" className="social-link" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', color: 'white' }}>F</a>
-                  <a href="#" className="social-link" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', color: 'white' }}>T</a>
-                  <a href="#" className="social-link" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', color: 'white' }}>I</a>
+                <div>
+                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Producto</h4>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <li><a href="#plantillas" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Plantillas</a></li>
+                    <li><a href="#como-funciona" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Cómo funciona</a></li>
+                    <li><a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Precios</a></li>
+                  </ul>
                 </div>
+
+                <div>
+                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Compañía</h4>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <li><a href="https://interactivomagic.ftydownloader.com/politica-privacidad.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Privacidad</a></li>
+                    <li><a href="#" onClick={(e) => { e.preventDefault(); setLegalModal('terms'); }} style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Términos</a></li>
+                    <li><a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.3s' }}>Contacto</a></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Síguenos</h4>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <a href="#" className="social-link" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', color: 'white' }}>F</a>
+                    <a href="#" className="social-link" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', color: 'white' }}>T</a>
+                    <a href="#" className="social-link" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', color: 'white' }}>I</a>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ textAlign: 'center', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                © 2026 InteractivoMagic - Hecho con ❤️ para compartir momentos especiales
               </div>
             </div>
-
-            <div style={{ textAlign: 'center', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-              © 2026 InteractivoMagic - Hecho con ❤️ para compartir momentos especiales
-            </div>
-          </div>
-        </footer>
-      )}
+          </footer>
+        )
+      }
 
       <AnimatePresence>
         {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
       </AnimatePresence>
-    </div>
+    </div >
   );
 }
 
