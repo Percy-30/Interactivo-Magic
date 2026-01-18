@@ -256,10 +256,16 @@ function App() {
       alert('Por favor, completa todos los campos.');
       return;
     }
-    // If upload is selected but no file
-    if (formData.hasAudio && formData.audioOption === 'upload' && !formData.audioFile) {
-      alert('Por favor, selecciona un archivo de audio para subir.');
-      return;
+    // Unified Audio Validation
+    if (formData.hasAudio) {
+      if (formData.audioOption === 'upload' && !formData.audioFile) {
+        alert('Por favor, sube un archivo de audio para continuar.');
+        return;
+      }
+      if (formData.audioOption === 'youtube' && !formData.youtubeUrl.trim()) {
+        alert('Por favor, ingresa un link de YouTube válido.');
+        return;
+      }
     }
 
     // Show Rewarded Interstitial ad in mobile app before generating result
@@ -600,24 +606,52 @@ function App() {
                     borderRadius: '20px',
                     border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.2rem' }}>
+                    <div
+                      onClick={() => setFormData({ ...formData, hasAudio: !formData.hasAudio })}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: '1.2rem',
+                        padding: '1rem',
+                        background: formData.hasAudio ? 'rgba(255, 77, 148, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: '15px',
+                        cursor: 'pointer',
+                        border: formData.hasAudio ? '2px solid var(--primary)' : '1px solid rgba(255, 255, 255, 0.1)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      className="audio-toggle-card"
+                    >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(255, 0, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <Music size={20} color="#ff00ff" />
+                        <div style={{
+                          width: '45px',
+                          height: '45px',
+                          borderRadius: '12px',
+                          background: formData.hasAudio ? 'var(--primary)' : 'rgba(255, 0, 255, 0.2)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.3s'
+                        }}>
+                          <Music size={24} color="white" />
                         </div>
                         <div>
-                          <p style={{ fontWeight: '700', fontSize: '1rem', margin: 0 }}>Música Mágica</p>
-                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>Añade una banda sonora a tu mensaje</p>
+                          <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Música Mágica</p>
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>{formData.hasAudio ? 'Música activada ✨' : 'Click para añadir música'}</p>
                         </div>
                       </div>
-                      <label className="switch">
-                        <input
-                          type="checkbox"
-                          checked={formData.hasAudio}
-                          onChange={(e) => setFormData({ ...formData, hasAudio: e.target.checked })}
-                        />
-                        <span className="slider round"></span>
-                      </label>
+                      <div style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        border: '2px solid white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: formData.hasAudio ? 'white' : 'transparent'
+                      }}>
+                        {formData.hasAudio && <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--primary)' }} />}
+                      </div>
                     </div>
 
                     {formData.hasAudio && (
