@@ -12,6 +12,9 @@ const TemplateEngine = {
         const extractId = (url, type) => {
             if (!url) return '';
             if (type === 'youtube') {
+                // If it's already a valid 11-char ID, return it
+                if (url.length === 11 && !url.includes('/') && !url.includes('=')) return url;
+
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                 const match = url.match(regExp);
                 return (match && match[2].length === 11) ? match[2] : '';

@@ -210,7 +210,13 @@ function App() {
         const decoded = JSON.parse(decodedString);
         const tpl = TEMPLATES.find(t => t.id === decoded.t);
         if (tpl) {
-          setViewData({ ...decoded, html: tpl.content });
+          // Ensure audioOption is reconstructed correctly from data
+          const reconstructedAudioOption = decoded.yt ? 'youtube' : (decoded.src === 'uploaded' ? 'upload' : 'default');
+          setViewData({
+            ...decoded,
+            html: tpl.content,
+            audioOption: reconstructedAudioOption
+          });
         }
       } catch (e) {
         console.error("Error decoding message:", e);
