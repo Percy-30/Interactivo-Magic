@@ -249,7 +249,7 @@ function App() {
     });
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!formData.name || !formData.sender || !formData.message) {
       alert('Por favor, completa todos los campos.');
       return;
@@ -259,22 +259,19 @@ function App() {
       alert('Por favor, selecciona un archivo de audio para subir.');
       return;
     }
-    // Validation for social links
-    if (formData.hasAudio) {
-      if (formData.audioOption === 'youtube' && !extractSocialId(formData.youtubeUrl, 'youtube')) {
-        alert('Por favor, ingresa un link de YouTube válido.');
-        return;
+
+    // Show Rewarded Interstitial ad in mobile app before generating result
+    if (isMobileApp) {
+      try {
+        await showRewardedInterstitial();
+      } catch (e) {
+        console.error("Ad error, proceeding anyway:", e);
       }
     }
 
     const url = getShareUrl();
     setGeneratedUrl(url);
     setShowResult(true);
-
-    // Load and show interstitial ad on mobile or AdSense on web
-    if (isMobileApp) {
-      showRewardedInterstitial();
-    }
   };
 
   const scrollToTemplates = () => {
@@ -514,30 +511,9 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.15 }}
                 className="glass card template-card"
-                onClick={async () => {
-                  // Show rewarded interstitial ad in mobile app before selecting template
-                  if (isMobileApp) {
-                    await showRewardedInterstitial(
-                      // onReward callback
-                      () => {
-                        console.log('User earned reward, proceeding to template');
-                        setSelectedTemplate(tpl);
-                      },
-                      // onDismiss callback
-                      (rewarded) => {
-                        if (rewarded) {
-                          console.log('Ad watched, template unlocked');
-                        } else {
-                          console.log('Ad dismissed without reward');
-                          // Still allow access since rewarded interstitial is optional
-                          setSelectedTemplate(tpl);
-                        }
-                      }
-                    );
-                  } else {
-                    // On web, just select template directly
-                    setSelectedTemplate(tpl);
-                  }
+                onClick={() => {
+                  // Simply select template (ads moved to Generate button for better UX)
+                  setSelectedTemplate(tpl);
                 }}
                 style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem' }}
               >
