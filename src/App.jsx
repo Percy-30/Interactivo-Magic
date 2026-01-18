@@ -162,7 +162,6 @@ function App() {
   const [legalModal, setLegalModal] = useState(null); // 'privacy', 'terms'
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileApp, setIsMobileApp] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false); // New loading state
   const [formData, setFormData] = useState({
     name: '',
     sender: '',
@@ -242,14 +241,13 @@ function App() {
   };
 
   const handleCopyLink = () => {
-    // generatedUrl is already shortened now
     navigator.clipboard.writeText(generatedUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
     if (!formData.name || !formData.sender || !formData.message) {
       alert('Por favor, completa todos los campos.');
       return;
@@ -267,21 +265,13 @@ function App() {
       }
     }
 
-    setIsGenerating(true);
-    try {
-      const url = getShareUrl();
-      const shortUrl = await shortenUrl(url);
-      setGeneratedUrl(shortUrl);
-      setShowResult(true);
+    const url = getShareUrl();
+    setGeneratedUrl(url);
+    setShowResult(true);
 
-      // Load and show interstitial ad on mobile or AdSense on web
-      if (isMobileApp) {
-        await showRewardedInterstitial();
-      }
-    } catch (error) {
-      console.error("Error generating message:", error);
-    } finally {
-      setIsGenerating(false);
+    // Load and show interstitial ad on mobile or AdSense on web
+    if (isMobileApp) {
+      showRewardedInterstitial();
     }
   };
 
@@ -721,7 +711,6 @@ function App() {
                   <button
                     className="btn btn-primary"
                     onClick={handleGenerate}
-                    disabled={isGenerating}
                     style={{
                       width: '100%',
                       padding: '1.2rem',
@@ -730,20 +719,10 @@ function App() {
                       justifyContent: 'center',
                       gap: '0.8rem',
                       marginBottom: '1rem',
-                      boxShadow: '0 8px 25px rgba(255, 0, 255, 0.3)',
-                      opacity: isGenerating ? 0.7 : 1
+                      boxShadow: '0 8px 25px rgba(255, 0, 255, 0.3)'
                     }}
                   >
-                    {isGenerating ? (
-                      <>
-                        <div className="loader-small"></div>
-                        <span>Generando Magia...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={22} /> Generar Mensaje Mágico
-                      </>
-                    )}
+                    <Sparkles size={22} /> Generar Mensaje Mágico
                   </button>
                 </div>
               </>
