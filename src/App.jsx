@@ -111,6 +111,46 @@ const AdSlot = ({ label = 'Publicidad', adSlot, adFormat = 'auto', adLayout, ful
   );
 };
 
+const LegalModal = ({ type, onClose }) => {
+  const content = {
+    privacy: {
+      title: 'Política de Privacidad',
+      body: 'En InteractivoMagic, valoramos tu privacidad. No almacenamos tus mensajes ni datos personales en nuestros servidores de forma permanente. Los links generados contienen la información codificada en la URL, lo que significa que el mensaje vive en el link que compartes, no en nuestras bases de datos.'
+    },
+    terms: {
+      title: 'Términos de Servicio',
+      body: 'Al usar InteractivoMagic, aceptas que eres el único responsable del contenido de los mensajes que generas. Nos reservamos el derecho de deshabilitar el servicio si se detecta un uso indebido o malintencionado de la plataforma.'
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="modal-overlay"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="glass modal-content"
+        onClick={e => e.stopPropagation()}
+        style={{ padding: '2rem', maxWidth: '500px', width: '90%' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ margin: 0 }}>{content[type].title}</h2>
+          <button className="btn-icon" onClick={onClose}><X /></button>
+        </div>
+        <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>{content[type].body}</p>
+        <button className="btn btn-primary" onClick={onClose} style={{ marginTop: '2rem', width: '100%' }}>Entendido</button>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [viewData, setViewData] = useState(null);
@@ -282,7 +322,7 @@ function App() {
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem' }}>
           <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Sparkles size={28} color="#ff00ff" />
-            <span style={{ fontSize: '1.5rem', fontWeight: '800', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: '4' }}>
+            <span style={{ fontSize: '1.5rem', fontWeight: '800', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               InteractivoMagic
             </span>
           </div>
@@ -414,9 +454,9 @@ function App() {
                   background: 'rgba(255, 0, 255, 0.1)',
                   marginBottom: '1rem'
                 }}>
-                  {feature.icon}
+                  {feat.icon}
                 </div>
-                <h3 style={{ marginBottom: '0.75rem', fontSize: '1.25rem' }}>{feature.title}</h3>
+                <h3 style={{ marginBottom: '0.75rem', fontSize: '1.25rem' }}>{feat.title}</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>{feat.description}</p>
               </motion.div>
             ))}
@@ -629,7 +669,7 @@ function App() {
                                 }
                               }}
                             />
-                            <label htmlFor="audio-upload" className="btn glass" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', fontSize: '0.9rem', width: '100%', justifyContent: 'center' }}>
+                            <label htmlFor="audio-upload" className="btn glass" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', width: '100%', justifyContent: 'center' }}>
                               {formData.audioFile ? `🎵 ${formData.audioFile.name}` : 'Seleccionar Archivo'}
                             </label>
                           </div>

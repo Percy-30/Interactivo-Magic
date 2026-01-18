@@ -1,4 +1,4 @@
-import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, AdMobRewardItem, RewardAdOptions, AdLoadInfo, AdMobError } from '@capacitor-community/admob';
+import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { isNativePlatform } from './platformUtils';
 import { ADMOB_CONFIG, USE_TEST_ADS, getAdId } from '../config/admobConfig';
 
