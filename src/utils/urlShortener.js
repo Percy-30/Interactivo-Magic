@@ -1,4 +1,4 @@
-import { SHORTENER_API } from '../config/appConfig';
+import { SHORTENER_API, LOCAL_DEV_IP } from '../config/appConfig';
 
 /**
  * URL Shortener Utility using our custom Backend API
@@ -7,12 +7,24 @@ import { SHORTENER_API } from '../config/appConfig';
  */
 export const shortenUrl = async (longUrl) => {
     try {
-        // Detect if we are on localhost to use local backend during dev
-        const isLocal = typeof window !== 'undefined' &&
-            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+        const isCapacitor = typeof window !== 'undefined' && (hostname.includes('capacitor') || hostname === 'localhost' && window.location.port === '');
+        const isLocalWeb = hostname === 'localhost' || hostname === '127.0.0.1';
 
-        // In local development, use localhost:3001, otherwise use production API
-        const apiBase = isLocal ? 'http://localhost:3001' : SHORTENER_API;
+        // Decision logic for API Endpoint:
+        let apiBase = SHORTENER_API;
+
+        if (isLocalWeb && window.location.port !== '') {
+            // Case 1: Browser on PC (localhost:5173) -> Use local backend
+            apiBase = 'http://localhost:3001';
+        } else if (isCapacitor) {
+            // Case 2: Running in Native App (host is localhost/capacitor but no port)
+            // If you are testing locally on your network, use LOCAL_DEV_IP
+            // For production builds, always use SHORTENER_API
+            const IS_DEV_TESTING = true; // CHANGE THIS TO false FOR PRODUCTION RELEASE
+            apiBase = IS_DEV_TESTING ? `http://${LOCAL_DEV_IP}:3001` : SHORTENER_API;
+        }
+
         const shortenEndpoint = `${apiBase}/api/shorten`;
 
         const response = await fetch(shortenEndpoint, {
@@ -26,7 +38,13 @@ export const shortenUrl = async (longUrl) => {
         if (response.ok) {
             const data = await response.json();
             if (data.success && data.shortUrl) {
-                return data.shortUrl;
+                // Ensure the returned shortUrl uses a reachable domain/IP
+                // If the backend returns a localhost URL but we are on mobile, fix it
+                let finalUrl = data.shortUrl;
+                if (isCapacitor && finalUrl.includes('localhost')) {
+                    finalUrl = finalUrl.replace('localhost', LOCAL_DEV_IP);
+                }
+                return finalUrl;
             }
         }
 

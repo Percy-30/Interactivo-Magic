@@ -1,6 +1,7 @@
 // Production Domain Configuration
 export const PRODUCTION_DOMAIN = 'https://interactivomagic.ftydownloader.com';
 export const SHORTENER_API = 'https://s.ftydownloader.com'; // Your custom shortener domain
+export const LOCAL_DEV_IP = '192.168.1.13'; // Update this to your PC's IP for local mobile testing
 
 // Get the appropriate base URL based on environment
 export const getBaseUrl = () => {
