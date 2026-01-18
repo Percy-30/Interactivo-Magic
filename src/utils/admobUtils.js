@@ -85,7 +85,6 @@ export const removeBannerAd = async () => {
 export const showRewardedInterstitial = async (onReward, onDismiss) => {
     if (!isNativePlatform()) {
         console.log('AdMob: Not on native platform, proceeding without ad');
-        // On web, just proceed immediately
         if (onReward) onReward();
         return true;
     }
@@ -96,36 +95,40 @@ export const showRewardedInterstitial = async (onReward, onDismiss) => {
             isTesting: USE_TEST_ADS,
         };
 
+        console.log(`AdMob: Preparing Rewarded Interstitial (${options.adId})...`);
+
         // Prepare the ad
         await AdMob.prepareRewardVideoAd(options);
-        console.log('Rewarded interstitial prepared');
 
-        // Set up event listeners
         let rewarded = false;
 
+        // Set up event listeners
         const rewardListener = await AdMob.addListener('onRewardedVideoAdRewarded', (reward) => {
-            console.log('User earned reward:', reward);
+            console.log('AdMob: User earned reward!', reward);
             rewarded = true;
             if (onReward) onReward(reward);
         });
 
         const dismissListener = await AdMob.addListener('onRewardedVideoAdDismissed', () => {
-            console.log('Rewarded interstitial dismissed');
+            console.log('AdMob: Ad dismissed');
             if (onDismiss) onDismiss(rewarded);
 
-            // Clean up listeners
+            // Clean up
             rewardListener.remove();
             dismissListener.remove();
         });
 
+        // Small delay to ensure prep is handled by OS
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         // Show the ad
         await AdMob.showRewardVideoAd();
-        console.log('Rewarded interstitial shown');
+        console.log('AdMob: showRewardVideoAd called');
 
-        return rewarded;
+        return true;
     } catch (error) {
-        console.error('Error showing rewarded interstitial:', error);
-        // If ad fails to load, proceed anyway
+        console.error('AdMob: Error showing rewarded ad:', error);
+        // Fallback: if ad fails, still allow user to proceed
         if (onReward) onReward();
         return false;
     }
