@@ -162,6 +162,7 @@ function App() {
   const [legalModal, setLegalModal] = useState(null); // 'privacy', 'terms'
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileApp, setIsMobileApp] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
     sender: '',
@@ -252,21 +253,30 @@ function App() {
   };
 
   const handleGenerate = async () => {
-    if (!formData.name || !formData.sender || !formData.message) {
-      alert('Por favor, completa todos los campos.');
-      return;
-    }
-    // Unified Audio Validation
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = '¿Cómo se llama la persona especial?';
+    if (!formData.sender.trim()) newErrors.sender = 'Dinos quién envía el mensaje';
+    if (!formData.message.trim()) newErrors.message = '¡Escribe unas palabras mágicas!';
+
     if (formData.hasAudio) {
       if (formData.audioOption === 'upload' && !formData.audioFile) {
-        alert('Por favor, sube un archivo de audio para continuar.');
-        return;
+        newErrors.audio = 'Por favor, sube un archivo de audio.';
       }
       if (formData.audioOption === 'youtube' && !formData.youtubeUrl.trim()) {
-        alert('Por favor, ingresa un link de YouTube válido.');
-        return;
+        newErrors.youtube = 'Por favor, ingresa un link de YouTube.';
       }
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // Scroll to the first error
+      const firstError = Object.keys(newErrors)[0];
+      const element = document.getElementsByName(firstError)[0] || document.getElementById('audio-section');
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    setErrors({});
 
     // Show Rewarded Interstitial ad in mobile app before generating result
     if (isMobileApp) {
@@ -660,6 +670,11 @@ function App() {
                         animate={{ opacity: 1, height: 'auto' }}
                         style={{ overflow: 'hidden' }}
                       >
+                        {errors.audio || errors.youtube ? (
+                          <div style={{ color: 'var(--primary)', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: '500' }}>
+                            ⚠️ {errors.audio || errors.youtube}
+                          </div>
+                        ) : null}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem', marginBottom: '1.2rem' }}>
                           {[
                             { id: 'youtube', label: 'YouTube', help: 'Video' },
@@ -702,6 +717,7 @@ function App() {
                                   const reader = new FileReader();
                                   reader.onload = (event) => {
                                     setFormData({ ...formData, audioFile: file, audioSrc: event.target.result });
+                                    if (errors.audio) setErrors({ ...errors, audio: null });
                                   };
                                   reader.readAsDataURL(file);
                                 }
