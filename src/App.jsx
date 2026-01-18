@@ -586,18 +586,36 @@ function App() {
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Nombre del Destinatario</label>
                     <input
+                      name="name"
                       placeholder="Ej: Mi Amor"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, name: e.target.value });
+                        if (errors.name) setErrors({ ...errors, name: null });
+                      }}
+                      style={{
+                        borderColor: errors.name ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                        boxShadow: errors.name ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
+                      }}
                     />
+                    {errors.name && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.name}</p>}
                   </div>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Tu Nombre</label>
                     <input
+                      name="sender"
                       placeholder="Tu nombre"
                       value={formData.sender}
-                      onChange={(e) => setFormData({ ...formData, sender: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, sender: e.target.value });
+                        if (errors.sender) setErrors({ ...errors, sender: null });
+                      }}
+                      style={{
+                        borderColor: errors.sender ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                        boxShadow: errors.sender ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
+                      }}
                     />
+                    {errors.sender && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.sender}</p>}
                   </div>
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Mensaje Especial</label>
