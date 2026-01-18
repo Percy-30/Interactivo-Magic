@@ -131,8 +131,9 @@ export const showRewardedAd = async (onReward) => {
         }
 
         if (!isRewardedAdReady) {
-            console.warn('AdMob: Proceeding without ad (not ready)');
-            if (onReward) onReward();
+            console.warn('AdMob: Ad not ready, trying Interstitial fallback...');
+            await showInterstitial(); // Try the normal interstitial as backup
+            if (onReward) onReward(); // Continue to result anyway
             return false;
         }
 
