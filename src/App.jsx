@@ -117,11 +117,19 @@ const LegalModal = ({ type, onClose }) => {
   const content = {
     privacy: {
       title: 'Política de Privacidad',
-      body: 'En InteractivoMagic, valoramos tu privacidad. No almacenamos tus mensajes ni datos personales en nuestros servidores de forma permanente. Los links generados contienen la información codificada en la URL, lo que significa que el mensaje vive en el link que compartes, no en nuestras bases de datos.'
+      body: `En InteractivoMagic, valoramos tu privacidad. 
+
+1. Información: No recolectamos datos personales identificables. Los nombres y mensajes que ingresas se guardan localmente en la URL generada.
+2. Anuncios: Utilizamos Google AdMob para mostrar publicidad. AdMob puede recopilar datos técnicos (ID de publicidad, modelo de dispositivo) para personalizar anuncios.
+3. Archivos: Si subes un audio, este se procesa localmente para generar la experiencia, no se almacena en nuestros servidores.
+4. Consentimiento: Al usar la app, aceptas esta política.`
     },
     terms: {
       title: 'Términos de Servicio',
-      body: 'Al usar InteractivoMagic, aceptas que eres el único responsable del contenido de los mensajes que generas. Nos reservamos el derecho de deshabilitar el servicio si se detecta un uso indebido o malintencionado de la plataforma.'
+      body: `1. Uso: La app es para uso personal y creativo. Queda prohibido generar contenido ofensivo o ilegal.
+2. Responsabilidad: El usuario es el único responsable del contenido compartido a través de los links generados.
+3. Disponibilidad: No garantizamos el funcionamiento ininterrumpido del servicio debido a factores técnicos externos.
+4. Cambios: Nos reservamos el derecho de actualizar estos términos en cualquier momento para mejorar el servicio.`
     }
   };
 
@@ -556,6 +564,17 @@ function App() {
               </motion.div>
             ))}
           </div>
+
+          {isMobileApp && (
+            <div style={{ textAlign: 'center', marginTop: '3rem', opacity: 0.6 }}>
+              <button
+                onClick={() => setLegalModal('privacy')}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.85rem', textDecoration: 'underline', cursor: 'pointer' }}
+              >
+                Política de Privacidad
+              </button>
+            </div>
+          )}
         </section>
       ) : (
         <div style={{
