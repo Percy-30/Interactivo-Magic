@@ -6,10 +6,7 @@ import { ADMOB_CONFIG, USE_TEST_ADS, getAdId } from '../config/admobConfig';
  * Initialize AdMob SDK
  */
 export const initializeAdMob = async () => {
-    if (!isNativePlatform()) {
-        console.log('AdMob: Not on native platform, skipping initialization');
-        return;
-    }
+    if (!isNativePlatform()) return;
 
     try {
         await AdMob.initialize({
@@ -17,9 +14,9 @@ export const initializeAdMob = async () => {
             testingDevices: USE_TEST_ADS ? ['YOUR_DEVICE_ID_HERE'] : [],
             initializeForTesting: USE_TEST_ADS,
         });
-        console.log(`AdMob initialized successfully (${USE_TEST_ADS ? 'TEST MODE' : 'PRODUCTION MODE'})`);
+        console.log(`AdMob: Initialized (${USE_TEST_ADS ? 'TEST' : 'PROD'})`);
     } catch (error) {
-        console.error('AdMob initialization error:', error);
+        console.error('AdMob: Initialization error:', error);
     }
 };
 
@@ -27,10 +24,7 @@ export const initializeAdMob = async () => {
  * Show banner ad at bottom of screen
  */
 export const showBannerAd = async () => {
-    if (!isNativePlatform()) {
-        console.log('AdMob: Not on native platform, skipping banner ad');
-        return;
-    }
+    if (!isNativePlatform()) return;
 
     try {
         const options = {
@@ -42,9 +36,9 @@ export const showBannerAd = async () => {
         };
 
         await AdMob.showBanner(options);
-        console.log('Banner ad shown successfully');
+        console.log('AdMob: Banner shown');
     } catch (error) {
-        console.error('Error showing banner ad:', error);
+        console.error('AdMob: Error showing banner:', error);
     }
 };
 
@@ -53,30 +47,14 @@ export const showBannerAd = async () => {
  */
 export const hideBannerAd = async () => {
     if (!isNativePlatform()) return;
-
     try {
         await AdMob.hideBanner();
-        console.log('Banner ad hidden');
     } catch (error) {
-        console.error('Error hiding banner ad:', error);
+        console.error('AdMob: Error hiding banner:', error);
     }
 };
 
-/**
- * Remove banner ad
- */
-export const removeBannerAd = async () => {
-    if (!isNativePlatform()) return;
-
-    try {
-        await AdMob.removeBanner();
-        console.log('Banner ad removed');
-    } catch (error) {
-        console.error('Error removing banner ad:', error);
-    }
-};
-
-// Track ad state to avoid redundant calls
+// Track ad state
 let isRewardedAdPreparing = false;
 let isRewardedAdReady = false;
 
@@ -84,8 +62,7 @@ let isRewardedAdReady = false;
  * Pre-load a rewarded interstitial ad
  */
 export const prepareRewardedAd = async () => {
-    if (!isNativePlatform()) return;
-    if (isRewardedAdPreparing || isRewardedAdReady) return;
+    if (!isNativePlatform() || isRewardedAdPreparing || isRewardedAdReady) return;
 
     try {
         isRewardedAdPreparing = true;
@@ -96,46 +73,37 @@ export const prepareRewardedAd = async () => {
 
         console.log(`AdMob: Pre-loading Rewarded Interstitial (${options.adId})...`);
 
-        // Listeners for Rewarded Interstitial (V8+)
+        // Use specific method
+        if (typeof AdMob.prepareRewardedInterstitialAd === 'function') {
+            await AdMob.prepareRewardedInterstitialAd(options);
+        } else {
+            await AdMob.prepareRewardVideoAd(options);
+        }
+
+        // Listeners for load state
         const loadListener = await AdMob.addListener('onRewardedInterstitialAdLoaded', () => {
-            console.log('AdMob: event -> onRewardedInterstitialAdLoaded');
+            console.log('AdMob: Rewarded Interstitial LOADED');
             isRewardedAdReady = true;
             isRewardedAdPreparing = false;
             loadListener.remove();
         });
 
         const failListener = await AdMob.addListener('onRewardedInterstitialAdFailedToLoad', (error) => {
-            console.error('AdMob: event -> onRewardedInterstitialAdFailedToLoad', error);
-            alert(`DEBUG: Error al cargar anuncio: ${error.message || 'Error desconocido'}`);
+            console.error('AdMob: Rewarded Interstitial FAILED TO LOAD', error);
             isRewardedAdReady = false;
             isRewardedAdPreparing = false;
             failListener.remove();
         });
 
-        // Fallback Listeners (Standard Rewarded Video)
         const rvLoadListener = await AdMob.addListener('onRewardedVideoAdLoaded', () => {
-            console.log('AdMob: event -> onRewardedVideoAdLoaded');
+            console.log('AdMob: Ad Loaded (RV fallback)');
             isRewardedAdReady = true;
             isRewardedAdPreparing = false;
             rvLoadListener.remove();
         });
 
-        const rvFailListener = await AdMob.addListener('onRewardedVideoAdFailedToLoad', (error) => {
-            console.error('AdMob: event -> onRewardedVideoAdFailedToLoad', error);
-            rvFailListener.remove();
-        });
-
-        // Use the specific Rewarded Interstitial method
-        if (typeof AdMob.prepareRewardedInterstitialAd === 'function') {
-            console.log('AdMob: Using prepareRewardedInterstitialAd');
-            await AdMob.prepareRewardedInterstitialAd(options);
-        } else {
-            console.log('AdMob: Falling back to prepareRewardVideoAd');
-            await AdMob.prepareRewardVideoAd(options);
-        }
-
     } catch (error) {
-        console.error('AdMob: Error during preparation call:', error);
+        console.error('AdMob: Error preparing ad:', error);
         isRewardedAdPreparing = false;
         isRewardedAdReady = false;
     }
@@ -151,52 +119,44 @@ export const showRewardedAd = async (onReward) => {
     }
 
     try {
-        alert('DEBUG: Intentando mostrar anuncio bonificado...');
-
-        // If not ready, wait a bit
+        // Silent wait for up to 3 seconds if not ready
         if (!isRewardedAdReady) {
-            console.warn('AdMob: Ad not ready, waiting/preparing...');
+            console.log('AdMob: Ad not ready, waiting silent...');
             await prepareRewardedAd();
-
             let attempts = 0;
-            while (!isRewardedAdReady && attempts < 40) { // Up to 4 seconds
+            while (!isRewardedAdReady && attempts < 30) {
                 await new Promise(r => setTimeout(r, 100));
                 attempts++;
             }
         }
 
         if (!isRewardedAdReady) {
-            console.warn('AdMob: Giving up on ad, proceeding to generate');
-            alert('DEBUG: El anuncio no cargó a tiempo. Continuando sin anuncio.');
+            console.warn('AdMob: Proceeding without ad (not ready)');
             if (onReward) onReward();
             return false;
         }
 
         let rewarded = false;
 
-        // Reward Listeners
+        // Reward listeners
         const rewardListener = await AdMob.addListener('onRewardedVideoAdRewarded', (reward) => {
-            console.log('AdMob: event -> onRewardedVideoAdRewarded');
             rewarded = true;
             if (onReward) onReward(reward);
         });
 
         const riRewardListener = await AdMob.addListener('onRewardedInterstitialAdRewardReceived', (reward) => {
-            console.log('AdMob: event -> onRewardedInterstitialAdRewardReceived');
             rewarded = true;
             if (onReward) onReward(reward);
         });
 
-        // Dismiss Listeners
+        // Dismiss listeners
         const dismissListener = await AdMob.addListener('onRewardedVideoAdDismissed', () => {
-            console.log('AdMob: event -> onRewardedVideoAdDismissed');
             isRewardedAdReady = false;
             cleanup();
             prepareRewardedAd();
         });
 
         const riDismissListener = await AdMob.addListener('onRewardedInterstitialAdDismissed', () => {
-            console.log('AdMob: event -> onRewardedInterstitialAdDismissed');
             isRewardedAdReady = false;
             cleanup();
             prepareRewardedAd();
@@ -210,7 +170,6 @@ export const showRewardedAd = async (onReward) => {
         };
 
         // Show
-        console.log('AdMob: Executing show command...');
         if (typeof AdMob.showRewardedInterstitialAd === 'function') {
             await AdMob.showRewardedInterstitialAd();
         } else {
@@ -219,8 +178,7 @@ export const showRewardedAd = async (onReward) => {
 
         return true;
     } catch (error) {
-        console.error('AdMob: Critical error showing ad:', error);
-        alert(`DEBUG: Error crítico al mostrar: ${error.message}`);
+        console.error('AdMob: Error showing ad:', error);
         isRewardedAdReady = false;
         if (onReward) onReward();
         return false;
@@ -228,35 +186,23 @@ export const showRewardedAd = async (onReward) => {
 };
 
 /**
- * Show standard interstitial ad (e.g., on app startup)
+ * Show standard interstitial ad
  */
 export const showInterstitial = async () => {
-    if (!isNativePlatform()) {
-        console.log('AdMob: Not on native platform, skipping interstitial');
-        return;
-    }
-
+    if (!isNativePlatform()) return;
     try {
         const options = {
             adId: getAdId('INTERSTITIAL'),
             isTesting: USE_TEST_ADS,
         };
-
-        // Prepare
         await AdMob.prepareInterstitial(options);
-        console.log('Interstitial prepared');
-
-        // Show
         await AdMob.showInterstitial();
-        console.log('Interstitial shown');
     } catch (error) {
-        console.error('Error showing interstitial:', error);
+        console.error('AdMob: Error showing interstitial:', error);
     }
 };
 
 /**
- * Check if AdMob is available
+ * Check AdMob availability
  */
-export const isAdMobAvailable = () => {
-    return isNativePlatform();
-};
+export const isAdMobAvailable = () => isNativePlatform();
