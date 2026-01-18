@@ -1,5 +1,6 @@
 // Production Domain Configuration
 export const PRODUCTION_DOMAIN = 'https://interactivomagic.ftydownloader.com';
+export const SHORTENER_API = 'https://s.ftydownloader.com'; // Your custom shortener domain
 
 // Get the appropriate base URL based on environment
 export const getBaseUrl = () => {
