@@ -163,6 +163,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileApp, setIsMobileApp] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isGenerating, setIsGenerating] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     sender: '',
@@ -277,19 +278,26 @@ function App() {
     }
 
     setErrors({});
+    setIsGenerating(true);
 
-    // Show Rewarded Interstitial ad in mobile app before generating result
-    if (isMobileApp) {
-      try {
-        await showRewardedAd();
-      } catch (e) {
-        console.error("Ad error, proceeding anyway:", e);
+    try {
+      // Show Rewarded Interstitial ad in mobile app before generating result
+      if (isMobileApp) {
+        try {
+          await showRewardedAd();
+        } catch (e) {
+          console.error("Ad error, proceeding anyway:", e);
+        }
       }
-    }
 
-    const url = getShareUrl();
-    setGeneratedUrl(url);
-    setShowResult(true);
+      const url = getShareUrl();
+      setGeneratedUrl(url);
+      setShowResult(true);
+    } catch (err) {
+      console.error("Generation error:", err);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const scrollToTemplates = () => {
@@ -773,6 +781,7 @@ function App() {
                   <button
                     className="btn btn-primary"
                     onClick={handleGenerate}
+                    disabled={isGenerating}
                     style={{
                       width: '100%',
                       padding: '1.2rem',
@@ -781,10 +790,20 @@ function App() {
                       justifyContent: 'center',
                       gap: '0.8rem',
                       marginBottom: '1rem',
-                      boxShadow: '0 8px 25px rgba(255, 0, 255, 0.3)'
+                      boxShadow: '0 8px 25px rgba(255, 0, 255, 0.3)',
+                      opacity: isGenerating ? 0.7 : 1,
+                      cursor: isGenerating ? 'not-allowed' : 'pointer'
                     }}
                   >
-                    <Sparkles size={22} /> Generar Mensaje Mágico
+                    {isGenerating ? (
+                      <>
+                        <div className="loader-small" /> Preparando Magia...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={22} /> Generar Mensaje Mágico
+                      </>
+                    )}
                   </button>
                 </div>
               </>

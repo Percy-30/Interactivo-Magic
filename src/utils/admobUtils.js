@@ -119,22 +119,22 @@ export const showRewardedAd = async (onReward) => {
     }
 
     try {
-        // Silent wait for up to 3 seconds if not ready
+        // Silent wait for up to 5 seconds if not ready (forced priority)
         if (!isRewardedAdReady) {
-            console.log('AdMob: Ad not ready, waiting silent...');
+            console.log('AdMob: Waiting for Rewarded ad (forced priority)...');
             await prepareRewardedAd();
             let attempts = 0;
-            while (!isRewardedAdReady && attempts < 30) {
+            while (!isRewardedAdReady && attempts < 50) { // Up to 5 seconds
                 await new Promise(r => setTimeout(r, 100));
                 attempts++;
             }
         }
 
         if (!isRewardedAdReady) {
-            console.warn('AdMob: Ad not ready, trying Interstitial fallback...');
-            await showInterstitial(); // Try the normal interstitial as backup
-            if (onReward) onReward(); // Continue to result anyway
-            return false;
+            console.warn('AdMob: Rewarded NOT ready, launching Interstitial fallback...');
+            await showInterstitial();
+            if (onReward) onReward();
+            return true;
         }
 
         let rewarded = false;
