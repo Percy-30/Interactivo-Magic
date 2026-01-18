@@ -1,0 +1,21 @@
+// Production Domain Configuration
+export const PRODUCTION_DOMAIN = 'https://interactivomagic.ftydownloader.com';
+
+// Get the appropriate base URL based on environment
+export const getBaseUrl = () => {
+    // In development (localhost), use production domain for share links
+    // In production, use window.location.origin
+    if (typeof window !== 'undefined') {
+        const isLocalhost = window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.includes('capacitor');
+
+        if (isLocalhost) {
+            return PRODUCTION_DOMAIN;
+        }
+
+        return window.location.origin;
+    }
+
+    return PRODUCTION_DOMAIN;
+};

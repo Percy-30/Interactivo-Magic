@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User, Link as LinkIcon, Check, Menu, X, Star, Zap, Users } from 'lucide-react';
+import { Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User, Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
 import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
 import { isNativePlatform, shareContent } from './utils/platformUtils';
+import { getBaseUrl } from './config/appConfig';
+import { shortenUrl } from './utils/urlShortener';
 import { initializeAdMob, showBannerAd, showRewardedInterstitial } from './utils/admobUtils';
 import { getAdSenseClientId } from './config/adsenseConfig';
 import './styles/index.css';
@@ -233,12 +235,14 @@ function App() {
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
-    return `${window.location.origin}${window.location.pathname}?msg=${encoded}`;
+    const baseUrl = getBaseUrl();
+    return `${baseUrl}/?msg=${encoded}`;
   };
 
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     const url = getShareUrl();
-    navigator.clipboard.writeText(url).then(() => {
+    const shortUrl = await shortenUrl(url);
+    navigator.clipboard.writeText(shortUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -771,21 +775,47 @@ function App() {
                       )}
                     </button>
 
-                    <button
-                      className="btn glass"
-                      onClick={handleDownload}
-                      style={{
-                        justifyContent: 'center',
-                        background: 'rgba(0, 242, 255, 0.15)',
-                        border: '2px solid rgba(0, 242, 255, 0.4)',
-                        fontSize: '1rem',
-                        padding: '1rem 1.5rem',
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      <Download size={20} color="#00f2ff" />
-                      <span>Descargar</span>
-                    </button>
+                    {isMobileApp ? (
+                      <button
+                        className="btn glass"
+                        onClick={async () => {
+                          const url = getShareUrl();
+                          const shortUrl = await shortenUrl(url);
+                          await shareContent({
+                            title: 'InteractivoMagic',
+                            text: `${formData.sender} te ha enviado un mensaje mágico ✨`,
+                            url: shortUrl
+                          });
+                        }}
+                        style={{
+                          justifyContent: 'center',
+                          background: 'rgba(0, 242, 255, 0.15)',
+                          border: '2px solid rgba(0, 242, 255, 0.4)',
+                          fontSize: '1rem',
+                          padding: '1rem 1.5rem',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <Share2 size={20} color="#00f2ff" />
+                        <span>Compartir</span>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn glass"
+                        onClick={handleDownload}
+                        style={{
+                          justifyContent: 'center',
+                          background: 'rgba(0, 242, 255, 0.15)',
+                          border: '2px solid rgba(0, 242, 255, 0.4)',
+                          fontSize: '1rem',
+                          padding: '1rem 1.5rem',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <Download size={20} color="#00f2ff" />
+                        <span>Descargar</span>
+                      </button>
+                    )}
                   </div>
 
                   <button
