@@ -3,7 +3,7 @@ import { Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, Use
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
 import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
-import { isNativePlatform, shareContent } from './utils/platformUtils';
+import { isNativePlatform, shareContent, shareHTMLFile } from './utils/platformUtils';
 import { getBaseUrl } from './config/appConfig';
 import { shortenUrl } from './utils/urlShortener';
 import { initializeAdMob, showBannerAd, showRewardedAd, showInterstitial, prepareRewardedAd } from './utils/admobUtils';
@@ -927,10 +927,57 @@ function App() {
                       <button
                         className="btn glass"
                         onClick={async () => {
-                          await shareContent({
-                            title: 'InteractivoMagic',
-                            text: `${formData.sender} te ha enviado un mensaje mágico ✨`,
-                            url: generatedUrl
+                          // Generate a friendly filename
+                          const safeName = (formData.name || 'alguien').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                          const safeSender = (formData.sender || 'tu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                          const templateSlug = selectedTemplate.id;
+                          const fileName = `${templateSlug}_de_${safeSender}_para_${safeName}.html`;
+
+                          // Create a simple redirect HTML content
+                          const redirectHtml = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url=${generatedUrl}">
+    <script>window.location.href = "${generatedUrl}";</script>
+    <title>Interactivo Magic ✨</title>
+    <style>
+        body { 
+            background: #0a0a0c; 
+            color: white; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            text-align: center;
+        }
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #ff00ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <h3>Abriendo tu mensaje mágico...</h3>
+    <p style="opacity: 0.6; font-size: 0.9rem;">Si no redirige automáticamente, <a href="${generatedUrl}" style="color: #00f2ff;">haz clic aquí</a>.</p>
+</body>
+</html>`;
+
+                          await shareHTMLFile({
+                            fileName,
+                            htmlContent: redirectHtml
                           });
                         }}
                         style={{

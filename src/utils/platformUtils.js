@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 
 /**
  * Check if the app is running in a native mobile environment
@@ -20,7 +21,6 @@ export const getPlatform = () => {
  */
 export const shareContent = async ({ title, text, url }) => {
     if (isNativePlatform()) {
-        // Use Capacitor's native Share plugin
         try {
             await Share.share({
                 title: title || 'Interactivo Magic',
@@ -34,7 +34,6 @@ export const shareContent = async ({ title, text, url }) => {
             return { success: false, error };
         }
     } else {
-        // Use Web Share API fallback
         if (navigator.share) {
             try {
                 await navigator.share({
@@ -48,7 +47,6 @@ export const shareContent = async ({ title, text, url }) => {
                 return { success: false, error };
             }
         } else {
-            // Fallback to clipboard
             try {
                 await navigator.clipboard.writeText(url || text || '');
                 return { success: true, fallback: 'clipboard' };
@@ -56,5 +54,35 @@ export const shareContent = async ({ title, text, url }) => {
                 return { success: false, error };
             }
         }
+    }
+};
+
+/**
+ * Share a generated HTML file on mobile
+ */
+export const shareHTMLFile = async ({ fileName, htmlContent }) => {
+    if (!isNativePlatform()) return { success: false, error: 'Not on native platform' };
+
+    try {
+        // Save the file to the cache directory first
+        const result = await Filesystem.writeFile({
+            path: fileName,
+            data: htmlContent,
+            directory: Directory.Cache,
+            encoding: 'utf8'
+        });
+
+        // Share the file using its local URI
+        await Share.share({
+            title: 'Interactivo Magic',
+            text: 'Te han enviado un mensaje mágico ✨',
+            files: [result.uri],
+            dialogTitle: 'Compartir archivo mágico'
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error('Share HTML file error:', error);
+        return { success: false, error };
     }
 };
