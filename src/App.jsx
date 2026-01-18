@@ -620,11 +620,21 @@ function App() {
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Mensaje Especial</label>
                     <textarea
+                      name="message"
                       rows="4"
-                      placeholder="Escribe algo lindo..."
+                      placeholder="Escribe algo lindo...."
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, message: e.target.value });
+                        if (errors.message) setErrors({ ...errors, message: null });
+                      }}
+                      style={{
+                        borderColor: errors.message ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                        boxShadow: errors.message ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none',
+                        resize: 'none'
+                      }}
                     />
+                    {errors.message && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.message}</p>}
                   </div>
 
                   {/* Audio Selection Section */}
