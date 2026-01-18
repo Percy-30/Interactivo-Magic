@@ -956,7 +956,7 @@ function App() {
       )}
 
       {/* Ad Placeholder Section */}
-      {!selectedTemplate && (
+      {!selectedTemplate && !isMobileApp && (
         <div className="container" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
           <div className="glass" style={{ padding: '1rem', textAlign: 'center', borderStyle: 'dashed', background: 'rgba(255,255,255,0.02)' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>Publicidad</p>
@@ -978,12 +978,12 @@ function App() {
       )}
 
       {/* SLOT D: Footer Ad - Display */}
-      {!selectedTemplate && (
+      {!selectedTemplate && !isMobileApp && (
         <AdSlot label="Recomendado para ti" adSlot="4095225502" />
       )}
 
       {/* Footer */}
-      {!selectedTemplate && (
+      {!selectedTemplate && !isMobileApp && (
         <footer style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', marginTop: '4rem' }}>
           <div className="container">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '3rem', marginBottom: '3rem' }}>
