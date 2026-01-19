@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User,
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
@@ -20,6 +21,12 @@ import {
   HEART_PHOTO_TEMPLATE, OUR_YEAR_TEMPLATE, CHRISTMAS_TREE_TEMPLATE,
   NEW_YEAR_TEMPLATE, LAST_CHANCE_TEMPLATE, HIDDEN_MESSAGE_TEMPLATE
 } from './templates';
+import { isNativePlatform, shareContent, shareHTMLFile } from './utils/platformUtils';
+import { getBaseUrl } from './config/appConfig';
+import { shortenUrl } from './utils/urlShortener';
+import { initializeAdMob, showBannerAd, showRewardedAd, showInterstitial, prepareRewardedAd, hideBannerAd } from './utils/admobUtils';
+import { getAdSenseClientId } from './config/adsenseConfig';
+import './styles/index.css';
 
 const CATEGORIES = [
   { id: 'todos', name: 'Todos', icon: <Layers size={18} /> },
