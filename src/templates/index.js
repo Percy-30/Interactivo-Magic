@@ -942,18 +942,22 @@ export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
         .book.open { transform: translateX(25%); }
         
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); }
-        .front, .back { width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem; box-sizing: border-box; border-radius: 0 15px 15px 0; }
+        .page1 { z-index: 5; }
+        .page2 { z-index: 4; }
         
-        .cover { background: linear-gradient(135deg, #800000 0%, #a00000 100%); color: white; border-left: 12px solid #5a0000; box-shadow: 10px 10px 30px rgba(0,0,0,0.6); }
-        .cover h1 { font-family: 'Dancing Script', cursive; font-size: 2.8rem; text-align: center; margin-bottom: 0.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .cover .names { font-size: 1.2rem; font-weight: 900; color: #ffcc00; text-transform: uppercase; letter-spacing: 2px; margin-top: 1rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-align: center; }
+        .front, .back { width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem; box-sizing: border-box; border-radius: 0 15px 15px 0; }
+        .back { transform: rotateY(180deg); }
+        
+        .cover { background: linear-gradient(135deg, #800000 0%, #a00000 100%); color: white !important; border-left: 12px solid #5a0000; box-shadow: 10px 10px 30px rgba(0,0,0,0.6); }
+        .cover h1 { font-family: 'Dancing Script', cursive; font-size: 2.8rem; text-align: center; margin-bottom: 0.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); color: white !important; }
+        .cover .names { font-size: 1.2rem; font-weight: 900; color: #ffcc00 !important; text-transform: uppercase; letter-spacing: 2px; margin-top: 1rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-align: center; }
         .cover .emoji { font-size: 5.5rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); }
         
-        .inner-page { background: #fff9e6; color: #1a1a1a; box-shadow: inset 5px 0 15px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); }
-        .inner-page h2 { font-family: 'Dancing Script', cursive; color: #800000; font-size: 2.2rem; margin-bottom: 1.5rem; }
-        .inner-page p { font-size: 1.3rem; line-height: 1.7; text-align: center; font-style: italic; font-weight: 500; color: #333; width: 100%; word-wrap: break-word; }
+        .inner-page { background: #fff9e6; color: #1a1a1a !important; box-shadow: inset 5px 0 15px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); }
+        .inner-page h2 { font-family: 'Dancing Script', cursive; color: #800000 !important; font-size: 2.2rem; margin-bottom: 1.5rem; }
+        .inner-page p { font-size: 1.3rem; line-height: 1.7; text-align: center; font-style: italic; font-weight: 700; color: #000 !important; width: 100%; word-wrap: break-word; }
         
-        .page.flipped { transform: rotateY(-180deg); }
+        .page.flipped { transform: rotateY(-180deg); z-index: 10 !important; }
         
         .floating-heart { position: absolute; color: #ff4d94; opacity: 0; pointer-events: none; z-index: 100; font-size: 24px; }
         
@@ -966,6 +970,8 @@ export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
         .audio-controls { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 12px 25px; border-radius: 30px; display: flex; align-items: center; gap: 12px; z-index: 1000; color: white; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
         .play-btn { cursor: pointer; font-weight: 900; background: #ff4d94; padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; }
         
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
         @media (max-width: 400px) {
             .book { width: 300px; height: 420px; }
             .cover h1 { font-size: 2.2rem; }
@@ -984,12 +990,12 @@ export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
 
     <div class="book" id="book" onclick="flipPage()">
         <!-- Page 1: Cover -->
-        <div class="page" id="page1">
+        <div class="page page1" id="page1">
             <div class="front cover">
                 <div class="emoji">📖</div>
                 <h1>Libro del Amor</h1>
                 <div class="names">{{sender}} & {{name}}</div>
-                <div style="margin-top: 2.5rem; opacity: 0.6; font-size: 0.8rem; letter-spacing: 3px; font-weight: 900;">UN VIAJE DE SENTIMIENTOS</div>
+                <div style="margin-top: 2.5rem; opacity: 0.6; font-size: 0.8rem; letter-spacing: 3px; font-weight: 900; color: white !important;">UN VIAJE DE SENTIMIENTOS</div>
             </div>
             <div class="back inner-page">
                 <h2>Para: {{name}}</h2>
@@ -998,10 +1004,10 @@ export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
             </div>
         </div>
         <!-- Page 2: Message -->
-        <div class="page" id="page2">
+        <div class="page page2" id="page2">
             <div class="front inner-page">
                 <p>{{message}}</p>
-                <div style="margin-top: 3rem; font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #800000; border-top: 1px solid rgba(128,0,0,0.1); padding-top: 1.5rem;">
+                <div style="margin-top: 3rem; font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #800000 !important; border-top: 1px solid rgba(128,0,0,0.1); padding-top: 1.5rem; font-weight: 700;">
                     Con amor, <br> {{sender}}
                 </div>
             </div>
