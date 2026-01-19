@@ -925,3 +925,35 @@ export const BIRTHDAY_TEMPLATE = `<!DOCTYPE html>
     </script>
 </body>
 </html>`;
+
+// Export all templates for the massive catalog expansion
+export const BOOK_LOVE_TEMPLATE = LOVE_TEMPLATE.replace('<h1>', '<h1 style="transform: rotateX(10deg); text-shadow: 0 5px 15px rgba(0,0,0,0.5);">📖 Libro del Amor: ');
+export const MARVEL_BOOK_TEMPLATE = LOVE_TEMPLATE.replace('#ff4d94', '#ed1d24').replace('🎁', '🦸‍♂️');
+export const GALAXY_GENERATOR_TEMPLATE = GALAXY_TEMPLATE;
+export const MUSICAL_SPHERE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🔮');
+export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE;
+export const FORGIVE_ME_CATS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐱').replace('SÍ ❤️', 'SÍ, TE PERDONO ❤️');
+export const PUZZLE_LOVE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🧩');
+export const RULETA_LOVE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎡');
+export const FORGIVE_ME_PENGUINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐧');
+export const FLOWERS_RAMO_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💐');
+export const ENOJONA_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '😡');
+export const DATE_COUNTER_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '⏰').replace('¡Feliz Cumpleaños!', 'Nuestro Tiempo Juntos');
+export const LOVE_CERTIFICATE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '📜');
+export const COUPLE_INITIALS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '👕');
+export const ENCHANTED_LETTER_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎃').replace('#ff4d94', '#ff8000');
+export const LOVE_VITAMINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💊');
+export const SCRATCH_MESSAGE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎫');
+export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50');
+export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
+export const DEDICATE_SONG_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎧');
+export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺');
+export const BE_MY_BOYFRIEND_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', 'SÍ, ¡ACEPTO! 💍');
+export const TE_AMO_TEMPLATE = GALAXY_TEMPLATE.replace('<h1>', '<h1>❤️ ');
+export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
+export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
+export const OUR_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '📅');
+export const CHRISTMAS_TREE_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🎄').replace('#00f2ff', '#2e7d32');
+export const NEW_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🥂').replace('¡Feliz Cumpleaños!', '¡Feliz Año Nuevo 2026!');
+export const LAST_CHANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🔓').replace('SÍ ❤️', 'SÍ, UNA ÚLTIMA VEZ ❤️');
+export const HIDDEN_MESSAGE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🕵️‍♀️');
