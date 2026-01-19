@@ -4,6 +4,49 @@ const TemplateEngine = {
     render: (templateHtml, data) => {
         let finalHtml = templateHtml;
 
+        // Specific image URL fixing logic
+        const fixImageUrl = (url) => {
+            if (!url) return '';
+
+            // Google Drive
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/\/d\/(.+?)\/(view|edit)/) || url.match(/id=(.+?)(&|$)/);
+                if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+            }
+
+            // Imgur
+            if (url.includes('imgur.com') && !url.includes('i.imgur.com') && !url.endsWith('.jpg') && !url.endsWith('.png')) {
+                const id = url.split('/').pop();
+                if (id) return `https://i.imgur.com/${id}.jpg`;
+            }
+
+            // Pinterest
+            if (url.includes('pinterest.com/pin/')) {
+                // Pinterest direct images are harder, but often we can guess the format
+                // For now, if we can't easily fix it, let it be, but many direct links work.
+            }
+
+            // Google Search Image result (redirects)
+            if (url.includes('google.com/imgres')) {
+                const match = url.match(/imgurl=(.+?)&/);
+                if (match) return decodeURIComponent(match[1]);
+            }
+
+            // OneDrive
+            if (url.includes('onedrive.live.com') && url.includes('embed')) {
+                return url.replace('embed', 'download');
+            }
+
+            // Google Photos (basic share links are hard to fix, but some work)
+            if (url.includes('photos.app.goo.gl')) {
+                // These are redirects, can't easily fix without a head request
+            }
+
+            return url;
+        };
+
+        const imageSrc = fixImageUrl(data.img || data.imageSrc || '');
+
         // Specific audio logic
         const audioSrc = data.audioOption === 'default'
             ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
@@ -12,9 +55,7 @@ const TemplateEngine = {
         const extractId = (url, type) => {
             if (!url) return '';
             if (type === 'youtube') {
-                // If it's already a valid 11-char ID, return it
                 if (url.length === 11 && !url.includes('/') && !url.includes('=')) return url;
-
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                 const match = url.match(regExp);
                 return (match && match[2].length === 11) ? match[2] : '';
@@ -28,8 +69,9 @@ const TemplateEngine = {
             .replace(/{{audio_src}}/g, audioSrc)
             .replace(/{{youtube_id}}/g, ytId || '')
             .replace(/{{audio_display}}/g, (data.hasAudio || data.audio) ? 'display: block' : 'display: none')
-            .replace(/{{image_src}}/g, data.img || data.imageSrc || '')
-            .replace(/{{image_display}}/g, (data.img || data.imageSrc) ? 'display: block' : 'display: none');
+            .replace(/{{image_src}}/g, imageSrc)
+            .replace(/{{image_display}}/g, imageSrc ? 'display: block' : 'display: none')
+            .replace(/{{extra_text}}/g, data.extraText || data.et || '');
 
         // Replace other placeholders
         Object.keys(data).forEach(key => {

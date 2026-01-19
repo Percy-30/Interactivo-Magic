@@ -66,9 +66,9 @@ export const LOVE_TEMPLATE = `<!DOCTYPE html>
 
     <div class="card" id="success">
         <div class="photo-result">
-            <img src="{{image_src}}" alt="Foto especial">
+            <img src="{{image_src}}" alt="Foto especial" onerror="this.parentElement.style.display='none'">
         </div>
-        <h1>¡SABÍA QUE DIRÍAS QUE SÍ! ❤️</h1>
+        <div style="font-size: 1.4rem; font-weight: 800; color: #ff4d94; margin-bottom: 1.5rem; line-height: 1.4; white-space: pre-wrap;">{{extra_text}}</div>
         <p>Te quiero mucho, {{name}}.</p>
     </div>
 
@@ -594,6 +594,7 @@ export const GALAXY_TEMPLATE = `<!DOCTYPE html>
         </div>
         <div class="message-card">
             <div class="message-text">{{message}}</div>
+            <div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.8; font-weight: 800;">{{extra_text}}</div>
             <div class="sender-label">Enviado con ❤️ por:</div>
             <div class="sender-name">{{sender}}</div>
             <a href="/" class="create-btn">Crea tu propio mensaje ✨</a>
@@ -838,7 +839,9 @@ export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
         #intro-overlay.hidden { opacity: 0; pointer-events: none; }
         .box-container { text-align: center; cursor: pointer; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        
+        @media (max-width: 600px) {
+            .book { width: 300px; height: 420px; }
+            .cover h1 { font-size: 2.22rem; }
             .inner-page p { font-size: 1.1rem; }
             .photo-frame { width: 140px; height: 180px; }
         }
@@ -884,16 +887,18 @@ export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
             </div>
             <div class="back inner-page" style="padding: 1.5rem;">
                 <div class="photo-frame">
-                    <img src="{{image_src}}" alt="Nuestra Foto">
+                    <img src="{{image_src}}" alt="Nuestra Foto" onerror="this.parentElement.style.display='none'">
                 </div>
                 <h2 style="margin-top: 0; font-size: 1.8rem;">Para: {{name}}</h2>
-                <p style="font-size: 1.1rem;">Nuestra historia es mi favorita...</p>
+                <div style="padding: 0 1rem; width: 100%; box-sizing: border-box;">
+                    <p style="font-size: 1.1rem; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: pre-wrap;">{{extra_text}}</p>
+                </div>
             </div>
         </div>
         <!-- Page 2: Message -->
         <div class="page page2" id="page2">
             <div class="front inner-page">
-                <p>{{message}}</p>
+                <p style="white-space: pre-wrap;">{{message}}</p>
                 <div style="margin-top: 3rem; font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #800000 !important; border-top: 1px solid rgba(128,0,0,0.1); padding-top: 1.5rem; font-weight: 700;">
                     Con amor, <br> {{sender}}
                 </div>
@@ -1070,9 +1075,9 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
 
                     <div class="card">
                         <div class="photo-result">
-                            <img src="{{image_src}}" alt="Foto de Cumpleaños">
+                            <img src="{{image_src}}" alt="Foto de Cumpleaños" onerror="this.parentElement.style.display='none'">
                         </div>
-                        <h1>¡Feliz Cumpleaños!</h1>
+                        <div style="color: #ff4d94; font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.3; white-space: pre-wrap;">{{extra_text}}</div>
                         <p>{{ message }}</p>
                         <div class="sender">DE PARTE DE: {{ sender }}</div>
                     </div>
@@ -1158,7 +1163,7 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
             </html>`;
 
 
-            export const PUZZLE_LOVE_TEMPLATE = `<!DOCTYPE html>
+export const PUZZLE_LOVE_TEMPLATE = `<!DOCTYPE html>
             <html lang="es">
                 <head>
                     <meta charset="UTF-8">
@@ -1215,7 +1220,7 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
                                 <div class="photo-result">
                                     <img src="{{image_src}}" alt="Nuestra Foto">
                                 </div>
-                                <h1>¡LOGRADO! ❤️</h1>
+                                <h1>{{extra_text}}</h1>
                                 <p style="font-size: 1.2rem; color: #fff;">{{ message }}</p>
                                 <div style="margin-top: 1.5rem; color: rgba(255,255,255,0.6);">De: {{ sender }}</div>
                             </div>
@@ -1337,7 +1342,7 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
                         </body>
                     </html>`;
 
-                    export const RULETA_LOVE_TEMPLATE = `<!DOCTYPE html>
+export const RULETA_LOVE_TEMPLATE = `<!DOCTYPE html>
                     <html lang="es">
                         <head>
                             <meta charset="UTF-8">
@@ -1399,7 +1404,7 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
                                         <div class="photo-result">
                                             <img src="{{image_src}}" alt="Regalo especial">
                                         </div>
-                                        <h1 style="color: #ff4d94; font-size: 2.5rem; margin-bottom: 1rem;">🎰 ¡GANASTE!</h1>
+                                        <h1 style="color: #ff4d94; font-size: 2.5rem; margin-bottom: 1rem;">{{extra_text}}</h1>
                                         <p style="font-size: 1.3rem;">{{ message }}</p>
                                         <div style="margin-top: 1.5rem; font-style: italic; opacity: 0.6;">De: {{ sender }}</div>
                                     </div>
@@ -1497,7 +1502,7 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
                                 </body>
                             </html>`;
 
-                            export const SCRATCH_MESSAGE_TEMPLATE = `<!DOCTYPE html>
+export const SCRATCH_MESSAGE_TEMPLATE = `<!DOCTYPE html>
                             <html lang="es">
                                 <head>
                                     <meta charset="UTF-8">
@@ -1667,32 +1672,32 @@ export const BIRTHDAY_TEMPLATE = `< !DOCTYPE html>
                                         </body>
                                     </html>`;
 
-                                    // --- THEMATIC SPECIALIZATIONS ---
-                                    export const MARVEL_BOOK_TEMPLATE = LOVE_TEMPLATE.replace('#ff4d94', '#ed1d24').replace('🎁', '🦸‍♂️').replace('<h1>', '<h1>Avengers Love: ');
-                                        export const GALAXY_GENERATOR_TEMPLATE = GALAXY_TEMPLATE;
-                                        export const MUSICAL_SPHERE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🔮');
-                                        export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', '¡SÍ, ACEPTO! 💍');
-                                        export const FORGIVE_ME_CATS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐱').replace('SÍ ❤️', 'SÍ, TE PERDONO ❤️').replace('p {', 'p {font - family: "Comic Sans MS", cursive; ');
-                                        export const FORGIVE_ME_PENGUINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐧').replace('background: #0a0514', 'background: #e3f2fd; color: #333;');
-                                        export const FLOWERS_RAMO_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💐').replace('background: #0a0514', 'background: #fce4ec; color: #333;');
-                                        export const ENOJONA_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '😡');
-                                        export const DATE_COUNTER_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '⏰').replace('¡Feliz Cumpleaños!', 'Nuestro Tiempo Juntos').replace('#00f2ff', '#00ff00');
-                                        export const LOVE_CERTIFICATE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '📜').replace('background: rgba(255,255,255,0.1)', 'background: #f9f4e8; color: #444; border: 5px double #a67c52;');
-                                        export const COUPLE_INITIALS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '👕');
-                                        export const ENCHANTED_LETTER_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎃').replace('#ff4d94', '#ff8000');
-                                        export const LOVE_VITAMINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💊');
-                                        export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50').replace('background: rgba(255,255,255,0.1)', 'background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; font-weight: 900;');
-                                        export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
-                                        export const DEDICATE_SONG_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎧');
-                                        export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺').replace('background: #0a0514', 'background: #03a9f4;');
-                                        export const BE_MY_BOYFRIEND_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', 'SÍ, ¡ACEPTO! 💍');
-                                        export const TE_AMO_TEMPLATE = GALAXY_TEMPLATE.replace('<h1>', '<h1>❤️ ');
-                                            export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
-                                            export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
-                                            export const OUR_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '📅');
-                                            export const CHRISTMAS_TREE_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🎄').replace('#00f2ff', '#2e7d32').replace('background: #05020a', 'background: #002200;');
-                                            export const NEW_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🥂').replace('¡Feliz Cumpleaños!', '¡Feliz Año Nuevo 2026!');
-                                            export const LAST_CHANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🔓').replace('SÍ ❤️', 'SÍ, UNA ÚLTIMA VEZ ❤️');
-                                            export const HIDDEN_MESSAGE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🕵️‍♀️');
+// --- THEMATIC SPECIALIZATIONS ---
+export const MARVEL_BOOK_TEMPLATE = LOVE_TEMPLATE.replace('#ff4d94', '#ed1d24').replace('🎁', '🦸‍♂️').replace('<h1>', '<h1>Avengers Love: ');
+export const GALAXY_GENERATOR_TEMPLATE = GALAXY_TEMPLATE;
+export const MUSICAL_SPHERE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🔮');
+export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', '¡SÍ, ACEPTO! 💍');
+export const FORGIVE_ME_CATS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐱').replace('SÍ ❤️', 'SÍ, TE PERDONO ❤️').replace('p {', 'p {font - family: "Comic Sans MS", cursive; ');
+export const FORGIVE_ME_PENGUINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐧').replace('background: #0a0514', 'background: #e3f2fd; color: #333;');
+export const FLOWERS_RAMO_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💐').replace('background: #0a0514', 'background: #fce4ec; color: #333;');
+export const ENOJONA_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '😡');
+export const DATE_COUNTER_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '⏰').replace('¡Feliz Cumpleaños!', 'Nuestro Tiempo Juntos').replace('#00f2ff', '#00ff00');
+export const LOVE_CERTIFICATE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '📜').replace('background: rgba(255,255,255,0.1)', 'background: #f9f4e8; color: #444; border: 5px double #a67c52;');
+export const COUPLE_INITIALS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '👕');
+export const ENCHANTED_LETTER_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎃').replace('#ff4d94', '#ff8000');
+export const LOVE_VITAMINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💊');
+export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50').replace('background: rgba(255,255,255,0.1)', 'background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; font-weight: 900;');
+export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
+export const DEDICATE_SONG_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎧');
+export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺').replace('background: #0a0514', 'background: #03a9f4;');
+export const BE_MY_BOYFRIEND_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', 'SÍ, ¡ACEPTO! 💍');
+export const TE_AMO_TEMPLATE = GALAXY_TEMPLATE.replace('<h1>', '<h1>❤️ ');
+export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
+export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
+export const OUR_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '📅');
+export const CHRISTMAS_TREE_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🎄').replace('#00f2ff', '#2e7d32').replace('background: #05020a', 'background: #002200;');
+export const NEW_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🥂').replace('¡Feliz Cumpleaños!', '¡Feliz Año Nuevo 2026!');
+export const LAST_CHANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🔓').replace('SÍ ❤️', 'SÍ, UNA ÚLTIMA VEZ ❤️');
+export const HIDDEN_MESSAGE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🕵️‍♀️');
 
 

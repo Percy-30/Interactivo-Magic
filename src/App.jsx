@@ -44,7 +44,10 @@ const TEMPLATES = [
     description: 'Corazones flotantes y estrellas animadas.',
     icon: <Heart />,
     color: '#ff4d94',
-    content: GALAXY_TEMPLATE
+    content: GALAXY_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Frase flotante'
   },
   {
     id: 'book-love',
@@ -53,7 +56,10 @@ const TEMPLATES = [
     description: 'Carta digital con efecto libro 3D.',
     icon: <BookOpen />,
     color: '#ff4d94',
-    content: BOOK_LOVE_TEMPLATE
+    content: BOOK_LOVE_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Mensaje en página izquierda'
   },
   {
     id: 'marvel-book',
@@ -62,7 +68,10 @@ const TEMPLATES = [
     description: 'Versión especial de superhéroes.',
     icon: <Zap />,
     color: '#ed1d24',
-    content: MARVEL_BOOK_TEMPLATE
+    content: MARVEL_BOOK_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Texto secundario'
   },
   {
     id: 'galaxy-gen',
@@ -71,7 +80,10 @@ const TEMPLATES = [
     description: 'Escribe nombres y frases estelares.',
     icon: <Star />,
     color: '#7000ff',
-    content: GALAXY_GENERATOR_TEMPLATE
+    content: GALAXY_GENERATOR_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Frase de fondo'
   },
   {
     id: 'musical-sphere',
@@ -80,7 +92,9 @@ const TEMPLATES = [
     description: 'Esfera que vibra con tu música.',
     icon: <Music />,
     color: '#00f2ff',
-    content: MUSICAL_SPHERE_TEMPLATE
+    content: MUSICAL_SPHERE_TEMPLATE,
+    hasImage: false,
+    hasExtra: false
   },
   {
     id: 'proposal',
@@ -89,7 +103,10 @@ const TEMPLATES = [
     description: 'Dile que sea tu novi@ sin un NO.',
     icon: <Sparkles />,
     color: '#ff00ff',
-    content: PROPOSAL_TEMPLATE
+    content: PROPOSAL_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Frase bajo la foto'
   },
   {
     id: 'forgive-cats',
@@ -98,7 +115,10 @@ const TEMPLATES = [
     description: 'Gatitos lindos para pedir perdón.',
     icon: <Smile />,
     color: '#ffa500',
-    content: FORGIVE_ME_CATS_TEMPLATE
+    content: FORGIVE_ME_CATS_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Frase final'
   },
   {
     id: 'puzzle-love',
@@ -107,7 +127,10 @@ const TEMPLATES = [
     description: 'Crea un rompecabezas con su foto.',
     icon: <Gamepad />,
     color: '#ff4d94',
-    content: PUZZLE_LOVE_TEMPLATE
+    content: PUZZLE_LOVE_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Mensaje al ganar'
   },
   {
     id: 'ruleta-love',
@@ -116,7 +139,10 @@ const TEMPLATES = [
     description: 'Una ruleta que siempre sale SÍ.',
     icon: <RefreshCcw />,
     color: '#ff007f',
-    content: RULETA_LOVE_TEMPLATE
+    content: RULETA_LOVE_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Mensaje central'
   },
   {
     id: 'forgive-penguins',
@@ -125,7 +151,10 @@ const TEMPLATES = [
     description: 'Divertidos pingüinos para disculparse.',
     icon: <Smile />,
     color: '#0080ff',
-    content: FORGIVE_ME_PENGUINS_TEMPLATE
+    content: FORGIVE_ME_PENGUINS_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Texto final'
   },
   {
     id: 'flowers-ramo',
@@ -134,7 +163,10 @@ const TEMPLATES = [
     description: 'Regálale un hermoso ramo digital.',
     icon: <Gift />,
     color: '#ff80bf',
-    content: FLOWERS_RAMO_TEMPLATE
+    content: FLOWERS_RAMO_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Nota del ramo'
   },
   {
     id: 'enojona',
@@ -143,7 +175,10 @@ const TEMPLATES = [
     description: 'Gifs y música para tu enojona.',
     icon: <Flame />,
     color: '#ff4000',
-    content: ENOJONA_TEMPLATE
+    content: ENOJONA_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Texto final'
   },
   {
     id: 'date-counter',
@@ -152,7 +187,10 @@ const TEMPLATES = [
     description: 'Reloj neón para fechas clave.',
     icon: <Clock />,
     color: '#00ffcc',
-    content: DATE_COUNTER_TEMPLATE
+    content: DATE_COUNTER_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Título del evento'
   },
   {
     id: 'love-cert',
@@ -161,7 +199,10 @@ const TEMPLATES = [
     description: 'Crea tu certificado con huella.',
     icon: <Stamp />,
     color: '#ffd700',
-    content: LOVE_CERTIFICATE_TEMPLATE
+    content: LOVE_CERTIFICATE_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Cargo especial'
   },
   {
     id: 'initials',
@@ -170,7 +211,10 @@ const TEMPLATES = [
     description: 'Tus letras en personajes animados.',
     icon: <Shirt />,
     color: '#ff4d94',
-    content: COUPLE_INITIALS_TEMPLATE
+    content: COUPLE_INITIALS_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Fecha o Mensaje'
   },
   {
     id: 'enchanted-letter',
@@ -179,7 +223,10 @@ const TEMPLATES = [
     description: 'Especial Halloween para tu amor.',
     icon: <Ghost />,
     color: '#ff8000',
-    content: ENCHANTED_LETTER_TEMPLATE
+    content: ENCHANTED_LETTER_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Post Data (PD)'
   },
   {
     id: 'vitamins',
@@ -188,7 +235,10 @@ const TEMPLATES = [
     description: 'Dile que te falta su vitamina A, B...',
     icon: <Pill />,
     color: '#ff0000',
-    content: LOVE_VITAMINS_TEMPLATE
+    content: LOVE_VITAMINS_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Mensaje final'
   },
   {
     id: 'scratch',
@@ -197,7 +247,10 @@ const TEMPLATES = [
     description: 'Carta creativa de raspa y raspa.',
     icon: <Gamepad />,
     color: '#c0c0c0',
-    content: SCRATCH_MESSAGE_TEMPLATE
+    content: SCRATCH_MESSAGE_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Premio oculto'
   },
   {
     id: 'soccer-card',
@@ -206,7 +259,10 @@ const TEMPLATES = [
     description: 'Tarjeta estilo FIFA para amigos.',
     icon: <Zap />,
     color: '#4caf50',
-    content: SOCCER_CARD_TEMPLATE
+    content: SOCCER_CARD_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Posición/Rating'
   },
   {
     id: 'birthday',
@@ -215,7 +271,10 @@ const TEMPLATES = [
     description: 'Dedicatoria con lámpara creativa.',
     icon: <Gift />,
     color: '#ffeb3b',
-    content: BIRTHDAY_LAMP_TEMPLATE
+    content: BIRTHDAY_LAMP_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Mensaje en tarjeta'
   },
   {
     id: 'dedicate-song',
@@ -224,7 +283,10 @@ const TEMPLATES = [
     description: 'Reproductor con letra y fondo.',
     icon: <Music2 />,
     color: '#ff4d94',
-    content: DEDICATE_SONG_TEMPLATE
+    content: DEDICATE_SONG_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Dedicado a...'
   },
   {
     id: 'pocoyo',
@@ -233,7 +295,10 @@ const TEMPLATES = [
     description: 'Haz bailar a Pocoyo interactivo.',
     icon: <Music />,
     color: '#03a9f4',
-    content: POCOYO_DANCE_TEMPLATE
+    content: POCOYO_DANCE_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Frase flotante'
   },
   {
     id: 'be-my-gf',
@@ -242,7 +307,10 @@ const TEMPLATES = [
     description: 'El NO se mueve sin parar.',
     icon: <Heart />,
     color: '#e91e63',
-    content: BE_MY_BOYFRIEND_TEMPLATE
+    content: BE_MY_BOYFRIEND_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Mensaje persuasivo'
   },
   {
     id: 'te-amo',
@@ -251,7 +319,10 @@ const TEMPLATES = [
     description: 'Corazón mágico que se forma.',
     icon: <Heart />,
     color: '#f44336',
-    content: TE_AMO_TEMPLATE
+    content: TE_AMO_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Subtítulo'
   },
   {
     id: 'be-friends',
@@ -260,7 +331,10 @@ const TEMPLATES = [
     description: 'Pide volver con este detalle.',
     icon: <Users />,
     color: '#9c27b0',
-    content: BE_FRIENDS_TEMPLATE
+    content: BE_FRIENDS_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Posdata'
   },
   {
     id: 'heart-photo',
@@ -269,7 +343,10 @@ const TEMPLATES = [
     description: 'Corazón con 25 fotos favoritas.',
     icon: <Camera />,
     color: '#ff4081',
-    content: HEART_PHOTO_TEMPLATE
+    content: HEART_PHOTO_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Título del collage'
   },
   {
     id: 'our-year',
@@ -278,7 +355,10 @@ const TEMPLATES = [
     description: '12 fotos por cada mes juntos.',
     icon: <Image />,
     color: '#2196f3',
-    content: OUR_YEAR_TEMPLATE
+    content: OUR_YEAR_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Dedicatoria temporal'
   },
   {
     id: 'christmas',
@@ -287,7 +367,10 @@ const TEMPLATES = [
     description: 'Árbol con las fotos de tu amor.',
     icon: <TreePine />,
     color: '#2e7d32',
-    content: CHRISTMAS_TREE_TEMPLATE
+    content: CHRISTMAS_TREE_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Deseo navideño'
   },
   {
     id: 'new-year',
@@ -296,7 +379,10 @@ const TEMPLATES = [
     description: 'Festeja el inicio de este 2026.',
     icon: <PartyPopper />,
     color: '#fdd835',
-    content: NEW_YEAR_TEMPLATE
+    content: NEW_YEAR_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Propósito de año nuevo'
   },
   {
     id: 'last-chance',
@@ -305,7 +391,10 @@ const TEMPLATES = [
     description: 'No podrá resistirse al final.',
     icon: <Lock />,
     color: '#5d4037',
-    content: LAST_CHANCE_TEMPLATE
+    content: LAST_CHANCE_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Grito desesperado (broma)'
   },
   {
     id: 'hidden-msg',
@@ -314,7 +403,10 @@ const TEMPLATES = [
     description: 'Oculto entre las estrellas.',
     icon: <Eye />,
     color: '#3f51b5',
-    content: HIDDEN_MESSAGE_TEMPLATE
+    content: HIDDEN_MESSAGE_TEMPLATE,
+    hasImage: false,
+    hasExtra: true,
+    extraLabel: 'Pista del mensaje'
   }
 ];
 
@@ -457,6 +549,7 @@ function App() {
     name: '',
     sender: '',
     message: '',
+    extraText: '',
     hasAudio: true,
     audioOption: 'youtube', // 'upload', 'youtube'
     audioSrc: '',
@@ -501,7 +594,8 @@ function App() {
             ...decoded,
             html: tpl.content,
             audioOption: reconstructedAudioOption,
-            imageSrc: decoded.img || ''
+            imageSrc: decoded.img || '',
+            extraText: decoded.et || ''
           });
         }
       } catch (e) {
@@ -539,7 +633,8 @@ function App() {
       audio: formData.hasAudio,
       src: formData.audioOption === 'upload' ? 'uploaded' : (formData.audioOption === 'default' ? 'default' : null),
       yt: formData.audioOption === 'youtube' ? extractSocialId(formData.youtubeUrl, 'youtube') : null,
-      img: formData.hasImage ? formData.imageSrc : null
+      img: formData.hasImage ? formData.imageSrc : null,
+      et: formData.extraText || null
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -1028,77 +1123,101 @@ function App() {
                     {errors.message && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.message}</p>}
                   </div>
 
+                  {selectedTemplate.hasExtra && (
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                        {selectedTemplate.extraLabel || 'Texto Secundario'}
+                      </label>
+                      <textarea
+                        name="extraText"
+                        rows="3"
+                        placeholder="Ej: Escribe aquí la frase o nota especial para esta parte..."
+                        value={formData.extraText}
+                        onChange={(e) => setFormData({ ...formData, extraText: e.target.value })}
+                        onFocus={() => isMobileApp && hideBannerAd()}
+                        onBlur={() => isMobileApp && showBannerAd()}
+                        style={{
+                          fontSize: '0.9rem',
+                          borderColor: 'rgba(255,255,255,0.12)',
+                          resize: 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+
                   {/* Image Section */}
-                  <div style={{
-                    padding: '1.5rem',
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    borderRadius: '20px',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    marginBottom: '1rem'
-                  }}>
-                    <div
-                      onClick={() => setFormData({ ...formData, hasImage: !formData.hasImage })}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginBottom: formData.hasImage ? '1.2rem' : '0',
-                        padding: '1rem',
-                        background: formData.hasImage ? 'rgba(77, 148, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                        borderRadius: '15px',
-                        cursor: 'pointer',
-                        border: formData.hasImage ? '2px solid #00aaff' : '1px solid rgba(255, 255, 255, 0.1)',
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                        <div style={{
-                          width: '45px',
-                          height: '45px',
-                          borderRadius: '12px',
-                          background: formData.hasImage ? '#00aaff' : 'rgba(0, 170, 255, 0.2)',
+                  {selectedTemplate.hasImage && (
+                    <div style={{
+                      padding: '1.5rem',
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      marginBottom: '1rem'
+                    }}>
+                      <div
+                        onClick={() => setFormData({ ...formData, hasImage: !formData.hasImage })}
+                        style={{
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <Image size={24} color="white" />
-                        </div>
-                        <div>
-                          <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Imagen / Foto</p>
-                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>{formData.hasImage ? 'Foto activada 📸' : 'Click para añadir foto'}</p>
-                        </div>
-                      </div>
-                      <div style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        border: '2px solid white',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: formData.hasImage ? 'white' : 'transparent'
-                      }}>
-                        {formData.hasImage && <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00aaff' }} />}
-                      </div>
-                    </div>
-
-                    {formData.hasImage && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                          justifyContent: 'space-between',
+                          marginBottom: formData.hasImage ? '1.2rem' : '0',
+                          padding: '1rem',
+                          background: formData.hasImage ? 'rgba(77, 148, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                          borderRadius: '15px',
+                          cursor: 'pointer',
+                          border: formData.hasImage ? '2px solid #00aaff' : '1px solid rgba(255, 255, 255, 0.1)',
+                          transition: 'all 0.3s ease'
+                        }}
                       >
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Link de la Imagen (Pinterest, Google, etc.)</label>
-                        <input
-                          placeholder="https://ejemplo.com/foto.jpg"
-                          value={formData.imageSrc}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, imageSrc: e.target.value })}
-                          style={{ fontSize: '0.9rem', padding: '0.9rem' }}
-                        />
-                      </motion.div>
-                    )}
-                  </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                          <div style={{
+                            width: '45px',
+                            height: '45px',
+                            borderRadius: '12px',
+                            background: formData.hasImage ? '#00aaff' : 'rgba(0, 170, 255, 0.2)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Image size={24} color="white" />
+                          </div>
+                          <div>
+                            <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Imagen / Foto</p>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>{formData.hasImage ? 'Foto activada 📸' : 'Click para añadir foto'}</p>
+                          </div>
+                        </div>
+                        <div style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          border: '2px solid white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: formData.hasImage ? 'white' : 'transparent'
+                        }}>
+                          {formData.hasImage && <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00aaff' }} />}
+                        </div>
+                      </div>
+
+                      {formData.hasImage && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                        >
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Link de la Imagen (Pinterest, Google, etc.)</label>
+                          <input
+                            placeholder="https://ejemplo.com/foto.jpg"
+                            value={formData.imageSrc}
+                            onFocus={() => isMobileApp && hideBannerAd()}
+                            onBlur={() => isMobileApp && showBannerAd()}
+                            onChange={(e) => setFormData({ ...formData, imageSrc: e.target.value })}
+                            style={{ fontSize: '0.9rem', padding: '0.9rem' }}
+                          />
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Audio Selection Section */}
                   <div style={{
