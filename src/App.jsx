@@ -1,39 +1,313 @@
-import React, { useState, useEffect } from 'react';
-import { Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User, Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2 } from 'lucide-react';
+import {
+  Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User,
+  Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
+  Filter, Gamepad, BookOpen, UserPlus, Image, Music2, Camera, Clock,
+  Stamp, Shirt, Ghost, Pill, Layers, RefreshCcw, Smile, PartyPopper,
+  TreePine, Flame, Eye, Lock
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
-import { GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE } from './templates';
-import { isNativePlatform, shareContent, shareHTMLFile } from './utils/platformUtils';
-import { getBaseUrl } from './config/appConfig';
-import { shortenUrl } from './utils/urlShortener';
-import { initializeAdMob, showBannerAd, showRewardedAd, showInterstitial, prepareRewardedAd } from './utils/admobUtils';
-import { getAdSenseClientId } from './config/adsenseConfig';
-import './styles/index.css';
+import {
+  GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE,
+  BOOK_LOVE_TEMPLATE, MARVEL_BOOK_TEMPLATE, GALAXY_GENERATOR_TEMPLATE,
+  MUSICAL_SPHERE_TEMPLATE, PROPOSAL_TEMPLATE, FORGIVE_ME_CATS_TEMPLATE,
+  PUZZLE_LOVE_TEMPLATE, RULETA_LOVE_TEMPLATE, FORGIVE_ME_PENGUINS_TEMPLATE,
+  FLOWERS_RAMO_TEMPLATE, ENOJONA_TEMPLATE, DATE_COUNTER_TEMPLATE,
+  LOVE_CERTIFICATE_TEMPLATE, COUPLE_INITIALS_TEMPLATE, ENCHANTED_LETTER_TEMPLATE,
+  LOVE_VITAMINS_TEMPLATE, SCRATCH_MESSAGE_TEMPLATE, SOCCER_CARD_TEMPLATE,
+  BIRTHDAY_LAMP_TEMPLATE, DEDICATE_SONG_TEMPLATE, POCOYO_DANCE_TEMPLATE,
+  BE_MY_BOYFRIEND_TEMPLATE, TE_AMO_TEMPLATE, BE_FRIENDS_TEMPLATE,
+  HEART_PHOTO_TEMPLATE, OUR_YEAR_TEMPLATE, CHRISTMAS_TREE_TEMPLATE,
+  NEW_YEAR_TEMPLATE, LAST_CHANCE_TEMPLATE, HIDDEN_MESSAGE_TEMPLATE
+} from './templates';
+
+const CATEGORIES = [
+  { id: 'todos', name: 'Todos', icon: <Layers size={18} /> },
+  { id: 'amor', name: 'Amor', icon: <Heart size={18} /> },
+  { id: 'juegos', name: 'Juegos', icon: <Gamepad size={18} /> },
+  { id: 'eventos', name: 'Eventos', icon: <Calendar size={18} /> },
+  { id: 'divertido', name: 'Divertido', icon: <Smile size={18} /> }
+];
 
 const TEMPLATES = [
   {
     id: 'love',
+    category: 'amor',
     name: 'Galaxia de Amor',
     description: 'Corazones flotantes y estrellas animadas.',
-    icon: <Heart className="text-white" />,
+    icon: <Heart />,
     color: '#ff4d94',
     content: GALAXY_TEMPLATE
   },
   {
-    id: 'proposal',
-    name: 'Propuesta Irresistible',
-    description: 'El botón NO se escapará de su cursor.',
-    icon: <Sparkles className="text-white" />,
+    id: 'book-love',
+    category: 'amor',
+    name: 'Libro del Amor',
+    description: 'Carta digital con efecto libro 3D.',
+    icon: <BookOpen />,
+    color: '#ff4d94',
+    content: BOOK_LOVE_TEMPLATE
+  },
+  {
+    id: 'marvel-book',
+    category: 'divertido',
+    name: 'Libro Marvel ❤️',
+    description: 'Versión especial de superhéroes.',
+    icon: <Zap />,
+    color: '#ed1d24',
+    content: MARVEL_BOOK_TEMPLATE
+  },
+  {
+    id: 'galaxy-gen',
+    category: 'amor',
+    name: 'Generador de Galaxia ⭐',
+    description: 'Escribe nombres y frases estelares.',
+    icon: <Star />,
     color: '#7000ff',
-    content: LOVE_TEMPLATE
+    content: GALAXY_GENERATOR_TEMPLATE
+  },
+  {
+    id: 'musical-sphere',
+    category: 'amor',
+    name: 'Esfera Musical 🎵',
+    description: 'Esfera que vibra con tu música.',
+    icon: <Music />,
+    color: '#00f2ff',
+    content: MUSICAL_SPHERE_TEMPLATE
+  },
+  {
+    id: 'proposal',
+    category: 'amor',
+    name: 'Propuesta 💖',
+    description: 'Dile que sea tu novi@ sin un NO.',
+    icon: <Sparkles />,
+    color: '#ff00ff',
+    content: PROPOSAL_TEMPLATE
+  },
+  {
+    id: 'forgive-cats',
+    category: 'divertido',
+    name: 'Me Perdonas 😳',
+    description: 'Gatitos lindos para pedir perdón.',
+    icon: <Smile />,
+    color: '#ffa500',
+    content: FORGIVE_ME_CATS_TEMPLATE
+  },
+  {
+    id: 'puzzle-love',
+    category: 'juegos',
+    name: 'Puzzle del Amor 💫',
+    description: 'Crea un rompecabezas con su foto.',
+    icon: <Gamepad />,
+    color: '#ff4d94',
+    content: PUZZLE_LOVE_TEMPLATE
+  },
+  {
+    id: 'ruleta-love',
+    category: 'juegos',
+    name: 'Ruleta del Amor 💖',
+    description: 'Una ruleta que siempre sale SÍ.',
+    icon: <RefreshCcw />,
+    color: '#ff007f',
+    content: RULETA_LOVE_TEMPLATE
+  },
+  {
+    id: 'forgive-penguins',
+    category: 'divertido',
+    name: 'Perdón Mi Amor 🐧',
+    description: 'Divertidos pingüinos para disculparse.',
+    icon: <Smile />,
+    color: '#0080ff',
+    content: FORGIVE_ME_PENGUINS_TEMPLATE
+  },
+  {
+    id: 'flowers-ramo',
+    category: 'amor',
+    name: 'Ramo de Flores 🌸',
+    description: 'Regálale un hermoso ramo digital.',
+    icon: <Gift />,
+    color: '#ff80bf',
+    content: FLOWERS_RAMO_TEMPLATE
+  },
+  {
+    id: 'enojona',
+    category: 'divertido',
+    name: 'Mi Enojona 😡',
+    description: 'Gifs y música para tu enojona.',
+    icon: <Flame />,
+    color: '#ff4000',
+    content: ENOJONA_TEMPLATE
+  },
+  {
+    id: 'date-counter',
+    category: 'eventos',
+    name: 'Contador Especial 📆',
+    description: 'Reloj neón para fechas clave.',
+    icon: <Clock />,
+    color: '#00ffcc',
+    content: DATE_COUNTER_TEMPLATE
+  },
+  {
+    id: 'love-cert',
+    category: 'amor',
+    name: 'Certificado Amor',
+    description: 'Crea tu certificado con huella.',
+    icon: <Stamp />,
+    color: '#ffd700',
+    content: LOVE_CERTIFICATE_TEMPLATE
+  },
+  {
+    id: 'initials',
+    category: 'amor',
+    name: 'Iniciales Pareja 👥',
+    description: 'Tus letras en personajes animados.',
+    icon: <Shirt />,
+    color: '#ff4d94',
+    content: COUPLE_INITIALS_TEMPLATE
+  },
+  {
+    id: 'enchanted-letter',
+    category: 'eventos',
+    name: 'Carta Encantada 🎃',
+    description: 'Especial Halloween para tu amor.',
+    icon: <Ghost />,
+    color: '#ff8000',
+    content: ENCHANTED_LETTER_TEMPLATE
+  },
+  {
+    id: 'vitamins',
+    category: 'divertido',
+    name: 'Vitaminas Amor 💊',
+    description: 'Dile que te falta su vitamina A, B...',
+    icon: <Pill />,
+    color: '#ff0000',
+    content: LOVE_VITAMINS_TEMPLATE
+  },
+  {
+    id: 'scratch',
+    category: 'juegos',
+    name: 'Mensaje Raspa',
+    description: 'Carta creativa de raspa y raspa.',
+    icon: <Gamepad />,
+    color: '#c0c0c0',
+    content: SCRATCH_MESSAGE_TEMPLATE
+  },
+  {
+    id: 'soccer-card',
+    category: 'divertido',
+    name: 'Tarjeta Futbolista ⚽',
+    description: 'Tarjeta estilo FIFA para amigos.',
+    icon: <Zap />,
+    color: '#4caf50',
+    content: SOCCER_CARD_TEMPLATE
   },
   {
     id: 'birthday',
-    name: 'Feliz Cumpleaños',
-    description: 'Confeti y sorpresas digitales.',
-    icon: <Gift className="text-white" />,
-    color: '#00f2ff',
-    content: BIRTHDAY_TEMPLATE
+    category: 'eventos',
+    name: 'Feliz Cumpleaños 🎂',
+    description: 'Dedicatoria con lámpara creativa.',
+    icon: <Gift />,
+    color: '#ffeb3b',
+    content: BIRTHDAY_LAMP_TEMPLATE
+  },
+  {
+    id: 'dedicate-song',
+    category: 'amor',
+    name: 'Te la Dedico 🎶',
+    description: 'Reproductor con letra y fondo.',
+    icon: <Music2 />,
+    color: '#ff4d94',
+    content: DEDICATE_SONG_TEMPLATE
+  },
+  {
+    id: 'pocoyo',
+    category: 'divertido',
+    name: 'Pocoyo 🎶',
+    description: 'Haz bailar a Pocoyo interactivo.',
+    icon: <Music />,
+    color: '#03a9f4',
+    content: POCOYO_DANCE_TEMPLATE
+  },
+  {
+    id: 'be-my-gf',
+    category: 'amor',
+    name: '¿Quieres ser novi@? 💞',
+    description: 'El NO se mueve sin parar.',
+    icon: <Heart />,
+    color: '#e91e63',
+    content: BE_MY_BOYFRIEND_TEMPLATE
+  },
+  {
+    id: 'te-amo',
+    category: 'amor',
+    name: 'Te Amo 💞',
+    description: 'Corazón mágico que se forma.',
+    icon: <Heart />,
+    color: '#f44336',
+    content: TE_AMO_TEMPLATE
+  },
+  {
+    id: 'be-friends',
+    category: 'divertido',
+    name: 'Amig@s? 👥',
+    description: 'Pide volver con este detalle.',
+    icon: <Users />,
+    color: '#9c27b0',
+    content: BE_FRIENDS_TEMPLATE
+  },
+  {
+    id: 'heart-photo',
+    category: 'amor',
+    name: 'Crear Corazón 💫',
+    description: 'Corazón con 25 fotos favoritas.',
+    icon: <Camera />,
+    color: '#ff4081',
+    content: HEART_PHOTO_TEMPLATE
+  },
+  {
+    id: 'our-year',
+    category: 'eventos',
+    name: 'Nuestro Año 💫',
+    description: '12 fotos por cada mes juntos.',
+    icon: <Image />,
+    color: '#2196f3',
+    content: OUR_YEAR_TEMPLATE
+  },
+  {
+    id: 'christmas',
+    category: 'eventos',
+    name: 'Arbol Navidad 🎁',
+    description: 'Árbol con las fotos de tu amor.',
+    icon: <TreePine />,
+    color: '#2e7d32',
+    content: CHRISTMAS_TREE_TEMPLATE
+  },
+  {
+    id: 'new-year',
+    category: 'eventos',
+    name: 'Feliz Año 💥',
+    description: 'Festeja el inicio de este 2026.',
+    icon: <PartyPopper />,
+    color: '#fdd835',
+    content: NEW_YEAR_TEMPLATE
+  },
+  {
+    id: 'last-chance',
+    category: 'amor',
+    name: 'Última Oportunidad 😊',
+    description: 'No podrá resistirse al final.',
+    icon: <Lock />,
+    color: '#5d4037',
+    content: LAST_CHANCE_TEMPLATE
+  },
+  {
+    id: 'hidden-msg',
+    category: 'amor',
+    name: 'Mensaje Oculto 🤭',
+    description: 'Oculto entre las estrellas.',
+    icon: <Eye />,
+    color: '#3f51b5',
+    content: HIDDEN_MESSAGE_TEMPLATE
   }
 ];
 
@@ -182,6 +456,8 @@ function App() {
     youtubeUrl: '',
     audioFile: null
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategory, setActiveCategory] = useState('todos');
 
   // Check platform and viewer mode on load
   useEffect(() => {
@@ -544,32 +820,96 @@ function App() {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
-            {TEMPLATES.map((tpl, idx) => (
-              <motion.div
-                key={tpl.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.15 }}
-                className="glass card template-card"
-                onClick={() => {
-                  // Simply select template (ads moved to Generate button for better UX)
-                  setSelectedTemplate(tpl);
-                  // Pre-load rewarded ad while user fills the form
-                  if (isMobileApp) {
-                    prepareRewardedAd();
-                  }
-                }}
-                style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem' }}
-              >
-                <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'white' }}>{tpl.icon}</div>
-                <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', color: 'white' }}>{tpl.name}</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1rem' }}>{tpl.description}</p>
-                <div className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                  Seleccionar <ArrowRight size={18} />
+          {/* Search and Category Filters */}
+          <div className="container" style={{ marginBottom: '3rem' }}>
+            <div className="glass" style={{ padding: '1.5rem', borderRadius: '24px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+                {/* Search Bar */}
+                <div style={{ position: 'relative', flexGrow: 1, maxWidth: '500px' }}>
+                  <Search size={20} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.4)' }} />
+                  <input
+                    type="text"
+                    placeholder="Busca una plantilla... (ej: Marvel, Amor)"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                      paddingLeft: '45px',
+                      borderRadius: '15px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      width: '100%'
+                    }}
+                  />
                 </div>
-              </motion.div>
-            ))}
+
+                {/* Categories */}
+                <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', scrollbarWidth: 'none' }}>
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(cat.id)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.6rem 1.2rem',
+                        borderRadius: '12px',
+                        whiteSpace: 'nowrap',
+                        background: activeCategory === cat.id ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
+                        border: '1px solid',
+                        borderColor: activeCategory === cat.id ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
+                        color: 'white',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s'
+                      }}
+                    >
+                      {cat.icon}
+                      <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>{cat.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1.5rem',
+            padding: '0 1rem'
+          }}>
+            {TEMPLATES
+              .filter(t => {
+                const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  t.description.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesCategory = activeCategory === 'todos' || t.category === activeCategory;
+                return matchesSearch && matchesCategory;
+              })
+              .map((tpl, idx) => (
+                <motion.div
+                  key={tpl.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.15 }}
+                  className="glass card template-card"
+                  onClick={() => {
+                    // Simply select template (ads moved to Generate button for better UX)
+                    setSelectedTemplate(tpl);
+                    // Pre-load rewarded ad while user fills the form
+                    if (isMobileApp) {
+                      prepareRewardedAd();
+                    }
+                  }}
+                  style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem' }}
+                >
+                  <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'white' }}>{tpl.icon}</div>
+                  <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', color: 'white' }}>{tpl.name}</h3>
+                  <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1rem' }}>{tpl.description}</p>
+                  <div className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                    Seleccionar <ArrowRight size={18} />
+                  </div>
+                </motion.div>
+              ))}
           </div>
 
           {isMobileApp && (
