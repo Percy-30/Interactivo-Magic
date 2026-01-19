@@ -926,34 +926,350 @@ export const BIRTHDAY_TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Export all templates for the massive catalog expansion
-export const BOOK_LOVE_TEMPLATE = LOVE_TEMPLATE.replace('<h1>', '<h1 style="transform: rotateX(10deg); text-shadow: 0 5px 15px rgba(0,0,0,0.5);">📖 Libro del Amor: ');
-export const MARVEL_BOOK_TEMPLATE = LOVE_TEMPLATE.replace('#ff4d94', '#ed1d24').replace('🎁', '🦸‍♂️');
+// --- SPECIALIZED TEMPLATE BASES ---
+
+export const BOOK_LOVE_TEMPLATE = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libro del Amor - {{name}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;700&display=swap');
+        body { margin: 0; background: #0a0514; color: #333; font-family: 'Outfit', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; perspective: 1500px; }
+        .book { width: 350px; height: 450px; position: relative; transition: transform 0.5s; transform-style: preserve-3d; cursor: pointer; }
+        .book.open { transform: translateX(25%); }
+        .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); }
+        .front, .back { width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; box-sizing: border-box; }
+        .cover { background: #800000; color: white; border-radius: 0 15px 15px 0; box-shadow: 5px 5px 20px rgba(0,0,0,0.5); border-left: 10px solid #5a0000; }
+        .cover h1 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; text-align: center; margin-bottom: 1rem; }
+        .cover .emoji { font-size: 5rem; margin-bottom: 2rem; }
+        .inner-page { background: #fff9e6; color: #444; border-radius: 0 10px 10px 0; box-shadow: inset 3px 0 10px rgba(0,0,0,0.1); }
+        .inner-page h2 { font-family: 'Dancing Script', cursive; color: #800000; font-size: 2rem; }
+        .inner-page p { font-size: 1.1rem; line-height: 1.6; text-align: center; font-style: italic; }
+        .page.flipped { transform: rotateY(-180deg); }
+        .floating-heart { position: absolute; color: #ff4d94; opacity: 0; pointer-events: none; z-index: 100; }
+        
+        /* Intro Overlay */
+        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0514; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
+        #intro-overlay.hidden { opacity: 0; pointer-events: none; }
+        .box-container { text-align: center; cursor: pointer; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        
+        .audio-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 20px; display: flex; align-items: center; gap: 10px; z-index: 1000; color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .play-btn { cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="intro-overlay">
+        <div class="box-container" onclick="openBox()">
+            <div style="font-size: 80px;">📖</div>
+            <div style="color: white; font-size: 24px; font-weight: bold; margin-top: 20px;">Tu Libro del Amor</div>
+            <div style="color: rgba(255,255,255,0.6); margin-top: 10px;">TOCA PARA ABRIR</div>
+        </div>
+    </div>
+
+    <div class="book" id="book" onclick="flipPage()">
+        <!-- Page 1: Cover -->
+        <div class="page" id="page1">
+            <div class="front cover">
+                <div class="emoji">📖</div>
+                <h1>Libro del Amor</h1>
+                <div style="margin-top: 2rem; opacity: 0.8; font-size: 0.9rem;">Un viaje de sentimientos ❤️</div>
+            </div>
+            <div class="back inner-page">
+                <h2>Para: {{name}}</h2>
+                <p>Cada página de mi vida es mejor desde que tú estás en ella...</p>
+                <div style="margin-top: 2rem; font-size: 1.5rem;">💌</div>
+            </div>
+        </div>
+        <!-- Page 2: Message -->
+        <div class="page" id="page2">
+            <div class="front inner-page">
+                <p>{{message}}</p>
+                <div style="margin-top: 2rem; font-weight: bold; color: #800000;">Con todo mi amor, <br> {{sender}}</div>
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: #999;">Página 2</div>
+            </div>
+            <div class="back inner-page" style="background: #eee;">
+                <h1>❤️</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="audio-controls" style="{{audio_display}}">
+        <div class="play-btn" id="play-btn">▶ PLAY</div>
+        <div id="time">0:00</div>
+    </div>
+
+    <audio id="bg-audio" src="{{audio_src}}" loop></audio>
+    <div id="youtube-player"></div>
+
+    <script>
+        let stage = 0;
+        function openBox() {
+            document.getElementById('intro-overlay').classList.add('hidden');
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => {});
+            // Check for YouTube handled by parent if necessary
+        }
+
+        function flipPage() {
+            const book = document.getElementById('book');
+            if (stage === 0) {
+                document.getElementById('page1').classList.add('flipped');
+                book.classList.add('open');
+                stage = 1;
+                createHearts();
+            } else if (stage === 1) {
+                document.getElementById('page2').classList.add('flipped');
+                stage = 2;
+            } else {
+                document.getElementById('page1').classList.remove('flipped');
+                document.getElementById('page2').classList.remove('flipped');
+                book.classList.remove('open');
+                stage = 0;
+            }
+        }
+
+        function createHearts() {
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'floating-heart';
+                    h.innerHTML = '❤️';
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.top = '100vh';
+                    document.body.appendChild(h);
+                    h.animate([
+                        { transform: 'translateY(0) scale(1)', opacity: 1 },
+                        { transform: 'translateY(-100vh) scale(2)', opacity: 0 }
+                    ], { duration: 3000 + Math.random() * 2000 }).onfinish = () => h.remove();
+                }, i * 200);
+            }
+        }
+    </script>
+</body>
+</html>`;
+
+export const PUZZLE_LOVE_TEMPLATE = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Mágico - {{name}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
+        body { margin: 0; background: #0a0514; color: white; font-family: 'Outfit', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .puzzle-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; width: 300px; height: 300px; margin-bottom: 2rem; }
+        .puzzle-tile { width: 100%; height: 100%; background: #ff4d94; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: transform 0.2s; color: white; font-weight: bold; position: relative; overflow: hidden; }
+        .puzzle-tile::before { content: ''; position: absolute; width: 100%; height: 100%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3)); }
+        .message-box { display: none; text-align: center; padding: 2rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); width: 90%; max-width: 400px; }
+        h1 { font-size: 1.8rem; color: #ff4d94; margin-bottom: 1rem; }
+        
+        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0514; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
+        #intro-overlay.hidden { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div id="intro-overlay">
+        <div onclick="document.getElementById('intro-overlay').classList.add('hidden')" style="text-align: center; cursor: pointer;">
+            <div style="font-size: 80px;">🧩</div>
+            <div style="color: white; font-size: 24px; font-weight: bold; margin-top: 20px;">¡Arma el Puzzle!</div>
+            <div style="color: rgba(255,255,255,0.6); margin-top: 10px;">TOCA PARA EMPEZAR</div>
+        </div>
+    </div>
+
+    <div id="game-ui" style="text-align: center;">
+        <h2 style="margin-bottom: 1rem; color: #ff4d94;">¡Ordena el Desorden! 🧩</h2>
+        <div class="puzzle-board" id="board"></div>
+        <p style="opacity: 0.6;">Toca las piezas para moverlas</p>
+    </div>
+
+    <div class="message-box" id="message-box">
+        <h1>¡LOGRADO! ❤️</h1>
+        <p style="font-size: 1.2rem; color: #fff;">{{message}}</p>
+        <div style="margin-top: 1.5rem; color: rgba(255,255,255,0.6);">De: {{sender}}</div>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        let tiles = ['❤️', '💖', '✨', '⭐', '🎈', '🌹', '🦋', '💍', ' '];
+        let state = [...tiles].sort(() => Math.random() - 0.5);
+        
+        function render() {
+            board.innerHTML = '';
+            state.forEach((char, i) => {
+                const div = document.createElement('div');
+                div.className = 'puzzle-tile';
+                if (char === ' ') div.style.background = 'transparent';
+                else div.textContent = char;
+                div.onclick = () => move(i);
+                board.appendChild(div);
+            });
+            checkWin();
+        }
+
+        function move(idx) {
+            const empty = state.indexOf(' ');
+            const valid = [idx-1, idx+1, idx-3, idx+3];
+            if (valid.includes(empty)) {
+                if (idx%3===0 && empty===idx-1) return;
+                if (idx%3===2 && empty===idx+1) return;
+                state[empty] = state[idx];
+                state[idx] = ' ';
+                render();
+            }
+        }
+
+        function checkWin() {
+            if (state.join('') === tiles.join('')) {
+                document.getElementById('game-ui').style.display = 'none';
+                document.getElementById('message-box').style.display = 'block';
+                // Trigger effects
+            }
+        }
+        render();
+    </script>
+</body>
+</html>`;
+
+export const RULETA_LOVE_TEMPLATE = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta Mágica - {{name}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
+        body { margin: 0; background: #0a0514; color: white; font-family: 'Outfit', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .wheel-container { position: relative; width: 300px; height: 300px; margin-bottom: 2rem; transition: transform 4s cubic-bezier(0.1, 0, 0, 1); }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid white; background: conic-gradient(
+            #ff4d94 0% 12.5%, #7000ff 12.5% 25%, #00f2ff 25% 37.5%, #ffeead 37.5% 50%,
+            #ff4d94 50% 62.5%, #7000ff 62.5% 75%, #00f2ff 75% 87.5%, #ffeead 87.5% 100%
+        ); position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: white; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        .spin-btn { padding: 15px 40px; background: #ff4d94; border: none; border-radius: 30px; color: white; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 148, 0.4); }
+        .message-card { display: none; text-align: center; padding: 2.5rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 25px; width: 90%; max-width: 400px; border: 1px solid rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <div class="pointer"></div>
+        <div class="wheel-container" id="wheel">
+            <div class="wheel"></div>
+        </div>
+        <button class="spin-btn" id="spinBtn" onclick="spin()">GIRAR RULETA 🎡</button>
+    </div>
+
+    <div class="message-card" id="result">
+        <h1 style="color: #ff4d94; font-size: 2.5rem; margin-bottom: 1rem;">🎰 ¡GANASTE!</h1>
+        <p style="font-size: 1.3rem;">{{message}}</p>
+        <div style="margin-top: 1.5rem; font-style: italic; opacity: 0.6;">De: {{sender}}</div>
+    </div>
+
+    <script>
+        function spin() {
+            const wheel = document.getElementById('wheel');
+            const btn = document.getElementById('spinBtn');
+            const rand = 3600 + Math.random() * 3600;
+            wheel.style.transform = "rotate(" + rand + "deg)";
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            setTimeout(() => {
+                document.getElementById('game').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+            }, 4500);
+        }
+    </script>
+</body>
+</html>`;
+
+export const SCRATCH_MESSAGE_TEMPLATE = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspa y Gana - {{name}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
+        body { margin: 0; background: #0a0514; color: white; font-family: 'Outfit', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .scratch-container { position: relative; width: 320px; height: 200px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        canvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+        .message-bg { width: 100%; height: 100%; background: #ff4d94; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <h2 style="margin-bottom: 1.5rem;">¡Raspa para ver tu mensaje! 🎫</h2>
+    <div class="scratch-container">
+        <div class="message-bg">
+            <div style="font-weight: 900; font-size: 1.2rem;">{{message}}</div>
+            <div style="margin-top: 1rem; opacity: 0.8; font-size: 0.9rem;">- {{sender}}</div>
+        </div>
+        <canvas id="scratchCanvas"></canvas>
+    </div>
+    <p style="margin-top: 2rem; opacity: 0.5;">Usa tu dedo o mouse para raspar</p>
+
+    <script>
+        const canvas = document.getElementById('scratchCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 320;
+        canvas.height = 200;
+
+        ctx.fillStyle = '#777';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#444';
+        ctx.font = '24px Outfit';
+        ctx.textAlign = 'center';
+        ctx.fillText('RASPA AQUÍ', 160, 105);
+
+        let isDrawing = false;
+        function scratch(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mousemove', scratch);
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
+        canvas.addEventListener('touchend', () => isDrawing = false);
+        canvas.addEventListener('touchmove', scratch);
+    </script>
+</body>
+</html>`;
+
+// --- THEMATIC SPECIALIZATIONS ---
+export const MARVEL_BOOK_TEMPLATE = LOVE_TEMPLATE.replace('#ff4d94', '#ed1d24').replace('🎁', '🦸‍♂️').replace('<h1>', '<h1>Avengers Love: ');
 export const GALAXY_GENERATOR_TEMPLATE = GALAXY_TEMPLATE;
 export const MUSICAL_SPHERE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🔮');
-export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE;
-export const FORGIVE_ME_CATS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐱').replace('SÍ ❤️', 'SÍ, TE PERDONO ❤️');
-export const PUZZLE_LOVE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🧩');
-export const RULETA_LOVE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎡');
-export const FORGIVE_ME_PENGUINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐧');
-export const FLOWERS_RAMO_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💐');
+export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', '¡SÍ, ACEPTO! 💍');
+export const FORGIVE_ME_CATS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐱').replace('SÍ ❤️', 'SÍ, TE PERDONO ❤️').replace('p {', 'p { font-family: "Comic Sans MS", cursive; ');
+export const FORGIVE_ME_PENGUINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐧').replace('background: #0a0514', 'background: #e3f2fd; color: #333;');
+export const FLOWERS_RAMO_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💐').replace('background: #0a0514', 'background: #fce4ec; color: #333;');
 export const ENOJONA_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '😡');
-export const DATE_COUNTER_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '⏰').replace('¡Feliz Cumpleaños!', 'Nuestro Tiempo Juntos');
-export const LOVE_CERTIFICATE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '📜');
+export const DATE_COUNTER_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '⏰').replace('¡Feliz Cumpleaños!', 'Nuestro Tiempo Juntos').replace('#00f2ff', '#00ff00');
+export const LOVE_CERTIFICATE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '📜').replace('background: rgba(255,255,255,0.1)', 'background: #f9f4e8; color: #444; border: 5px double #a67c52;');
 export const COUPLE_INITIALS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '👕');
 export const ENCHANTED_LETTER_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎃').replace('#ff4d94', '#ff8000');
 export const LOVE_VITAMINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💊');
-export const SCRATCH_MESSAGE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎫');
-export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50');
+export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50').replace('background: rgba(255,255,255,0.1)', 'background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; font-weight: 900;');
 export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
 export const DEDICATE_SONG_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎧');
-export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺');
+export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺').replace('background: #0a0514', 'background: #03a9f4;');
 export const BE_MY_BOYFRIEND_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', 'SÍ, ¡ACEPTO! 💍');
 export const TE_AMO_TEMPLATE = GALAXY_TEMPLATE.replace('<h1>', '<h1>❤️ ');
 export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
 export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
 export const OUR_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '📅');
-export const CHRISTMAS_TREE_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🎄').replace('#00f2ff', '#2e7d32');
+export const CHRISTMAS_TREE_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🎄').replace('#00f2ff', '#2e7d32').replace('background: #05020a', 'background: #002200;');
 export const NEW_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🥂').replace('¡Feliz Cumpleaños!', '¡Feliz Año Nuevo 2026!');
 export const LAST_CHANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🔓').replace('SÍ ❤️', 'SÍ, UNA ÚLTIMA VEZ ❤️');
 export const HIDDEN_MESSAGE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🕵️‍♀️');
+
+
