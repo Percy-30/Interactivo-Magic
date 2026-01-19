@@ -461,7 +461,9 @@ function App() {
     audioOption: 'youtube', // 'upload', 'youtube'
     audioSrc: '',
     youtubeUrl: '',
-    audioFile: null
+    audioFile: null,
+    hasImage: false,
+    imageSrc: ''
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
@@ -498,7 +500,8 @@ function App() {
           setViewData({
             ...decoded,
             html: tpl.content,
-            audioOption: reconstructedAudioOption
+            audioOption: reconstructedAudioOption,
+            imageSrc: decoded.img || ''
           });
         }
       } catch (e) {
@@ -535,7 +538,8 @@ function App() {
       t: selectedTemplate.id,
       audio: formData.hasAudio,
       src: formData.audioOption === 'upload' ? 'uploaded' : (formData.audioOption === 'default' ? 'default' : null),
-      yt: formData.audioOption === 'youtube' ? extractSocialId(formData.youtubeUrl, 'youtube') : null
+      yt: formData.audioOption === 'youtube' ? extractSocialId(formData.youtubeUrl, 'youtube') : null,
+      img: formData.hasImage ? formData.imageSrc : null
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -1022,6 +1026,78 @@ function App() {
                       }}
                     />
                     {errors.message && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.message}</p>}
+                  </div>
+
+                  {/* Image Section */}
+                  <div style={{
+                    padding: '1.5rem',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '20px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    marginBottom: '1rem'
+                  }}>
+                    <div
+                      onClick={() => setFormData({ ...formData, hasImage: !formData.hasImage })}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: formData.hasImage ? '1.2rem' : '0',
+                        padding: '1rem',
+                        background: formData.hasImage ? 'rgba(77, 148, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: '15px',
+                        cursor: 'pointer',
+                        border: formData.hasImage ? '2px solid #00aaff' : '1px solid rgba(255, 255, 255, 0.1)',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                        <div style={{
+                          width: '45px',
+                          height: '45px',
+                          borderRadius: '12px',
+                          background: formData.hasImage ? '#00aaff' : 'rgba(0, 170, 255, 0.2)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Image size={24} color="white" />
+                        </div>
+                        <div>
+                          <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Imagen / Foto</p>
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>{formData.hasImage ? 'Foto activada 📸' : 'Click para añadir foto'}</p>
+                        </div>
+                      </div>
+                      <div style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        border: '2px solid white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: formData.hasImage ? 'white' : 'transparent'
+                      }}>
+                        {formData.hasImage && <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00aaff' }} />}
+                      </div>
+                    </div>
+
+                    {formData.hasImage && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                      >
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Link de la Imagen (Pinterest, Google, etc.)</label>
+                        <input
+                          placeholder="https://ejemplo.com/foto.jpg"
+                          value={formData.imageSrc}
+                          onFocus={() => isMobileApp && hideBannerAd()}
+                          onBlur={() => isMobileApp && showBannerAd()}
+                          onChange={(e) => setFormData({ ...formData, imageSrc: e.target.value })}
+                          style={{ fontSize: '0.9rem', padding: '0.9rem' }}
+                        />
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Audio Selection Section */}

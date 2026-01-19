@@ -27,7 +27,9 @@ const TemplateEngine = {
         finalHtml = finalHtml
             .replace(/{{audio_src}}/g, audioSrc)
             .replace(/{{youtube_id}}/g, ytId || '')
-            .replace(/{{audio_display}}/g, (data.hasAudio || data.audio) ? 'display: block' : 'display: none');
+            .replace(/{{audio_display}}/g, (data.hasAudio || data.audio) ? 'display: block' : 'display: none')
+            .replace(/{{image_src}}/g, data.img || data.imageSrc || '')
+            .replace(/{{image_display}}/g, (data.img || data.imageSrc) ? 'display: block' : 'display: none');
 
         // Replace other placeholders
         Object.keys(data).forEach(key => {
