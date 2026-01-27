@@ -59,7 +59,7 @@
         <canvas id="scratchCanvas"></canvas>
     </div>
 
-    <div class="audio-controls" style="display: {{audio_display}}">
+    <div class="audio-controls" id="audio-ui" style="display: none;">
         <div class="song-title">Audio Mágico</div>
         <div class="play-btn" id="play-btn">
             <div id="play-icon">▶</div>
@@ -101,7 +101,11 @@
 
         function openBox() {
             document.getElementById('intro-overlay').classList.add('hidden');
+            const hasAudio = '{{has_audio}}' === 'true';
             setTimeout(() => {
+                if (hasAudio) {
+                    document.getElementById('audio-ui').style.display = 'flex';
+                }
                 if (activePlatform === 'youtube' && ytPlayer) ytPlayer.playVideo();
                 else audio.play().catch(() => { });
                 updateUI(true);
