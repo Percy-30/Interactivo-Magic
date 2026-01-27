@@ -542,7 +542,7 @@ function createFloatingElement() {
 
 function createCenterHeart() {
     const heart = document.createElement('div');
-    const icons = ['¤ï¸', '’–', '’˜', '’', ''];
+    const icons = ['❤️', '✨', '💖', '🌟', '💕'];
     heart.textContent = icons[Math.floor(Math.random() * icons.length)];
     heart.style.position = 'absolute';
     heart.style.fontSize = Math.random() * 30 + 15 + 'px';

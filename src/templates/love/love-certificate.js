@@ -36,7 +36,7 @@
         /* Decorative Static Heart Clusters */
         .cert-border::before, .cert-border::after,
         .cert-container::before, .cert-container::after {
-            content: '¤ï¸ ’– ';
+            content: '❤️ ✨';
             position: absolute;
             font-size: 1.4rem;
             z-index: 10;
@@ -179,20 +179,20 @@
 </head>
 <body>
     <div id="intro-overlay" onclick="openBox()">
-        <div class="gift-box">“œ</div>
+        <div class="gift-box">🎁</div>
         <div style="font-size: 2rem; font-weight: 950; color: #831843; margin-top: 2rem; text-align: center; padding: 0 20px;">He emitido un documento oficial...</div>
-        <div style="color: #be185d; margin-top: 1.5rem; font-weight: 800; letter-spacing: 5px; animation: pulse 1.5s infinite;">TOCA PARA ABRIR ¤ï¸</div>
+        <div style="color: #be185d; margin-top: 1.5rem; font-weight: 800; letter-spacing: 5px; animation: pulse 1.5s infinite;">TOCA PARA ABRIR ❤️</div>
     </div>
 
     <div class="cert-border" id="certificate">
         <div class="cert-container">
             <h1>Certificado del Amor</h1>
-            <span class="bouquet">’</span>
+            <span class="bouquet">💐</span>
             
             <div class="cert-text">
-                <p>Por la presente certifico que nuestros corazones han sido enlazados por el destino ’ž.</p>
+                <p>Por la presente certifico que nuestros corazones han sido enlazados por el destino 💖.</p>
                 <p style="margin-top: 1.5rem; font-weight: 700; color: #831843; font-size: 1.4rem;">{{message}}</p>
-                <p style="margin-top: 1.5rem;">Prometo cuidarte, amarte y hacerte feliz en cada dÃ­a que la vida nos regale. Œ¸</p>
+                <p style="margin-top: 1.5rem;">Prometo cuidarte, amarte y hacerte feliz en cada día que la vida nos regale. ✨</p>
             </div>
 
             <div class="photo-frame">
@@ -210,12 +210,12 @@
     </div>
 
     <button class="btn-download" onclick="window.print()">
-        “„ Guardar como PDF / Imprimir
+        📥 Guardar como PDF / Imprimir
     </button>
 
     <div class="audio-controls" style="display: none;" id="audio-ui">
         <div class="play-btn" id="play-btn">
-            <span id="play-icon">–¶</span><span id="pause-icon" style="display:none">||</span>
+            <span id="play-icon">▶</span><span id="pause-icon" style="display:none">||</span>
         </div>
         <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
     </div>
@@ -283,7 +283,7 @@
                 const h = document.createElement('div');
                 const isUp = Math.random() > 0.5;
                 h.className = 'heart-float ' + (isUp ? 'float-up' : 'float-down');
-                h.innerHTML = ['¤ï¸', '’–', '', 'Œ¸'][Math.floor(Math.random()*4)];
+                h.innerHTML = ['❤️', '✨', '💖', '💕'][Math.floor(Math.random()*4)];
                 h.style.left = Math.random() * 100 + 'vw';
                 h.style.top = isUp ? '110vh' : '-10vh';
                 const duration = 3 + Math.random() * 3;

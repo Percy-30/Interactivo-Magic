@@ -213,18 +213,18 @@
 </head>
 <body>
     <div id="intro-overlay" onclick="openBox()">
-        <div style="font-size: 80px; margin-bottom: 2rem; filter: drop-shadow(0 0 30px #ff4d94);">ðŸ’</div>
+        <div style="font-size: 80px; margin-bottom: 2rem; filter: drop-shadow(0 0 30px #ff4d94);">💝</div>
         <div style="font-size: 2rem; font-weight: 950; color: white; text-align: center; padding: 0 20px;">Toca para descubrir algo especial</div>
-        <div style="color: #ff4d94; margin-top: 1.5rem; font-weight: 800; letter-spacing: 5px; animation: pulse 1.5s infinite;">ABRIR SORPRESA ¤ï¸</div>
+        <div style="color: #ff4d94; margin-top: 1.5rem; font-weight: 800; letter-spacing: 5px; animation: pulse 1.5s infinite;">ABRIR SORPRESA ❤️</div>
     </div>
 
     <div class="header">
-        <h1>¤ï¸ {{name}} ¤ï¸</h1>
+        <h1>❤️ {{name}} ❤️</h1>
     </div>
 
     <div class="initials-display">
         <div class="initial-box">Ella: <div class="letter-circle">{{extra_text}}</div></div>
-        <div class="initial-box">Ã‰l: <div class="letter-circle">{{extra_text_2}}</div></div>
+        <div class="initial-box">Él: <div class="letter-circle">{{extra_text_2}}</div></div>
     </div>
 
     <div class="main-card">
@@ -233,7 +233,7 @@
         </div>
         
         <div class="heart-container" onclick="startMagic()">
-            <div class="magic-heart">¤ï¸</div>
+            <div class="magic-heart">❤️</div>
             <div class="initials-overlay">
                 <span>{{extra_text}}</span>
                 <span>&</span>
@@ -244,14 +244,14 @@
         <div class="card-footer">
             <p style="margin-bottom: 1.5rem; opacity: 0.8; font-weight: 700; color: #ffb3d1;">{{sender}}</p>
             <button class="btn-download" onclick="window.print()">
-                ðŸ“¥ Guardar Recuerdo
+                📥 Guardar Recuerdo
             </button>
         </div>
     </div>
 
     <div class="audio-controls" style="display: none;" id="audio-ui">
         <div class="play-btn" id="play-btn">
-            <span id="play-icon">–¶</span><span id="pause-icon" style="display:none">||</span>
+            <span id="play-icon">▶</span><span id="pause-icon" style="display:none">||</span>
         </div>
         <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
     </div>
@@ -324,7 +324,7 @@
                 setTimeout(() => {
                     const h = document.createElement('div');
                     h.className = 'decor';
-                    h.innerHTML = ['¤ï¸', 'ðŸ’–', 'œ¨', '¸', 'ðŸ’'][Math.floor(Math.random()*5)];
+                    h.innerHTML = ['❤️', '💖', '✨', '💕', '💝'][Math.floor(Math.random()*5)];
                     h.style.left = Math.random() * 100 + 'vw';
                     const duration = 3 + Math.random() * 3;
                     h.style.animationDuration = duration + 's';
