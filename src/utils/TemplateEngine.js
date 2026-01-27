@@ -8,10 +8,18 @@ const TemplateEngine = {
         const fixImageUrl = (url) => {
             if (!url) return '';
 
-            // Google Drive
+            // Google Drive - improved pattern matching
             if (url.includes('drive.google.com')) {
-                const match = url.match(/\/d\/(.+?)\/(view|edit)/) || url.match(/id=(.+?)(&|$)/);
-                if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+                // Match /d/FILE_ID/view or /d/FILE_ID/edit or /file/d/FILE_ID/
+                const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
+                    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+                    url.match(/id=([a-zA-Z0-9_-]+)/);
+                if (match) {
+                    const fileId = match[1];
+                    console.log('[TemplateEngine] Google Drive detected, ID:', fileId);
+                    // Use thumbnail endpoint which works better for embedding
+                    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+                }
             }
 
             // Imgur
@@ -47,6 +55,12 @@ const TemplateEngine = {
 
         const imageSrc = fixImageUrl(data.img || data.imageSrc || '');
 
+        console.log('[TemplateEngine DEBUG] Image data:', {
+            dataImg: data.img ? data.img.substring(0, 80) + '...' : 'NONE',
+            dataImageSrc: data.imageSrc ? data.imageSrc.substring(0, 80) + '...' : 'NONE',
+            finalImageSrc: imageSrc ? imageSrc : 'NONE'
+        });
+
         // Specific audio logic
         const audioSrc = data.audioOption === 'default'
             ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
@@ -65,13 +79,28 @@ const TemplateEngine = {
 
         const ytId = data.audioOption === 'youtube' ? extractId(data.youtubeUrl, 'youtube') : '';
 
+        // Standard variable replacement
+        finalHtml = finalHtml
+            .replace(/{{name}}/g, data.name || '')
+            .replace(/{{sender}}/g, data.sender || '')
+            .replace(/{{message}}/g, data.message || '');
+
+        console.log('[TemplateEngine] === IMAGE DEBUG START ===');
+        console.log('[TemplateEngine] data.img:', data.img);
+        console.log('[TemplateEngine] data.imageSrc:', data.imageSrc);
+        console.log('[TemplateEngine] data.hasImage:', data.hasImage);
+        console.log('[TemplateEngine] Final imageSrc:', imageSrc);
+        console.log('[TemplateEngine] === IMAGE DEBUG END ===');
+
         finalHtml = finalHtml
             .replace(/{{audio_src}}/g, audioSrc)
             .replace(/{{youtube_id}}/g, ytId || '')
-            .replace(/{{audio_display}}/g, (data.hasAudio || data.audio) ? 'display: block' : 'display: none')
+            .replace(/{{audio_display}}/g, (data.hasAudio || data.audio) ? 'block' : 'none')
             .replace(/{{image_src}}/g, imageSrc)
-            .replace(/{{image_display}}/g, imageSrc ? 'display: block' : 'display: none')
-            .replace(/{{extra_text}}/g, data.extraText || data.et || '');
+            .replace(/{{image_display}}/g, (imageSrc || data.hasImage || data.img) ? 'block' : 'none')
+            .replace(/{{has_audio}}/g, (data.hasAudio || data.audio) ? 'true' : 'false')
+            .replace(/{{extra_text}}/g, data.extraText || data.et || '')
+            .replace(/{{extra_text_2}}/g, data.extraText2 || data.et2 || '');
 
         // Replace other placeholders
         Object.keys(data).forEach(key => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User,
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
@@ -45,7 +45,7 @@ const TEMPLATES = [
     icon: <Heart />,
     color: '#ff4d94',
     content: GALAXY_TEMPLATE,
-    hasImage: true,
+    hasImage: false,
     hasExtra: true,
     extraLabel: 'Frase flotante'
   },
@@ -58,8 +58,10 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: BOOK_LOVE_TEMPLATE,
     hasImage: true,
+    hasMultiImage: false,
+    hasItems: true,
     hasExtra: true,
-    extraLabel: 'Mensaje en página izquierda'
+    extraLabel: 'Dedicatoria inicial'
   },
   {
     id: 'marvel-book',
@@ -71,7 +73,9 @@ const TEMPLATES = [
     content: MARVEL_BOOK_TEMPLATE,
     hasImage: true,
     hasExtra: true,
-    extraLabel: 'Texto secundario'
+    extraLabel: '📜 Historia de Origen',
+    hasExtra2: true,
+    extraLabel2: '⚡ Poderes Especiales'
   },
   {
     id: 'galaxy-gen',
@@ -88,13 +92,14 @@ const TEMPLATES = [
   {
     id: 'musical-sphere',
     category: 'amor',
-    name: 'Esfera Musical 🎵',
-    description: 'Esfera que vibra con tu música.',
+    name: 'Esfera Musical 🎶',
+    description: 'Esfera 3D que vibra con tu música.',
     icon: <Music />,
     color: '#00f2ff',
     content: MUSICAL_SPHERE_TEMPLATE,
-    hasImage: false,
-    hasExtra: false
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: '✨ Frase en la esfera (si no subes foto)'
   },
   {
     id: 'proposal',
@@ -104,9 +109,9 @@ const TEMPLATES = [
     icon: <Sparkles />,
     color: '#ff00ff',
     content: PROPOSAL_TEMPLATE,
-    hasImage: true,
+    hasImage: false,
     hasExtra: true,
-    extraLabel: 'Frase bajo la foto'
+    extraLabel: 'Frase bajo la propuesta'
   },
   {
     id: 'forgive-cats',
@@ -136,11 +141,11 @@ const TEMPLATES = [
     id: 'ruleta-love',
     category: 'juegos',
     name: 'Ruleta del Amor 💖',
-    description: 'Una ruleta que siempre sale SÍ.',
+    description: 'Una ruleta que siempre sale Sí.',
     icon: <RefreshCcw />,
     color: '#ff007f',
     content: RULETA_LOVE_TEMPLATE,
-    hasImage: true,
+    hasImage: false,
     hasExtra: true,
     extraLabel: 'Mensaje central'
   },
@@ -176,14 +181,14 @@ const TEMPLATES = [
     icon: <Flame />,
     color: '#ff4000',
     content: ENOJONA_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Texto final'
   },
   {
     id: 'date-counter',
     category: 'eventos',
-    name: 'Contador Especial 📆',
+    name: 'Contador Especial 📅',
     description: 'Reloj neón para fechas clave.',
     icon: <Clock />,
     color: '#00ffcc',
@@ -200,7 +205,7 @@ const TEMPLATES = [
     icon: <Stamp />,
     color: '#ffd700',
     content: LOVE_CERTIFICATE_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Cargo especial'
   },
@@ -212,13 +217,15 @@ const TEMPLATES = [
     icon: <Shirt />,
     color: '#ff4d94',
     content: COUPLE_INITIALS_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
-    extraLabel: 'Fecha o Mensaje'
+    hasExtra2: true,
+    extraLabel: 'Inicial Ella',
+    extra2Label: 'Inicial Él'
   },
   {
     id: 'enchanted-letter',
-    category: 'eventos',
+    category: 'amor',
     name: 'Carta Encantada 🎃',
     description: 'Especial Halloween para tu amor.',
     icon: <Ghost />,
@@ -236,7 +243,7 @@ const TEMPLATES = [
     icon: <Pill />,
     color: '#ff0000',
     content: LOVE_VITAMINS_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Mensaje final'
   },
@@ -296,7 +303,7 @@ const TEMPLATES = [
     icon: <Music />,
     color: '#03a9f4',
     content: POCOYO_DANCE_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Frase flotante'
   },
@@ -533,6 +540,47 @@ const LegalModal = ({ type, onClose }) => {
   );
 };
 
+// Ultra-aggressive image compression for URL sharing
+const compressImage = (file) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Aggressive size reduction - max 400px on longest side
+        let width = img.width;
+        let height = img.height;
+        const maxSize = 400;
+
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Very aggressive quality - 50% (0.5)
+        const compressed = canvas.toDataURL('image/jpeg', 0.5);
+        resolve(compressed);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -550,13 +598,16 @@ function App() {
     sender: '',
     message: '',
     extraText: '',
+    extraText2: '',
     hasAudio: true,
     audioOption: 'youtube', // 'upload', 'youtube'
     audioSrc: '',
     youtubeUrl: '',
     audioFile: null,
     hasImage: false,
-    imageSrc: ''
+    imageOption: 'url', // 'url', 'upload'
+    imageSrc: '',
+    imageFile: null
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
@@ -595,7 +646,8 @@ function App() {
             html: tpl.content,
             audioOption: reconstructedAudioOption,
             imageSrc: decoded.img || '',
-            extraText: decoded.et || ''
+            extraText: decoded.et || '',
+            extraText2: decoded.et2 || ''
           });
         }
       } catch (e) {
@@ -603,6 +655,41 @@ function App() {
       }
     }
   }, []);
+
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new window.Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const max_size = 250; // Balanced for quality and URL limits
+
+          if (width > height) {
+            if (width > max_size) {
+              height *= max_size / width;
+              width = max_size;
+            }
+          } else {
+            if (height > max_size) {
+              width *= max_size / height;
+              height = max_size;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.5)); // 50% quality JPEG
+        };
+      };
+    });
+  };
 
   const handleDownload = () => {
     const shareUrl = getShareUrl();
@@ -633,8 +720,9 @@ function App() {
       audio: formData.hasAudio,
       src: formData.audioOption === 'upload' ? 'uploaded' : (formData.audioOption === 'default' ? 'default' : null),
       yt: formData.audioOption === 'youtube' ? extractSocialId(formData.youtubeUrl, 'youtube') : null,
-      img: formData.hasImage ? formData.imageSrc : null,
-      et: formData.extraText || null
+      img: formData.imageSrc || null,
+      et: formData.extraText || null,
+      et2: formData.extraText2 || null
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -707,7 +795,9 @@ function App() {
       ...viewData,
       audio: viewData.audio || viewData.hasAudio,
       audioSrc: viewData.audioSrc || (viewData.src !== 'default' && viewData.src !== 'uploaded' ? viewData.src : ''),
-      youtubeUrl: viewData.youtubeUrl || (viewData.yt ? `https://youtube.com/watch?v=${viewData.yt}` : '')
+      youtubeUrl: viewData.youtubeUrl || (viewData.yt ? `https://youtube.com/watch?v=${viewData.yt}` : ''),
+      imageSrc: viewData.imageSrc || viewData.img || '',
+      img: viewData.imageSrc || viewData.img || ''
     });
 
     return (
@@ -1123,27 +1213,66 @@ function App() {
                     {errors.message && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.message}</p>}
                   </div>
 
-                  {selectedTemplate.hasExtra && (
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                        {selectedTemplate.extraLabel || 'Texto Secundario'}
-                      </label>
-                      <textarea
-                        name="extraText"
-                        rows="3"
-                        placeholder="Ej: Escribe aquí la frase o nota especial para esta parte..."
-                        value={formData.extraText}
-                        onChange={(e) => setFormData({ ...formData, extraText: e.target.value })}
-                        onFocus={() => isMobileApp && hideBannerAd()}
-                        onBlur={() => isMobileApp && showBannerAd()}
-                        style={{
-                          fontSize: '0.9rem',
-                          borderColor: 'rgba(255,255,255,0.12)',
-                          resize: 'none'
-                        }}
-                      />
-                    </div>
-                  )}
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    {selectedTemplate.hasExtra && (
+                      <div style={{ flex: selectedTemplate.hasExtra2 ? '1 1 140px' : '1 1 100%' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                          {selectedTemplate.extraLabel || 'Texto Secundario'}
+                        </label>
+                        {selectedTemplate.id === 'initials' ? (
+                          <input
+                            name="extraText"
+                            placeholder="A"
+                            maxLength={1}
+                            value={formData.extraText}
+                            onChange={(e) => setFormData({ ...formData, extraText: e.target.value })}
+                            onFocus={() => isMobileApp && hideBannerAd()}
+                            onBlur={() => isMobileApp && showBannerAd()}
+                            style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}
+                          />
+                        ) : (
+                          <textarea
+                            name="extraText"
+                            rows="3"
+                            placeholder="Ej: Escribe aquí la frase o nota especial..."
+                            value={formData.extraText}
+                            onChange={(e) => setFormData({ ...formData, extraText: e.target.value })}
+                            onFocus={() => isMobileApp && hideBannerAd()}
+                            onBlur={() => isMobileApp && showBannerAd()}
+                            style={{ fontSize: '0.9rem', borderColor: 'rgba(255,255,255,0.12)', resize: 'none' }}
+                          />
+                        )}
+                      </div>
+                    )}
+
+                    {selectedTemplate.hasExtra2 && (
+                      <div style={{ flex: '1 1 140px' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                          {selectedTemplate.extra2Label || 'Texto 2'}
+                        </label>
+                        {selectedTemplate.id === 'initials' ? (
+                          <input
+                            name="extraText2"
+                            placeholder="B"
+                            maxLength={1}
+                            value={formData.extraText2}
+                            onChange={(e) => setFormData({ ...formData, extraText2: e.target.value })}
+                            onFocus={() => isMobileApp && hideBannerAd()}
+                            onBlur={() => isMobileApp && showBannerAd()}
+                            style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}
+                          />
+                        ) : (
+                          <input
+                            name="extraText2"
+                            value={formData.extraText2}
+                            onChange={(e) => setFormData({ ...formData, extraText2: e.target.value })}
+                            onFocus={() => isMobileApp && hideBannerAd()}
+                            onBlur={() => isMobileApp && showBannerAd()}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Image Section */}
                   {selectedTemplate.hasImage && (
@@ -1205,15 +1334,78 @@ function App() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                         >
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Link de la Imagen (Pinterest, Google, etc.)</label>
-                          <input
-                            placeholder="https://ejemplo.com/foto.jpg"
-                            value={formData.imageSrc}
-                            onFocus={() => isMobileApp && hideBannerAd()}
-                            onBlur={() => isMobileApp && showBannerAd()}
-                            onChange={(e) => setFormData({ ...formData, imageSrc: e.target.value })}
-                            style={{ fontSize: '0.9rem', padding: '0.9rem' }}
-                          />
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem', marginBottom: '1.2rem' }}>
+                            {[
+                              { id: 'url', label: 'Link Web', help: 'Pinterest/Google' },
+                              { id: 'upload', label: 'Sube foto', help: 'Desde galería' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                onClick={() => setFormData({ ...formData, imageOption: opt.id })}
+                                style={{
+                                  padding: '0.8rem',
+                                  borderRadius: '12px',
+                                  border: formData.imageOption === opt.id ? '2px solid #00aaff' : '1px solid rgba(255,255,255,0.1)',
+                                  background: formData.imageOption === opt.id ? 'rgba(0, 170, 255, 0.1)' : 'transparent',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.3s'
+                                }}
+                              >
+                                <p style={{ fontWeight: '700', fontSize: '0.9rem', margin: '0 0 2px 0', color: formData.imageOption === opt.id ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
+                                <p style={{ fontSize: '0.65rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
+                              </button>
+                            ))}
+                          </div>
+                          <div style={{
+                            padding: '0.8rem',
+                            background: 'rgba(0, 170, 255, 0.08)',
+                            borderRadius: '10px',
+                            marginBottom: '1rem',
+                            border: '1px solid rgba(0, 170, 255, 0.15)'
+                          }}>
+                            <p style={{ fontSize: '0.75rem', margin: 0, color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                              💡 <strong>Sube foto:</strong> Se comprime para compartir por link. <strong>Link Web:</strong> Usar para mejores resultados.
+                            </p>
+                          </div>
+
+                          {formData.imageOption === 'url' ? (
+                            <>
+                              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Link de la Imagen</label>
+                              <input
+                                placeholder="https://ejemplo.com/foto.jpg"
+                                value={formData.imageSrc}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, imageSrc: e.target.value, hasImage: true })}
+                                style={{ fontSize: '0.9rem', padding: '0.9rem' }}
+                              />
+                            </>
+                          ) : (
+                            <div style={{
+                              padding: '1rem',
+                              border: '1px dashed rgba(255,255,255,0.2)',
+                              borderRadius: '12px',
+                              textAlign: 'center'
+                            }}>
+                              <p style={{ fontSize: '0.85rem', marginBottom: '1rem', color: 'var(--text-muted)' }}>Selecciona una foto (Máx 2MB sugerido)</p>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                id="image-upload"
+                                style={{ display: 'none' }}
+                                onChange={async (e) => {
+                                  const file = e.target.files[0];
+                                  if (file) {
+                                    const compressed = await compressImage(file);
+                                    setFormData({ ...formData, imageFile: file, imageSrc: compressed, hasImage: true });
+                                  }
+                                }}
+                              />
+                              <label htmlFor="image-upload" className="btn glass" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', width: '100%', justifyContent: 'center' }}>
+                                {formData.imageFile ? `📸 ${formData.imageFile.name}` : 'Seleccionar Foto'}
+                              </label>
+                            </div>
+                          )}
                         </motion.div>
                       )}
                     </div>
@@ -1334,7 +1526,7 @@ function App() {
                               }}
                             />
                             <label htmlFor="audio-upload" className="btn glass" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', width: '100%', justifyContent: 'center' }}>
-                              {formData.audioFile ? `🎵 ${formData.audioFile.name}` : 'Seleccionar Archivo'}
+                              {formData.audioFile ? `🎶 ${formData.audioFile.name}` : 'Seleccionar Archivo'}
                             </label>
                           </div>
                         )}
@@ -1704,7 +1896,7 @@ function App() {
                     <span style={{ fontSize: '1.3rem', fontWeight: '800' }}>InteractivoMagic</span>
                   </div>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                    Transforma mensajes simples en experiencias mágicas e interactivas. Hecho con ❤️ para compartir.
+                    Transforma mensajes simples en experiencias mágicas e interactivas. Hecho con  para compartir.
                   </p>
                 </div>
 
@@ -1737,7 +1929,7 @@ function App() {
               </div>
 
               <div style={{ textAlign: 'center', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                © 2026 InteractivoMagic - Hecho con ❤️ para compartir momentos especiales
+                © 2026 InteractivoMagic - Hecho con  para compartir momentos especiales
               </div>
             </div>
           </footer>
@@ -1752,3 +1944,8 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
