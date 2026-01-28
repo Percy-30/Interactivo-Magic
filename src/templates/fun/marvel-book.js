@@ -49,11 +49,23 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
             <div class="front cover">
                 <h1>{{message}}</h1>
                 <div class="cover-sticker">CON AMOR</div>
-                <div class="marvel-logo-area"><img src="{{image_src}}" alt="Cover" onerror="this.src='https://i.imgur.com/rN7Yv4T.png'"></div>
+                <div class="marvel-logo-area" style="display: {{image_display}}"><img src="{{image_src}}" alt="Cover" onerror="this.src='https://i.imgur.com/rN7Yv4T.png'"></div>
                 <div style="margin-top: 2rem; font-family: 'Bangers'; font-size: 1.2rem; color: #ffd700; letter-spacing: 2px;">{{sender}} & {{name}}</div>
             </div>
-            <div class="back">{{item_1_content}}</div>
+            <div class="back inner-page">
+                <div class="comic-text">¡Alerta Roja! Se ha detectado un sentimiento nivel Vengador en el sector de mi corazón.</div>
+            </div>
         </div>
+
+        <div class="page page2" id="page2">
+            <div class="front inner-page">
+                <div class="comic-text">Ni siquiera las Gemas del Infinito tienen tanto poder como tu sonrisa.</div>
+            </div>
+            <div class="back inner-page">
+                <div class="comic-text">Eres mi superhéroe favorito en este y en todos los multiversos.</div>
+            </div>
+        </div>
+
         {{dynamic_pages}}
     </div>
 

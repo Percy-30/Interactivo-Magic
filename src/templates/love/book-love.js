@@ -84,72 +84,28 @@
             <div class="front cover">
                 <div class="emoji">📖</div>
                 <h1>Libro del Amor</h1>
+                <div class="photo-frame">
+                    <img src="{{image_src}}" alt="Portada" onerror="this.src='https://i.imgur.com/rN7Yv4T.png'">
+                </div>
                 <div class="names">{{sender}} & {{name}}</div>
                 <div style="margin-top: 2.5rem; opacity: 0.6; font-size: 0.8rem; letter-spacing: 3px; font-weight: 900; color: white !important;">UN VIAJE DE SENTIMIENTOS</div>
             </div>
-            <div class="back inner-page" style="padding: 1.5rem;">
-                <div class="photo-frame" style="display: {{image_display}};">
-                    <img src="{{image_src}}" alt="Nuestra Foto" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.style.display='none'">
-                </div>
-                <h2 style="margin-top: 0; font-size: 1.8rem;">Para: {{name}}</h2>
-                <div style="padding: 0 1rem; width: 100%; box-sizing: border-box;">
-                    <p style="font-size: 1.1rem; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: pre-wrap;">{{extra_text}}</p>
-                </div>
+            <div class="back inner-page">
+                <p>En este libro encontrarás pedacitos de mi alma, dedicados solo a ti. ❤️</p>
             </div>
         </div>
-        <!-- Page 2: Message -->
+
         <div class="page page2" id="page2">
             <div class="front inner-page">
-                <p style="white-space: pre-wrap;">{{message}}</p>
-                <div style="margin-top: 3rem; font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #800000 !important; border-top: 1px solid rgba(128,0,0,0.1); padding-top: 1.5rem; font-weight: 700;">
-                    Con amor, <br> {{sender}}
-                </div>
-            </div>
-            <div class="back inner-page" style="background: #e8e1cf; display: flex; align-items: center; justify-content: center;">
-                <div style="font-size: 5rem; opacity: 0.2;">❤️</div>
-            </div>
-        </div>
-        <!-- Page 3: Romantic Quote -->
-        <div class="page page3" id="page3">
-            <div class="front inner-page" style="background: linear-gradient(135deg, #fff9e6 0%, #ffe8f0 100%);">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">💝</div>
-                <h2 style="color: #800000; font-size: 1.8rem; margin-bottom: 2rem;">Nuestro Amor</h2>
-                <p style="font-size: 1.2rem; line-height: 1.8; text-align: center; font-style: italic; color: #333;">
-                    "En cada latido de mi corazón está tu nombre, en cada pensamiento tu sonrisa, 
-                    y en cada momento el deseo de estar junto a ti."
-                </p>
-                <div style="margin-top: 2rem; font-size: 3rem;">✨</div>
+                <p>Cada momento a tu lado es un regalo que atesoro con todo mi ser.</p>
             </div>
             <div class="back inner-page">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">🌹</div>
-                <h2 style="color: #800000; font-size: 1.8rem; margin-bottom: 2rem;">Promesa Eterna</h2>
-                <p style="font-size: 1.15rem; line-height: 1.7; text-align: center; font-style: italic; color: #333;">
-                    "Prometo amarte en los días grises y en los soleados, en la calma y en la tormenta, 
-                    hoy, mañana y siempre."
-                </p>
-                <div style="margin-top: 2rem; font-size: 3rem;">💕</div>
+                <p>Eres mi pensamiento favorito al despertar y mi último deseo al dormir.</p>
             </div>
         </div>
-        <!-- Page 4: Final Message -->
-        <div class="page page4" id="page4">
-            <div class="front inner-page" style="background: linear-gradient(135deg, #fff0f5 0%, #fff9e6 100%);">
-                <div style="font-size: 4rem; margin-bottom: 2rem;">🌟</div>
-                <h2 style="color: #800000; font-size: 1.8rem; margin-bottom: 2rem;">Tú y Yo</h2>
-                <p style="font-size: 1.2rem; line-height: 1.8; text-align: center; font-weight: 700; color: #800000;">
-                    "Eres mi persona favorita, mi lugar seguro, mi hogar."
-                </p>
-                <div style="margin-top: 3rem; font-size: 2.5rem; opacity: 0.8;">💖 ✨ 💐</div>
-            </div>
-            <div class="back inner-page" style="background: linear-gradient(135deg, #800000 0%, #a00000 100%); color: white !important;">
-                <div style="font-size: 5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));">💍</div>
-                <h2 style="color: #ffcc00 !important; font-size: 2rem; margin-bottom: 2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Para Siempre</h2>
-                <p style="font-size: 1.3rem; line-height: 1.8; text-align: center; font-weight: 800; color: white !important; text-shadow: 0 2px 5px rgba(0,0,0,0.3);">
-                    Gracias por elegirme cada día. <br><br>
-                    Te amo infinitamente. 💕
-                </p>
-                <div style="margin-top: 2rem; font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px;">{{sender}}</div>
-            </div>
-        </div>
+
+        {{dynamic_pages}}
+    </div>
     </div>
 
     <div class="audio-controls" id="audio-ui" style="display: none;">
@@ -235,27 +191,18 @@
         }
 
         function flipPage() {
+            const pages = Array.from(document.querySelectorAll('.page'));
             const book = document.getElementById('book');
-            if (stage === 0) {
-                document.getElementById('page1').classList.add('flipped');
-                book.classList.add('open');
-                stage = 1;
-                createHearts();
-            } else if (stage === 1) {
-                document.getElementById('page2').classList.add('flipped');
-                stage = 2;
-            } else if (stage === 2) {
-                document.getElementById('page3').classList.add('flipped');
-                stage = 3;
-            } else if (stage === 3) {
-                document.getElementById('page4').classList.add('flipped');
-                stage = 4;
+            if (stage < pages.length) {
+                pages[stage].classList.add('flipped');
+                pages.forEach((p, i) => { p.style.zIndex = i < stage ? i + 1 : (i === stage ? 50 : pages.length - i); });
+                if (stage === 0) {
+                    book.classList.add('open');
+                    createHearts();
+                }
+                stage++;
             } else {
-                // Reset to beginning
-                document.getElementById('page1').classList.remove('flipped');
-                document.getElementById('page2').classList.remove('flipped');
-                document.getElementById('page3').classList.remove('flipped');
-                document.getElementById('page4').classList.remove('flipped');
+                pages.forEach((p, i) => { p.classList.remove('flipped'); p.style.zIndex = pages.length - i; });
                 book.classList.remove('open');
                 stage = 0;
             }

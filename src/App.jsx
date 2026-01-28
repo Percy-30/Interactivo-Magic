@@ -4,7 +4,7 @@ import {
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
   Filter, Gamepad, BookOpen, UserPlus, Image, Music2, Camera, Clock,
   Stamp, Shirt, Ghost, Pill, Layers, RefreshCcw, Smile, PartyPopper,
-  TreePine, Flame, Eye, Lock
+  TreePine, Flame, Eye, Lock, Minus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
@@ -58,10 +58,8 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: BOOK_LOVE_TEMPLATE,
     hasImage: true,
-    hasMultiImage: false,
     hasItems: true,
-    hasExtra: true,
-    extraLabel: 'Dedicatoria inicial'
+    pageOffset: 3
   },
   {
     id: 'marvel-book',
@@ -72,10 +70,8 @@ const TEMPLATES = [
     color: '#ed1d24',
     content: MARVEL_BOOK_TEMPLATE,
     hasImage: true,
-    hasExtra: true,
-    extraLabel: '📜 Historia de Origen',
-    hasExtra2: true,
-    extraLabel2: '⚡ Poderes Especiales'
+    hasItems: true,
+    pageOffset: 3
   },
   {
     id: 'galaxy-gen',
@@ -607,10 +603,22 @@ function App() {
     hasImage: false,
     imageOption: 'url', // 'url', 'upload'
     imageSrc: '',
-    imageFile: null
+    imageFile: null,
+    items: []
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
+  const [expandedSections, setExpandedSections] = useState({ text: true, image: true });
+  const [extraSlots, setExtraSlots] = useState(0);
+  const BASE_DYNAMIC_LIMIT = 5;
+
+  // Reset and initialize items when template changes
+  useEffect(() => {
+    if (selectedTemplate) {
+      setFormData(prev => ({ ...prev, items: [] }));
+      setExtraSlots(0); // Reset rewards too
+    }
+  }, [selectedTemplate]);
 
   // Check platform and viewer mode on load
   useEffect(() => {
@@ -793,6 +801,7 @@ function App() {
   if (viewData) {
     const finalHtml = TemplateEngine.render(viewData.html, {
       ...viewData,
+      pageOffset: selectedTemplate?.pageOffset || viewData.pageOffset,
       audio: viewData.audio || viewData.hasAudio,
       audioSrc: viewData.audioSrc || (viewData.src !== 'default' && viewData.src !== 'uploaded' ? viewData.src : ''),
       youtubeUrl: viewData.youtubeUrl || (viewData.yt ? `https://youtube.com/watch?v=${viewData.yt}` : ''),
@@ -1311,8 +1320,7 @@ function App() {
                             <Image size={24} color="white" />
                           </div>
                           <div>
-                            <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Imagen / Foto</p>
-                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>{formData.hasImage ? 'Foto activada 📸' : 'Click para añadir foto'}</p>
+                            <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Foto de Portada</p>
                           </div>
                         </div>
                         <div style={{
@@ -1408,6 +1416,289 @@ function App() {
                           )}
                         </motion.div>
                       )}
+                    </div>
+                  )}
+
+                  {/* Dynamic Items Section for Books */}
+                  {selectedTemplate.hasItems && (
+                    <div className="dynamic-content-container">
+                      {/* Section 1: Paragraphs */}
+                      <div className="dynamic-section-group text-accent">
+                        <div className={`action-row-card ${expandedSections.text ? 'expanded' : ''}`} onClick={() => {
+                          setExpandedSections(prev => ({ ...prev, text: !prev.text }));
+                        }}>
+                          <div className="flex items-center gap-4">
+                            <div className="action-row-icon text-accent">
+                              <BookOpen size={20} />
+                            </div>
+                            <div className="action-row-body">
+                              <span className="action-row-text">+ Agregar Párrafo</span>
+                              <small className="action-row-hint">Añade un texto o dedicatoria</small>
+                            </div>
+                          </div>
+                          <div className="card-radio-decoration">
+                            {expandedSections.text && <div className="inner-dot"></div>}
+                          </div>
+                        </div>
+
+                        <AnimatePresence>
+                          {expandedSections.text && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="section-items-expandable"
+                            >
+                              <div className="section-actions-bar">
+                                {formData.items.length < BASE_DYNAMIC_LIMIT + extraSlots ? (
+                                  <button className="btn-add-inline text-accent" onClick={(e) => {
+                                    e.stopPropagation();
+                                    const newItem = { id: Date.now(), type: 'text', content: '' };
+                                    setFormData({ ...formData, items: [...formData.items, newItem] });
+                                  }}>
+                                    + Nuevo Párrafo
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="btn-add-inline text-accent"
+                                    style={{ borderStyle: 'dashed', background: 'rgba(255,255,255,0.03)' }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      showRewardedAd(() => {
+                                        setExtraSlots(prev => prev + 1);
+                                      });
+                                    }}
+                                  >
+                                    📺 Desbloquear +1
+                                  </button>
+                                )}
+                              </div>
+
+                              <div className="dynamic-items-display-list">
+                                {formData.items.filter(it => it.type === 'text').map((item, idx) => {
+                                  const realIndex = formData.items.findIndex(it => it.id === item.id);
+                                  return (
+                                    <motion.div
+                                      key={item.id}
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      className="dynamic-item-entry"
+                                    >
+                                      <div className="item-entry-header">
+                                        <span className="item-entry-label">Párrafo {idx + 1}</span>
+                                        <button
+                                          className="item-entry-remove"
+                                          onClick={() => {
+                                            const newItems = [...formData.items];
+                                            newItems.splice(realIndex, 1);
+                                            setFormData({ ...formData, items: newItems });
+                                          }}
+                                        >
+                                          <Minus size={14} /> Quitar
+                                        </button>
+                                      </div>
+                                      <textarea
+                                        className="item-text-input"
+                                        placeholder="Escribe el mensaje..."
+                                        value={item.content}
+                                        rows={3}
+                                        onChange={(e) => {
+                                          const newItems = [...formData.items];
+                                          newItems[realIndex].content = e.target.value;
+                                          setFormData({ ...formData, items: newItems });
+                                        }}
+                                      />
+                                    </motion.div>
+                                  );
+                                })}
+                                {formData.items.filter(it => it.type === 'text').length === 0 && (
+                                  <div className="empty-section-tip">Aún no hay párrafos. Haz clic en "Nuevo Párrafo".</div>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Section 2: Photos */}
+                      <div className="dynamic-section-group image-accent" style={{ marginTop: '1rem' }}>
+                        <div className={`action-row-card ${expandedSections.image ? 'expanded' : ''}`} onClick={() => {
+                          setExpandedSections(prev => ({ ...prev, image: !prev.image }));
+                        }}>
+                          <div className="flex items-center gap-4">
+                            <div className="action-row-icon image-accent">
+                              <Camera size={20} />
+                            </div>
+                            <div className="action-row-body">
+                              <span className="action-row-text">+ Agregar Fotografía</span>
+                              <small className="action-row-hint">Sube una imagen especial</small>
+                            </div>
+                          </div>
+                          <div className="card-radio-decoration">
+                            {expandedSections.image && <div className="inner-dot"></div>}
+                          </div>
+                        </div>
+
+                        <AnimatePresence>
+                          {expandedSections.image && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="section-items-expandable"
+                            >
+                              <div className="section-actions-bar">
+                                {formData.items.length < BASE_DYNAMIC_LIMIT + extraSlots ? (
+                                  <button className="btn-add-inline image-accent" onClick={(e) => {
+                                    e.stopPropagation();
+                                    const newItem = { id: Date.now(), type: 'image', content: '', option: 'url' };
+                                    setFormData({ ...formData, items: [...formData.items, newItem] });
+                                  }}>
+                                    + Nueva Foto
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="btn-add-inline image-accent"
+                                    style={{ borderStyle: 'dashed', background: 'rgba(255,255,255,0.03)' }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      showRewardedAd(() => {
+                                        setExtraSlots(prev => prev + 1);
+                                      });
+                                    }}
+                                  >
+                                    📺 Desbloquear +1
+                                  </button>
+                                )}
+                              </div>
+
+                              <div className="dynamic-items-display-list">
+                                {formData.items.filter(it => it.type === 'image').map((item, idx) => {
+                                  const realIndex = formData.items.findIndex(it => it.id === item.id);
+                                  return (
+                                    <motion.div
+                                      key={item.id}
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      className="dynamic-item-entry"
+                                    >
+                                      <div className="item-entry-header">
+                                        <span className="item-entry-label">Foto {idx + 1}</span>
+                                        <button
+                                          className="item-entry-remove"
+                                          onClick={() => {
+                                            const newItems = [...formData.items];
+                                            newItems.splice(realIndex, 1);
+                                            setFormData({ ...formData, items: newItems });
+                                          }}
+                                        >
+                                          <Minus size={14} /> Quitar
+                                        </button>
+                                      </div>
+
+                                      <div className="item-photo-refinement">
+                                        <div className="mini-tabs-row">
+                                          <button
+                                            className={`mini-tab ${(!item.option || item.option === 'url') ? 'active' : ''}`}
+                                            onClick={() => {
+                                              const newItems = [...formData.items];
+                                              newItems[realIndex].option = 'url';
+                                              setFormData({ ...formData, items: newItems });
+                                            }}
+                                          >
+                                            <div className="tab-label">Link Web</div>
+                                            <div className="tab-hint">Pinterest/Google</div>
+                                          </button>
+                                          <button
+                                            className={`mini-tab ${item.option === 'upload' ? 'active' : ''}`}
+                                            onClick={() => {
+                                              const newItems = [...formData.items];
+                                              newItems[realIndex].option = 'upload';
+                                              setFormData({ ...formData, items: newItems });
+                                            }}
+                                          >
+                                            <div className="tab-label">Sube foto</div>
+                                            <div className="tab-hint">Desde galería</div>
+                                          </button>
+                                        </div>
+
+                                        <div className="item-hint-box">
+                                          <p>💡 <strong>Sube foto:</strong> Se comprime para compartir. <strong>Link Web:</strong> Usar para mejores resultados.</p>
+                                        </div>
+
+                                        {(!item.option || item.option === 'url') ? (
+                                          <div className="item-url-input-group">
+                                            <input
+                                              className="item-text-input micro"
+                                              style={{ marginTop: '0.5rem' }}
+                                              placeholder="Pega link de la foto aquí..."
+                                              value={item.content}
+                                              onChange={(e) => {
+                                                const newItems = [...formData.items];
+                                                newItems[realIndex].content = e.target.value;
+                                                setFormData({ ...formData, items: newItems });
+                                              }}
+                                            />
+                                          </div>
+                                        ) : (
+                                          <div className="item-upload-zone">
+                                            {item.content ? (
+                                              <div className="item-preview-stack">
+                                                <img src={item.content} alt="Preview" />
+                                                <button className="item-image-replace" onClick={() => {
+                                                  const input = document.createElement('input');
+                                                  input.type = 'file';
+                                                  input.accept = 'image/*';
+                                                  input.onchange = async (e) => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                      setIsGenerating(true);
+                                                      const compressed = await compressImage(file);
+                                                      const newItems = [...formData.items];
+                                                      newItems[realIndex].content = compressed;
+                                                      setFormData({ ...formData, items: newItems });
+                                                      setIsGenerating(false);
+                                                    }
+                                                  };
+                                                  input.click();
+                                                }}>Cambiar Imagen</button>
+                                              </div>
+                                            ) : (
+                                              <button className="btn-upload-placeholder" onClick={() => {
+                                                const input = document.createElement('input');
+                                                input.type = 'file';
+                                                input.accept = 'image/*';
+                                                input.onchange = async (e) => {
+                                                  const file = e.target.files[0];
+                                                  if (file) {
+                                                    setIsGenerating(true);
+                                                    const compressed = await compressImage(file);
+                                                    const newItems = [...formData.items];
+                                                    newItems[realIndex].content = compressed;
+                                                    setFormData({ ...formData, items: newItems });
+                                                    setIsGenerating(false);
+                                                  }
+                                                };
+                                                input.click();
+                                              }}>
+                                                <Camera size={20} />
+                                                <span>Seleccionar Foto</span>
+                                              </button>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </motion.div>
+                                  );
+                                })}
+                                {formData.items.filter(it => it.type === 'image').length === 0 && (
+                                  <div className="empty-section-tip">Aún no hay fotos. Haz clic en "Nueva Foto".</div>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
                   )}
 

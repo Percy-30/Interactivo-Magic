@@ -94,17 +94,68 @@ const TemplateEngine = {
 
         finalHtml = finalHtml
             .replace(/{{audio_src}}/g, audioSrc)
-            .replace(/{{youtube_id}}/g, ytId || '')
-            .replace(/{{audio_display}}/g, (data.hasAudio || data.audio) ? 'block' : 'none')
-            .replace(/{{image_src}}/g, imageSrc)
-            .replace(/{{image_display}}/g, (imageSrc || data.hasImage || data.img) ? 'block' : 'none')
-            .replace(/{{has_audio}}/g, (data.hasAudio || data.audio) ? 'true' : 'false')
+            .replace(/{{\s*youtube_id\s*}}/g, ytId || '')
+            .replace(/{{\s*audio_display\s*}}/g, (data.hasAudio || data.audio) ? 'block' : 'none')
+            .replace(/{{\s*audio_src\s*}}/g, audioSrc)
+            .replace(/{{\s*image_src\s*}}/g, imageSrc)
+            .replace(/{{\s*image_display\s*}}/g, (imageSrc || data.img) ? 'block' : 'none')
+            .replace(/{{\s*has_audio\s*}}/g, (data.hasAudio || data.audio) ? 'true' : 'false')
             .replace(/{{extra_text}}/g, data.extraText || data.et || '')
             .replace(/{{extra_text_2}}/g, data.extraText2 || data.et2 || '');
 
+        // Dynamic Items logic (for books)
+        const tid = data.t || data.templateId;
+        const isBookWithStatic = (tid === 'marvel-book' || tid === 'book-love');
+        const itemsOffset = data.pageOffset ? parseInt(data.pageOffset) : (isBookWithStatic ? 3 : 2);
+
+        if (data.items && Array.isArray(data.items)) {
+            let dynamicHtml = '';
+            let firstItemHtml = '';
+
+            data.items.forEach((item, index) => {
+                let itemHtml = '';
+                if (item.type === 'image') {
+                    const frameClass = (data.t === 'marvel-book' || data.templateId === 'marvel-book') ? 'pixel-frame' : 'photo-frame';
+                    const processedItemSrc = fixImageUrl(item.content || '');
+                    itemHtml = `
+                        <div class="${frameClass}">
+                            <img src="${processedItemSrc || 'https://i.imgur.com/rN7Yv4T.png'}" alt="Foto ${index + 1}">
+                        </div>
+                    `;
+                } else {
+                    if (data.t === 'marvel-book' || data.templateId === 'marvel-book') {
+                        itemHtml = `<div class="comic-text" style="font-size: 1.3rem; padding: 15px 25px; max-width: 85%; margin: 0 auto;">${item.content || '...'}</div>`;
+                    } else {
+                        itemHtml = `<p style="font-size: 1.3rem; line-height: 1.6; text-align: center; max-width: 90%; color: #333; margin: 0 auto;">${item.content || '...'}</p>`;
+                    }
+                }
+
+                if (index === 0 && !isBookWithStatic && !data.pageOffset) {
+                    firstItemHtml = itemHtml;
+                } else {
+                    const actualPageNum = isBookWithStatic || data.pageOffset ? (index + itemsOffset) : (index + 2);
+
+                    dynamicHtml += `
+                        <div class="page page${actualPageNum}" id="page${actualPageNum}">
+                            <div class="front inner-page">${itemHtml}</div>
+                            <div class="back inner-page"></div>
+                        </div>
+                    `;
+                }
+            });
+
+            finalHtml = finalHtml
+                .replace(/{{item_1_content}}/g, firstItemHtml)
+                .replace(/{{dynamic_pages}}/g, dynamicHtml);
+        } else {
+            finalHtml = finalHtml
+                .replace(/{{item_1_content}}/g, '')
+                .replace(/{{dynamic_pages}}/g, '');
+        }
+
         // Replace other placeholders
         Object.keys(data).forEach(key => {
-            if (['audioSrc', 'audioFile', 'hasAudio', 'audioOption'].includes(key)) return;
+            if (['audioSrc', 'audioFile', 'hasAudio', 'audioOption', 'items'].includes(key)) return;
             const regex = new RegExp(`{{${key}}}`, 'g');
             finalHtml = finalHtml.replace(regex, data[key]);
         });
