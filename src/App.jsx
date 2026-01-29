@@ -757,6 +757,10 @@ function App() {
       newErrors.extraText = 'Por favor, ingresa algunas palabras para la galaxia.';
     }
 
+    if (selectedTemplate.id === 'musical-sphere' && !formData.youtubeUrl.trim()) {
+      newErrors.youtube = 'Esta plantilla requiere un link de YouTube obligatorio.';
+    }
+
     if (formData.hasAudio) {
       if (formData.audioOption === 'upload' && !formData.audioFile) {
         newErrors.audio = 'Por favor, sube un archivo de audio.';

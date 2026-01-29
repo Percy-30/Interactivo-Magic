@@ -14,63 +14,104 @@ export const MUSICAL_SPHERE_TEMPLATE = `<!DOCTYPE html>
 
     #welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 2, 10, 0.95); backdrop-filter: blur(20px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
     .start-btn { background: linear-gradient(135deg, #00f2ff, #0066ff); color: white; border: none; padding: 1.2rem 3rem; border-radius: 50px; font-size: 1.2rem; font-weight: 800; box-shadow: 0 0 30px rgba(0, 242, 255, 0.4); text-transform: uppercase; letter-spacing: 2px; margin-top: 2rem; }
-
     .container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 2rem; }
     .scene { width: 320px; height: 320px; position: relative; margin: 3rem 0; transform-style: preserve-3d; }
     .sphere-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; animation: sphereFloat 6s ease-in-out infinite; }
     @keyframes sphereFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
     .sphere { width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.8) 100%); box-shadow: 0 0 80px rgba(0, 242, 255, 0.3), inset 0 0 50px rgba(0, 242, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; }
-    .sphere-content { width: 85%; height: 85%; border-radius: 50%; object-fit: cover; transition: transform 0.1s; }
-    .sphere-text-inner { width: 80%; text-align: center; font-weight: 800; font-size: 1.5rem; background: linear-gradient(135deg, #fff 0%, #00f2ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pulseText 2s ease-in-out infinite; }
-    @keyframes pulseText { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-    .ring { position: absolute; top: 50%; left: 50%; border: 2px solid rgba(0, 242, 255, 0.3); border-radius: 50%; transform: translate(-50%, -50%) rotateX(75deg); pointer-events: none; }
-    .ring-1 { width: 420px; height: 420px; animation: rotate 10s linear infinite; }
-    .ring-2 { width: 500px; height: 500px; border-color: rgba(245, 87, 108, 0.3); animation: rotate 15s linear infinite reverse; }
-    @keyframes rotate { from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0); } to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); } }
+    #intro-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        cursor: pointer;
+        transition: opacity 0.8s ease;
+    }
 
-    .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 30px; max-width: 500px; width: 90%; text-align: center; margin-top: 1rem; }
-    .sender { font-weight: 800; color: #00f2ff; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 2px; }
+    .box-container {
+        text-align: center;
+        animation: boxBounce 2s infinite ease-in-out;
+    }
 
-    .audio-ui { position: fixed; bottom: 30px; background: rgba(0,0,0,0.8); border: 1px solid #00f2ff; border-radius: 50px; padding: 10px 25px; display: flex; align-items: center; gap: 15px; z-index: 1000; color: white; }
-    .play-btn { width: 45px; height: 45px; background: #00f2ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #05020a; font-weight: bold; }
-    .viz-bar { width: 4px; background: #00f2ff; border-radius: 2px; height: 10px; animation: bounce 0.5s ease infinite alternate; display: none; }
-    @keyframes bounce { from { height: 5px; } to { height: 25px; } }
+    @keyframes boxBounce {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .box-emoji {
+        font-size: 7rem;
+        filter: drop-shadow(0 0 30px rgba(0, 242, 255, 0.5));
+        margin-bottom: 20px;
+    }
+
+    .box-text {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .tap-to-open {
+        color: #00f2ff;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.8;
+    }
+
+    .glow-bg { position: fixed; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 0; }
+    .glow-circle { position: absolute; border-radius: 50%; background: rgba(80, 0, 150, 0.15); filter: blur(40px); }
+    .glow-1 { width: 600px; height: 600px; }
+    .glow-2 { width: 400px; height: 400px; background: rgba(80, 0, 150, 0.25); }
+
+    .main-sphere { position: relative; width: 320px; height: 320px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 0 50px rgba(0,0,0,1); }
+    .photo-core { width: 85%; height: 60%; object-fit: cover; border-radius: 5px; transform: rotate(-5deg); box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+    
+    .particles-container { position: fixed; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+    .particle { position: absolute; background: #fff; border-radius: 50%; opacity: 0.5; }
+
+    .player-container { position: fixed; bottom: 40px; width: 90%; max-width: 400px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 15px 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; z-index: 1000; }
+    .control-btn { font-size: 24px; color: white; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; min-width: 30px; }
+    .control-btn:hover { opacity: 1; }
+    .progress-wrap { flex-grow: 1; position: relative; }
+    .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; }
+    .progress-fill { position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, #ff4b2b, #ff416c); border-radius: 3px; width: 0%; }
+    .time-info { color: white; font-size: 14px; font-family: monospace; opacity: 0.8; min-width: 80px; text-align: right; }
   </style>
 </head>
 <body>
-  <div class="nebula"></div><div class="stars-layer"></div>
-  <div id="welcome-overlay" onclick="openBox()">
-    <div style="text-align: center;">
-      <div style="font-size: 4rem; margin-bottom: 1rem;">🎵</div>
-      <h1 style="color: white; font-size: 2rem;">Sintonía Especial</h1>
-      <p style="color: #00f2ff; font-weight: 600;">{{name}}, una sorpresa te espera...</p>
-      <button class="start-btn">EMPEZAR</button>
+  <div class="neon-border"></div>
+  <div class="glow-bg"><div class="glow-circle glow-1"></div><div class="glow-circle glow-2"></div></div>
+  <div class="particles-container" id="particles"></div>
+
+  <div id="intro-overlay" onclick="openBox()">
+    <div class="box-container">
+      <div class="box-emoji">🎁</div>
+      <div class="box-text">Sintonía Especial</div>
+      <div class="tap-to-open">Haz clic para abrir la sorpresa</div>
     </div>
   </div>
 
-  <div class="container">
-    <h1 style="color:white; font-size:2.5rem; font-weight:900;">{{name}}</h1>
-    <div class="scene">
-      <div class="ring ring-1"></div><div class="ring ring-2"></div>
-      <div class="sphere-wrapper">
-        <div class="sphere" id="sphere">
-          <img src="{{image_src}}" id="sphereImg" class="sphere-content" onerror="this.style.display='none'; document.getElementById('sphereText').style.display='block';">
-          <div id="sphereText" class="sphere-text-inner" style="display: none">{{extra_text}}</div>
-        </div>
-      </div>
-    </div>
-    <div class="glass-card">
-      <p style="color:rgba(255,255,255,0.9); font-size:1.15rem; line-height:1.6; margin-bottom:1.5rem;">{{message}}</p>
-      <p class="sender">{{sender}}</p>
-    </div>
+  <div class="main-sphere" id="sphere">
+    <img src="{{image_src}}" class="photo-core" onerror="this.src='https://images.unsplash.com/photo-1518893063132-36e46dbe2428?q=80&w=1000&auto=format&fit=crop'">
   </div>
 
-  <div class="audio-ui" id="audio-ui" style="display: none;">
-    <div class="play-btn" id="play-btn">▶</div>
-    <div id="viz" style="display: flex; gap: 3px;">
-      <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+  <div class="player-container" id="player-ui" style="display: none;">
+    <div class="control-btn" id="play-btn">⏸</div>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
-    <div style="font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;">AUDIO MÁGICO</div>
+    <div class="time-info" id="time-display">0:00 / 0:00</div>
   </div>
 
   <audio id="bg-audio" src="{{audio_src}}" loop></audio>
@@ -78,77 +119,123 @@ export const MUSICAL_SPHERE_TEMPLATE = `<!DOCTYPE html>
 
   <script>
     const hasAudio = '{{has_audio}}' === 'true';
-    const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
+    const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '').trim();
     let audio = document.getElementById('bg-audio');
     let ytPlayer = null;
     let ytReady = false;
-    let playOnReady = false;
     let isPlaying = false;
     let activePlatform = (youtubeId && youtubeId.length > 2) ? 'youtube' : 'native';
 
-    if (activePlatform === 'youtube' && !window.YT_API_LOADED) {
+    // Particle System
+    function createParticles() {
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 3 + 1;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            container.appendChild(p);
+            animateParticle(p);
+        }
+    }
+    function animateParticle(p) {
+        const duration = Math.random() * 10000 + 5000;
+        p.animate([
+            { transform: 'translateY(0)', opacity: 0.5 },
+            { transform: 'translateY(-100vh)', opacity: 0 }
+        ], { duration, iterations: Infinity });
+    }
+    createParticles();
+
+    if (activePlatform === 'youtube') {
         const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-        document.head.appendChild(tag); window.YT_API_LOADED = true;
-    } else if (activePlatform === 'youtube' && window.YT && window.YT.Player) {
-        setTimeout(() => { if (typeof window.onYouTubeIframeAPIReady === 'function') window.onYouTubeIframeAPIReady(); }, 500);
+        document.head.appendChild(tag);
     }
 
     window.onYouTubeIframeAPIReady = function() {
-        if (activePlatform === 'youtube') {
-            ytPlayer = new YT.Player('yt-player', {
-                height: '0', width: '0', videoId: youtubeId,
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                events: {
-                    'onReady': () => { ytReady = true; if(playOnReady) { ytPlayer.playVideo(); updateUI(true); } },
-                    'onStateChange': (e) => updateUI(e.data === 1)
+        ytPlayer = new YT.Player('yt-player', {
+            height: '0', width: '0', videoId: youtubeId,
+            playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
+            events: {
+                'onReady': () => { ytReady = true; },
+                'onStateChange': (e) => {
+                    if (e.data === 1) startProgressLoop();
+                    updateUI(e.data === 1);
                 }
-            });
-        }
+            }
+        });
     };
+
+    function startProgressLoop() {
+        setInterval(() => {
+            if (!isPlaying) return;
+            let current, duration;
+            if (activePlatform === 'youtube') {
+                current = ytPlayer.getCurrentTime();
+                duration = ytPlayer.getDuration();
+            } else {
+                current = audio.currentTime;
+                duration = audio.duration;
+            }
+            if (duration) {
+                const pct = (current / duration) * 100;
+                document.getElementById('progress-fill').style.width = pct + '%';
+                document.getElementById('time-display').innerText = formatTime(current) + ' / ' + formatTime(duration);
+            }
+        }, 500);
+    }
+
+    function formatTime(s) {
+        const min = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return min + ":" + (sec < 10 ? '0' : '') + sec;
+    }
 
     function updateUI(playing) {
         isPlaying = playing;
-        const btn = document.getElementById('play-btn');
-        if (btn) btn.innerText = playing ? "||" : "▶";
-        document.querySelectorAll('.viz-bar').forEach(b => b.style.display = playing ? 'block' : 'none');
-        if (playing) startVibration(); else stopVibration();
+        document.getElementById('play-btn').innerText = playing ? "⏸" : "▶";
     }
 
-    audio.onplay = () => updateUI(true);
-    audio.onpause = () => updateUI(false);
-
     window.openBox = function() {
-        document.getElementById('welcome-overlay').classList.add('hidden');
+        const overlay = document.getElementById('intro-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 800);
+
         if (hasAudio) {
-            document.getElementById('audio-ui').style.display = 'flex';
-            try {
-                if (activePlatform === 'youtube') { if (ytReady) ytPlayer.playVideo(); else playOnReady = true; }
-                else if (audio) { audio.play().catch(() => {}); }
-            } catch(e) {}
+            document.getElementById('player-ui').style.display = 'flex';
+            if (activePlatform === 'youtube') {
+                if (ytReady && ytPlayer) {
+                    ytPlayer.playVideo();
+                } else {
+                    // Fallback if not ready yet
+                    let checkReady = setInterval(() => {
+                        if (ytReady && ytPlayer) {
+                            ytPlayer.playVideo();
+                            clearInterval(checkReady);
+                        }
+                    }, 500);
+                    setTimeout(() => clearInterval(checkReady), 5000);
+                }
+            } else {
+                audio.play().catch(e => console.log("Audio play failed:", e));
+                startProgressLoop();
+            }
         }
     };
 
-    document.getElementById('play-btn').onclick = (e) => {
-        e.stopPropagation();
-        if (activePlatform === 'youtube' && ytPlayer) {
-            if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
-        } else { if (audio.paused) audio.play(); else audio.pause(); }
+    document.getElementById('play-btn').onclick = () => {
+        if (activePlatform === 'youtube') {
+            if (isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
+        } else {
+            if (audio.paused) audio.play(); else audio.pause();
+            updateUI(!audio.paused);
+        }
     };
-
-    let vibInterval;
-    function startVibration() {
-        vibInterval = setInterval(() => {
-            const s = document.getElementById('sphere');
-            if(s) s.style.transform = 'scale(' + (1 + Math.random() * 0.05) + ')';
-        }, 100);
-    }
-    function stopVibration() { clearInterval(vibInterval); const s = document.getElementById('sphere'); if(s) s.style.transform = 'scale(1)'; }
-
-    // Fallback logic
-    if (!"{{image_src}}".includes("http")) {
-        document.getElementById('sphereImg').style.display = 'none';
-        document.getElementById('sphereText').style.display = 'block';
-    }
   </script>
 </body>
 </html>`;
