@@ -770,6 +770,10 @@ function App() {
       }
     }
 
+    if (selectedTemplate.id === 'puzzle-love' && !formData.imageSrc) {
+      newErrors.image = '¡Espera! Para armar el rompecabezas necesitamos una foto obligatoria.';
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       // Scroll to the first error
@@ -1319,9 +1323,14 @@ function App() {
                       padding: '1.5rem',
                       background: 'rgba(255, 255, 255, 0.03)',
                       borderRadius: '20px',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      border: errors.image ? '1px solid var(--primary)' : '1px solid rgba(255, 255, 255, 0.1)',
                       marginBottom: '1rem'
                     }}>
+                      {errors.image && (
+                        <div style={{ color: 'var(--primary)', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: '500' }}>
+                          ⚠️ {errors.image}
+                        </div>
+                      )}
                       <div
                         onClick={() => setFormData({ ...formData, hasImage: !formData.hasImage })}
                         style={{
@@ -1414,7 +1423,10 @@ function App() {
                                 value={formData.imageSrc}
                                 onFocus={() => isMobileApp && hideBannerAd()}
                                 onBlur={() => isMobileApp && showBannerAd()}
-                                onChange={(e) => setFormData({ ...formData, imageSrc: e.target.value, hasImage: true })}
+                                onChange={(e) => {
+                                  setFormData({ ...formData, imageSrc: e.target.value, hasImage: true });
+                                  if (errors.image) setErrors({ ...errors, image: null });
+                                }}
                                 style={{ fontSize: '0.9rem', padding: '0.9rem' }}
                               />
                             </>
@@ -1436,6 +1448,7 @@ function App() {
                                   if (file) {
                                     const compressed = await compressImage(file);
                                     setFormData({ ...formData, imageFile: file, imageSrc: compressed, hasImage: true });
+                                    if (errors.image) setErrors({ ...errors, image: null });
                                   }
                                 }}
                               />
