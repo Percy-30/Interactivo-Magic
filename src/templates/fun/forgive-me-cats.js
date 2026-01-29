@@ -95,7 +95,9 @@ export const FORGIVE_ME_CATS_TEMPLATE = `<!DOCTYPE html>
     </div>
 
     <div class="card" id="mainCard">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHV0NGRnbXp5am9uaG9qNXg4Z3Rtc3Z1bmh5ZHBqenp4Z3Rtc3Z1JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/qUIm586yaAyHC/giphy.gif" class="cat-gif" alt="Cat begging">
+        <div class="photo-result" style="display: {{image_display}}; margin-bottom: 2rem; transform: rotate(2deg);">
+            <img src="{{image_src}}" alt="Foto de arrepentimiento" onerror="this.parentElement.style.display='none'">
+        </div>
         <h1>Para: {{name}}</h1>
         <p class="sub-msg">¿Me perdonas? Prometo no hacerlo de nuevo 💗</p>
         <div class="btns">
