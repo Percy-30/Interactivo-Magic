@@ -11,9 +11,10 @@
             --primary: #ff4d94;
             --secondary: #00f2ff;
             --accent: #7000ff;
+            --orange: #ffb44d;
+            --cyan: #4db8ff;
+            --purple: #9d5eff;
             --bg: #050508;
-            --success: #2ecc71;
-            --error: #e74c3c;
         }
 
         body { 
@@ -44,62 +45,43 @@
         .heart-particle {
             position: absolute;
             color: var(--primary);
-            opacity: 0.3;
+            opacity: 0.2;
             animation: float-heart 10s linear infinite;
         }
 
         @keyframes float-heart {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.3; }
+            20% { opacity: 0.2; }
             100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
 
-        .game-header { text-align: center; margin-bottom: 2rem; position: relative; z-index: 10; }
-        .game-header h1 { font-size: 2.5rem; font-weight: 900; color: white; margin: 0; text-shadow: 0 0 20px rgba(255, 77, 148, 0.5); }
-        .game-header p { color: rgba(255,255,255,0.7); font-size: 1.1rem; margin-top: 0.5rem; }
+        .game-header { text-align: center; margin-bottom: 2.5rem; position: relative; z-index: 10; padding: 0 20px; }
+        .game-header h1 { font-size: 2.8rem; font-weight: 900; color: white; margin: 0; text-shadow: 0 0 20px rgba(255, 77, 148, 0.3); letter-spacing: -1px; }
+        .game-header p { color: rgba(255,255,255,0.8); font-size: 1.1rem; margin-top: 0.5rem; font-weight: 400; }
 
-        /* Wheel Styles */
+        /* Elegant Wheel Design */
         .wheel-outer {
             position: relative;
             width: 320px;
             height: 320px;
-            padding: 15px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1a1a2e, #0f0f1b);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #111;
+            padding: 12px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8), 0 0 20px rgba(255, 77, 148, 0.2);
             z-index: 10;
-        }
-
-        .wheel-neon-ring {
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 20px var(--primary);
-            opacity: 0.5;
-            animation: pulse-neon 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-neon {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.02); }
         }
 
         .pointer {
             position: absolute;
-            top: -20px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: white;
-            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+            clip-path: polygon(20% 0%, 80% 0%, 50% 100%);
             z-index: 100;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
-            border-top: 5px solid var(--secondary);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
 
         .wheel-container { 
@@ -109,7 +91,7 @@
             position: relative;
             overflow: hidden;
             transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
-            border: 8px solid #222;
+            border: 6px solid #1a1a1a;
         }
 
         .wheel {
@@ -117,16 +99,15 @@
             height: 100%;
             border-radius: 50%;
             position: absolute;
-            /* Alternate SÍ / NO colors */
             background: conic-gradient(
-                #ff4d94 0deg 45deg,
-                #333 45deg 90deg,
-                #ff4d94 90deg 135deg,
-                #333 135deg 180deg,
-                #ff4d94 180deg 225deg,
-                #333 225deg 270deg,
-                #ff4d94 270deg 315deg,
-                #333 315deg 360deg
+                var(--orange) 0deg 45deg,
+                var(--primary) 45deg 90deg,
+                var(--cyan) 90deg 135deg,
+                var(--purple) 135deg 180deg,
+                var(--orange) 180deg 225deg,
+                var(--primary) 225deg 270deg,
+                var(--cyan) 270deg 315deg,
+                var(--purple) 315deg 360deg
             );
         }
 
@@ -143,65 +124,68 @@
             font-weight: 900;
             font-size: 1.4rem;
             color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            padding-left: 60px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            padding-left: 65px;
+            letter-spacing: 1px;
+            text-transform: lowercase;
         }
 
         .wheel-center {
             position: absolute;
-            width: 70px;
-            height: 70px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 75px;
+            height: 75px;
             background: white;
             border-radius: 50%;
             z-index: 50;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 0 30px rgba(255,255,255,0.5), inset 0 0 10px rgba(0,0,0,0.2);
+            font-size: 2.2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 0 12px rgba(255, 77, 148, 0.2);
             border: 4px solid var(--primary);
         }
 
         .spin-btn {
-            margin-top: 3rem;
-            padding: 1rem 3.5rem;
+            margin-top: 3.5rem;
+            padding: 1.1rem 4rem;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             border: none;
             border-radius: 50px;
             color: white;
             font-weight: 800;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 77, 148, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 12px 30px rgba(255, 77, 148, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             position: relative;
             z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .spin-btn:hover:not(:disabled) { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 40px rgba(255, 77, 148, 0.6); }
+        .spin-btn:hover:not(:disabled) { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(255, 77, 148, 0.6); }
         .spin-btn:active:not(:disabled) { transform: scale(0.95); }
-        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+        .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: saturate(0.5); }
 
         /* Notification Toast */
         .toast {
             position: fixed;
-            top: 20px;
-            background: rgba(255, 77, 148, 0.9);
-            padding: 12px 25px;
+            top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 14px 30px;
             border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
             color: white;
-            font-weight: bold;
-            transform: translateY(-100px);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 700;
+            transform: translateY(-120px);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 5000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            font-size: 1rem;
         }
         .toast.show { transform: translateY(0); }
 
@@ -209,8 +193,8 @@
         .success-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(15px);
             z-index: 2000;
             display: none;
             flex-direction: column;
@@ -224,13 +208,13 @@
         .success-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2.5rem;
-            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            border-radius: 35px;
             text-align: center;
-            max-width: 450px;
+            max-width: 440px;
             width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            transform: translateY(30px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            transform: translateY(40px);
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -238,60 +222,55 @@
         .success-overlay.show .success-card { transform: translateY(0); }
 
         .photo-frame {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 2rem;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2.5rem;
             border-radius: 50%;
-            padding: 8px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            box-shadow: 0 0 30px rgba(255, 77, 148, 0.4);
+            padding: 10px;
+            background: linear-gradient(135deg, var(--orange), var(--primary), var(--purple));
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
             animation: float-photo 4s ease-in-out infinite;
         }
 
         @keyframes float-photo {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-12px); }
         }
 
         .photo-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #fff; }
 
-        .success-card h2 { font-size: 2.22rem; margin: 0 0 1rem; color: var(--primary); font-weight: 900; }
-        .success-card p { font-size: 1.2rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-bottom: 2rem; }
-        .sender-tag { font-size: 0.9rem; color: var(--secondary); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-
-        /* Intro Overlay */
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 3000; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        #intro-overlay.hidden { opacity: 0; pointer-events: none; transition: 0.8s opacity ease; }
+        .success-card h2 { font-size: 2.5rem; margin: 0 0 1.2rem; color: white; font-weight: 900; text-transform: lowercase; }
+        .success-card p { font-size: 1.25rem; line-height: 1.7; color: rgba(255,255,255,0.9); margin-bottom: 2.5rem; font-weight: 400; }
+        .sender-tag { font-size: 0.95rem; color: var(--orange); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.5rem; }
 
         /* Unified Audio Styles */
-        .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 350px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; gap: 15px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .play-btn { width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; color: white !important; font-weight: bold; }
-        .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: var(--primary); border-radius: 2px; }
-        .time-text { font-size: 11px; color: rgba(255, 255, 255, 0.5); min-width: 35px; font-family: monospace; }
-        .song-title { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; color: var(--primary); white-space: nowrap; text-transform: uppercase; letter-spacing: 1px; }
+        .audio-controls { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(25px); padding: 14px 24px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; gap: 18px; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        .play-btn { width: 44px; height: 44px; background: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; color: white; box-shadow: 0 4px 12px rgba(255, 77, 148, 0.3); }
+        .progress-bar-container { flex-grow: 1; height: 5px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.1s linear; }
+        .time-text { font-size: 11px; color: rgba(255, 255, 255, 0.5); min-width: 35px; font-family: 'Outfit', sans-serif; font-weight: 700; }
+        .song-title { position: absolute; top: -24px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 900; color: var(--primary); white-space: nowrap; text-transform: uppercase; letter-spacing: 2px; }
 
     </style>
 </head>
 <body>
     <div class="hearts-bg" id="hearts-bg"></div>
-    <div class="toast" id="toast">¡Casi! Inténtalo de nuevo... ✨</div>
+    <div class="toast" id="toast">¡ups! casi... intenta de nuevo ✨</div>
 
     <div id="intro-overlay" onclick="startExperience()">
         <div style="text-align: center;">
-            <div style="font-size: 100px; animation: bounce 2s infinite;">🎡</div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: white; margin-top: 1.5rem; letter-spacing: 2px;">RULETA DEL AMOR</div>
-            <div style="font-size: 1rem; color: var(--primary); margin-top: 0.5rem; opacity: 0.8; letter-spacing: 4px;">TOCA PARA GIRAR EL DESTINO</div>
+            <div style="font-size: 110px; animation: bounce 2.2s infinite; filter: drop-shadow(0 15px 30px rgba(255, 77, 148, 0.3));">🎡</div>
+            <div style="font-size: 2.22rem; font-weight: 900; color: white; margin-top: 1.8rem; letter-spacing: -1px; text-transform: lowercase;">ruleta del amor</div>
+            <div style="font-size: 1rem; color: var(--primary); margin-top: 0.6rem; opacity: 0.8; letter-spacing: 5px; font-weight: 700;">TOCA PARA EMPEZAR</div>
         </div>
     </div>
 
     <div class="game-header">
-        <h1>{{name}}</h1>
-        <p>✨ Deja que la ruleta decida nuestro destino...</p>
+        <h1 style="text-transform: lowercase;">{{name}}</h1>
+        <p>✨ deja que la ruleta decida nuestro destino...</p>
     </div>
 
     <div class="wheel-outer">
-        <div class="wheel-neon-ring"></div>
         <div class="pointer"></div>
         <div class="wheel-center">❤️</div>
         <div class="wheel-container" id="wheel-container">
@@ -302,7 +281,7 @@
     </div>
 
     <button class="spin-btn" id="spin-btn" onclick="spinWheel()">
-        ✨ GIRAR AHORA ✨
+        GIRAR RULETA
     </button>
 
     <!-- Success Screen -->
@@ -312,15 +291,15 @@
                 <img src="{{image_src}}" alt="{{name}}" onerror="this.parentElement.style.display='none'">
             </div>
             <div class="sender-tag">DE: {{sender}}</div>
-            <h2>{{extra_text}}</h2>
+            <h2 style="text-transform: lowercase;">{{extra_text}}</h2>
             <p>{{message}}</p>
-            <div style="font-size: 3rem;">💖✨💍</div>
+            <div style="font-size: 3.5rem; filter: drop-shadow(0 10px 20px rgba(255, 77, 148, 0.4));">💖✨💍</div>
         </div>
     </div>
 
     <!-- Audio Player -->
     <div class="audio-controls" id="audio-ui" style="display: none;">
-        <div class="song-title">Audio Mágico</div>
+        <div class="song-title">Tu Audio Mágico</div>
         <div class="play-btn" id="play-btn">
             <div id="play-icon">▶</div>
             <div id="pause-icon" style="display:none">||</div>
@@ -332,7 +311,7 @@
     </div>
 
     <audio id="bg-audio" src="{{audio_src}}" loop></audio>
-    <div id="yt-player-container" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0.01; pointer-events:none;">
+    <div id="yt-player-container" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0; pointer-events:none;">
         <div id="youtube-player"></div>
     </div>
 
@@ -340,14 +319,14 @@
     <script>
         const wheel = document.getElementById('wheel');
         const sections = [
-            { text: "SÍ", win: true },
-            { text: "NO", win: false },
-            { text: "SÍ", win: true },
-            { text: "NO", win: false },
-            { text: "SÍ", win: true },
-            { text: "NO", win: false },
-            { text: "SÍ", win: true },
-            { text: "NO", win: false }
+            { text: "no", win: false },
+            { text: "intenta", win: false },
+            { text: "no", win: false },
+            { text: "sí", win: true },
+            { text: "no", win: false },
+            { text: "tal vez", win: false },
+            { text: "no", win: false },
+            { text: "sí", win: true }
         ];
 
         // Generate Wheel Segments
@@ -361,13 +340,13 @@
 
         // Floating Hearts
         const heartsContainer = document.getElementById('hearts-bg');
-        for(let i=0; i<20; i++) {
+        for(let i=0; i<15; i++) {
             const heart = document.createElement('div');
             heart.className = 'heart-particle';
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            heart.style.animationDelay = Math.random() * 10 + 's';
+            heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            heart.style.animationDelay = Math.random() * 8 + 's';
             heartsContainer.appendChild(heart);
         }
 
@@ -404,7 +383,7 @@
                     else audio.play().catch(() => {});
                     updateUI(true);
                 }
-            }, 400);
+            }, 600);
         }
 
         function updateUI(playing) {
@@ -437,7 +416,6 @@
 
         /* --- Spin Logic --- */
         let canSpin = true;
-        let currentRotation = 0;
         let attemptCount = 0;
 
         function spinWheel() {
@@ -448,71 +426,59 @@
             
             canSpin = false;
             btn.disabled = true;
-            btn.innerHTML = "¡EL DESTINO DECIDE! 🎲";
+            btn.innerHTML = "decidiendo...";
             toast.classList.remove('show');
 
             attemptCount++;
             
-            // Logic: we want some variation but ensure success eventually or randomly.
-            // For fun, let's make it land on NO if it's the first time and they are unlucky (50/50).
-            // But if it's the second time, or if they are lucky, land on SÍ.
-            
-            let possibleIndices = [];
+            // Logic: first time usually NO, second time usually SÍ.
+            let targetIndex;
             if (attemptCount === 1) {
-                // First try: Can be SÍ or NO.
-                possibleIndices = [0, 1, 2, 3, 4, 5, 6, 7];
+                // Land on "no" (index 0, 2, 4 or 6)
+                const noIndices = [0, 2, 4, 6];
+                targetIndex = noIndices[Math.floor(Math.random() * noIndices.length)];
             } else {
-                // Second try onwards: More likely to be SÍ. Actually let's force SÍ on 2nd try if it was NO.
-                possibleIndices = [0, 2, 4, 6]; 
+                // Land on "sí" (index 3 or 7)
+                const winIndices = [3, 7];
+                targetIndex = winIndices[Math.floor(Math.random() * winIndices.length)];
             }
 
-            const targetIndex = possibleIndices[Math.floor(Math.random() * possibleIndices.length)];
             const isWin = sections[targetIndex].win;
-            
-            const rotations = 8 + attemptCount;
+            const rotations = 7 + attemptCount;
             const segmentAngle = 45;
             const offset = 22.5; 
             
-            // Calculate total rotation
             const targetRotation = (270 - (targetIndex * segmentAngle) - offset) + (360 * rotations);
-            currentRotation = targetRotation;
-            
             wheelContainer.style.transform = "rotate(" + targetRotation + "deg)";
 
             setTimeout(() => {
                 if (isWin) {
                     showSuccess();
                 } else {
-                    // It was a NO
                     toast.classList.add('show');
                     btn.disabled = false;
-                    btn.innerHTML = "✨ REINTENTAR ✨";
+                    btn.innerHTML = "reintentar ✨";
                     canSpin = true;
-                    // Hide toast after 3s
-                    setTimeout(() => toast.classList.remove('show'), 3000);
+                    setTimeout(() => toast.classList.remove('show'), 3500);
                 }
             }, 5500);
         }
 
         function showSuccess() {
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 3000 };
+            const end = Date.now() + (5 * 1000);
+            const colors = ['#ff4d94', '#ffb44d', '#ffffff'];
 
-            function randomInRange(min, max) {
-              return Math.random() * (max - min) + min;
-            }
+            (function frame() {
+              confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+              confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
 
-            const interval = setInterval(function() {
-              const timeLeft = animationEnd - Date.now();
-              if (timeLeft <= 0) { return clearInterval(interval); }
-              const particleCount = 50 * (timeLeft / duration);
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
+              if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
 
             document.getElementById('success-overlay').classList.add('show');
         }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
     </script>
 </body>
 </html>`;
