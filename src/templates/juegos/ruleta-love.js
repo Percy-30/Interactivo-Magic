@@ -332,7 +332,7 @@
         sections.forEach((section, i) => {
             const div = document.createElement('div');
             div.className = 'segment-text';
-            div.style.transform = `rotate(${ i * 45 }deg)`;
+            div.style.transform = "rotate(" + (i * 45) + "deg)";
             div.innerHTML = section.text;
             wheel.appendChild(div);
         });
@@ -409,7 +409,7 @@
                 document.getElementById('progress-bar').style.width = progress + '%';
                 const mins = Math.floor(audio.currentTime / 60);
                 const secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('time-display').textContent = \`\${mins}:\${secs < 10 ? '0' : ''}\${secs}\`;
+                document.getElementById('time-display').textContent = mins + ":" + (secs < 10 ? '0' : '') + secs;
             };
         }
 
@@ -424,31 +424,15 @@
             btn.disabled = true;
             btn.innerHTML = "¡EL DESTINO DECIDE! 🎲";
 
-            // RIGGED LOGIC: Always land on SÍ (index 0 or 4)
-            // Sections: 
-            // 0: SÍ (0-45deg)
-            // 4: SÍ (180-225deg)
-            // We want the TOP (pointer is at 0 rotation point relative to view)
-            // The segments rotate CLOCKWISE.
-            // Pointer is at TOP. 
-            // Angle 0 is right. Top is -90deg? 
-            // Let's simplify: 
-            // To point to segment i (index i): 
-            // segment i starts at i * 45deg. 
-            // To be at the top center, the segment needs to be at -90deg.
-            // Target Rotation = (360 - (i * 45) - 22.5) + (360 * rotations)
-            
             const winningIndices = [0, 4];
             const targetIndex = winningIndices[Math.floor(Math.random() * winningIndices.length)];
-            const rotations = 8; // Full spins
+            const rotations = 8;
             const segmentAngle = 45;
-            const offset = 22.5; // Center of segment
+            const offset = 22.5; 
             
-            // Note: pointer is at top (270deg in standard geometric circle where 0 is right)
-            // So we want the winning segment i to ends up at 270deg.
             const targetRotation = (270 - (targetIndex * segmentAngle) - offset) + (360 * rotations);
             
-            wheelContainer.style.transform = \`rotate(\${targetRotation}deg)\`;
+            wheelContainer.style.transform = "rotate(" + targetRotation + "deg)";
 
             setTimeout(() => {
                 showSuccess();
@@ -456,7 +440,6 @@
         }
 
         function showSuccess() {
-            // Confetti Blast
             const duration = 5 * 1000;
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 3000 };
@@ -475,8 +458,6 @@
 
             document.getElementById('success-overlay').classList.add('show');
         }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </script>
 </body>
 </html>\`;
