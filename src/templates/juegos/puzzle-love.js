@@ -16,9 +16,33 @@
         .box-emoji { font-size: 100px; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(255, 77, 148, 0.5)); }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        .game-header { position: relative; z-index: 10; text-align: center; margin-bottom: 2rem; }
-        .game-header h1 { font-size: 2.22rem; font-weight: 900; color: #ff4d94; text-shadow: 0 0 20px rgba(255, 77, 148, 0.4); margin-bottom: 0.5rem; }
+        .game-header { position: relative; z-index: 10; text-align: center; margin-bottom: 1rem; }
+        .game-header h1 { font-size: 2.2rem; font-weight: 900; color: #ff4d94; text-shadow: 0 0 20px rgba(255, 77, 148, 0.4); margin-bottom: 0.5rem; }
         .game-header p { color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
+
+        .reference-img {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 77, 148, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0.6;
+        }
+        .reference-img img { width: 100%; height: 100%; object-fit: cover; }
+        .reference-label {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
 
         .puzzle-container { 
             position: relative; 
@@ -110,6 +134,10 @@
             <p>Desliza las piezas de tu foto</p>
         </div>
         <div class="puzzle-container" id="p-container">
+            <div class="reference-label">REFERENCIA</div>
+            <div class="reference-img">
+                <img src="{{image_src}}" alt="Imagen de referencia">
+            </div>
             <div class="puzzle-board" id="board"></div>
         </div>
     </div>
