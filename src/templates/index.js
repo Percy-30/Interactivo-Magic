@@ -18,6 +18,7 @@ import { RULETA_LOVE_TEMPLATE } from './juegos/ruleta-love';
 import { SCRATCH_MESSAGE_TEMPLATE } from './juegos/scratch-message';
 
 import { MARVEL_BOOK_TEMPLATE } from './fun/marvel-book';
+import { FORGIVE_ME_CATS_TEMPLATE } from './fun/forgive-me-cats';
 import { ENCHANTED_LETTER_TEMPLATE } from './halloween/enchanted-letter';
 
 // --- EXPORTS ---
@@ -36,13 +37,13 @@ export {
     RULETA_LOVE_TEMPLATE,
     SCRATCH_MESSAGE_TEMPLATE,
     MARVEL_BOOK_TEMPLATE,
+    FORGIVE_ME_CATS_TEMPLATE,
     ENCHANTED_LETTER_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
 export const GALAXY_GENERATOR_TEMPLATE = GALAXY_TEMPLATE;
 export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', '¡SÍ, ACEPTO! 💍');
-export const FORGIVE_ME_CATS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐱');
 export const FORGIVE_ME_PENGUINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🐧');
 export const FLOWERS_RAMO_TEMPLATE = FLOWERS_BOUQUET_TEMPLATE;
 export const COUPLE_INITIALS_TEMPLATE = LOVE_INITIALS_TEMPLATE;

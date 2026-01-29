@@ -117,7 +117,7 @@ const TEMPLATES = [
     icon: <Smile />,
     color: '#ffa500',
     content: FORGIVE_ME_CATS_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Frase final'
   },
