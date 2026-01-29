@@ -125,7 +125,7 @@ const TEMPLATES = [
     id: 'puzzle-love',
     category: 'juegos',
     name: 'Puzzle del Amor 💫',
-    description: 'Crea un rompecabezas con su foto.',
+    description: 'Arma un rompecabezas con tu foto (Obligatoria).',
     icon: <Gamepad />,
     color: '#ff4d94',
     content: PUZZLE_LOVE_TEMPLATE,

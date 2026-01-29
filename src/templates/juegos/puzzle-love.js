@@ -3,88 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle Mágico - {{name}}</title>
+    <title>Puzzle de Amor - {{name}}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
-        body { margin: 0; background: #0a0514; color: white; font-family: 'Outfit', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .puzzle-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; width: 300px; height: 300px; margin-bottom: 2rem; }
-        .puzzle-tile { width: 100%; height: 100%; background: #ff4d94; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: transform 0.2s; color: white; font-weight: bold; position: relative; overflow: hidden; }
-        .puzzle-tile::before { content: ''; position: absolute; width: 100%; height: 100%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3)); }
-        .message-box { display: none; text-align: center; padding: 2rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); width: 90%; max-width: 400px; }
-        h1 { font-size: 1.8rem; color: #ff4d94; margin-bottom: 1rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: #0a0514; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; color: white; }
+        
+        .romantic-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05020a 100%); }
+        .hearts-bg { position: absolute; width: 100%; height: 100%; pointer-events: none; }
 
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0514; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
-        #intro-overlay.hidden { opacity: 0; pointer-events: none; }
+        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0514; z-index: 10000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; cursor: pointer; }
+        .box-emoji { font-size: 100px; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(255, 77, 148, 0.5)); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* Unified Audio Styles */
-        .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 350px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; gap: 15px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: white; }
-        .play-btn { width: 40px; height: 40px; background: #ff4d94; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; color: white !important; font-weight: bold; }
-        .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: #ff4d94; border-radius: 2px; }
-        .time-text { font-size: 11px; color: rgba(255, 255, 255, 0.5); min-width: 35px; font-family: monospace; }
-        .song-title { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; color: #ff4d94; white-space: nowrap; text-transform: uppercase; letter-spacing: 1px; }
+        .game-header { position: relative; z-index: 10; text-align: center; margin-bottom: 2rem; }
+        .game-header h1 { font-size: 2.22rem; font-weight: 900; color: #ff4d94; text-shadow: 0 0 20px rgba(255, 77, 148, 0.4); margin-bottom: 0.5rem; }
+        .game-header p { color: rgba(255, 255, 255, 0.6); letter-spacing: 1px; }
 
-        .photo-result {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: {{image_display}};
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 2px solid rgba(255, 77, 148, 0.3);
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-            min-height: 100px;
+        .puzzle-container { 
+            position: relative; 
+            z-index: 10; 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(20px); 
+            padding: 12px; 
+            border-radius: 25px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            transition: transform 0.8s ease;
         }
-        .photo-result img { width: 100%; height: auto; display: block; }
+
+        .puzzle-board { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 6px; 
+            width: 320px; 
+            height: 320px; 
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .puzzle-tile { 
+            width: 100%; 
+            height: 100%; 
+            background-size: 320px 320px; 
+            background-repeat: no-repeat; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+        .puzzle-tile.empty { background: transparent !important; box-shadow: none; cursor: default; }
+        .puzzle-tile:not(.empty):hover { transform: scale(0.97); filter: brightness(1.2); }
+
+        .message-box { 
+            display: none; 
+            position: relative; 
+            z-index: 20; 
+            text-align: center; 
+            width: 90%; 
+            max-width: 450px; 
+            animation: winPop 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes winPop { 0% { opacity: 0; transform: scale(0.5) translateY(50px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .photo-reveal {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            padding: 8px;
+            background: linear-gradient(45deg, #ff416c, #7000ff);
+            box-shadow: 0 0 40px rgba(255, 65, 108, 0.6);
+            overflow: hidden;
+        }
+        .photo-reveal img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #0a0514; }
+
+        .win-title { font-size: 2.8rem; font-weight: 900; background: linear-gradient(to bottom, #fff, #ff4d94); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; }
+        .win-msg { font-size: 1.4rem; color: rgba(255,255,255,0.9); line-height: 1.5; margin-bottom: 2rem; font-weight: 300; }
+        .win-sender { color: #ffcc00; font-weight: 800; font-size: 1.2rem; }
+
+        /* Audio Controls */
+        .audio-controls { position: fixed; bottom: 30px; width: 85%; max-width: 380px; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); padding: 12px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; z-index: 1000; transition: transform 0.5s; }
+        .play-btn { width: 42px; height: 42px; background: #ff4d94; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; border: none; }
+        .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+        .progress-bar { width: 0%; height: 100%; background: #ff4d94; border-radius: 2px; }
+        .time-text { font-size: 11px; color: rgba(255,255,255,0.5); min-width: 35px; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
-    <div id="intro-overlay">
-        <div onclick="openBox()" style="text-align: center; cursor: pointer;">
-            <div style="font-size: 80px;">🧩</div>
-            <div style="color: white; font-size: 24px; font-weight: bold; margin-top: 20px;">¡Arma el Puzzle!</div>
-            <div style="color: rgba(255,255,255,0.6); margin-top: 10px;">TOCA PARA EMPEZAR</div>
+    <div class="romantic-bg">
+        <div class="hearts-bg" id="hearts-container"></div>
+    </div>
+
+    <div id="intro-overlay" onclick="openBox()">
+        <div class="box-container" style="text-align:center;">
+            <div class="box-emoji">🧩</div>
+            <div style="margin-top:2rem; color:white; font-weight:900; font-size:1.8rem; letter-spacing:2px;">PUZZLE DEL AMOR</div>
+            <div style="color:rgba(255,255,255,0.5); margin-top:0.5rem; letter-spacing:4px;">TOCA PARA ARMAR EL RECUERDO</div>
         </div>
     </div>
 
-    <div id="game-ui" style="text-align: center;">
-        <h2 style="margin-bottom: 1rem; color: #ff4d94;">¡Ordena el Desorden! 🧩</h2>
-        <div class="puzzle-board" id="board"></div>
-        <p style="opacity: 0.6;">Toca las piezas para moverlas</p>
+    <div id="game-ui">
+        <div class="game-header">
+            <h1>¡Reconstruye el Momento! 💫</h1>
+            <p>Desliza las piezas de tu foto</p>
+        </div>
+        <div class="puzzle-container" id="p-container">
+            <div class="puzzle-board" id="board"></div>
+        </div>
     </div>
 
-    <div class="message-box" id="message-box">
-        <div class="photo-result">
-            <img src="{{image_src}}" alt="Nuestra Foto" onerror="this.parentElement.style.display='none'">
+    <div class="message-box" id="win-ui">
+        <div class="photo-reveal">
+            <img src="{{image_src}}" alt="Foto Completa">
         </div>
-        <h1>{{extra_text}}</h1>
-        <p style="font-size: 1.2rem; color: #fff;">{{message}}</p>
-        <div style="margin-top: 1.5rem; color: rgba(255,255,255,0.6);">De: {{sender}}</div>
+        <h2 class="win-title">¡LO LOGRASTE! 😍</h2>
+        <div class="win-msg">{{message}}</div>
+        <p style="color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">De tu amor:</p>
+        <div class="win-sender">{{sender}}</div>
+        <a href="/" style="display:inline-block; margin-top:2.5rem; color:rgba(255,255,255,0.3); text-decoration:none; font-size:0.8rem; border:1px solid rgba(255,255,255,0.1); padding:8px 20px; border-radius:20px;">Crea tu propio puzzle ✨</a>
     </div>
 
     <div class="audio-controls" id="audio-ui" style="display: none;">
-        <div class="song-title">Audio Mágico</div>
-        <div class="play-btn" id="play-btn">
-            <div id="play-icon">▶</div>
-            <div id="pause-icon" style="display:none">||</div>
-        </div>
+        <button class="play-btn" id="play-btn">
+            <span id="play-icon">▶</span>
+            <span id="pause-icon" style="display:none">||</span>
+        </button>
         <div class="progress-bar-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
-        <div class="time-display time-text" id="time-display">0:00</div>
+        <div class="time-text" id="time-display">0:00</div>
     </div>
 
     <audio id="bg-audio" src="{{audio_src}}" loop></audio>
-    <div id="yt-player-container" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0.01; pointer-events:none;">
+    <div id="yt-player-container" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0; pointer-events:none;">
         <div id="youtube-player"></div>
     </div>
 
     <script>
         const audio = document.getElementById('bg-audio');
         const youtubeId = "{{youtube_id}}";
-        let ytPlayer = null;
+        let ytReady = false, ytPlayer = null, isPlaying = false;
         let activePlatform = youtubeId ? 'youtube' : 'native';
-        let isPlaying = false;
+
+        // Hearts Background
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            const h = document.createElement('div');
+            h.innerHTML = ['❤️','✨','💖','💕'][Math.floor(Math.random()*4)];
+            h.style.position = 'absolute';
+            h.style.left = Math.random() * 100 + '%';
+            h.style.top = '105%';
+            h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            h.style.opacity = Math.random() * 0.3 + 0.1;
+            h.style.transition = 'transform ' + (Math.random() * 10 + 5) + 's linear';
+            container.appendChild(h);
+            setTimeout(() => h.style.transform = 'translateY(-120vh) rotate(' + (Math.random() * 360) + 'deg)', 50);
+            setTimeout(() => h.remove(), 15000);
+        }
+        setInterval(createHeart, 1000);
 
         if (activePlatform === 'youtube') {
             const tag = document.createElement('script');
@@ -97,22 +175,23 @@
                 ytPlayer = new YT.Player('youtube-player', {
                     height: '0', width: '0', videoId: youtubeId,
                     playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                    events: { 'onReady': () => console.log("YT Ready") }
+                    events: { 'onReady': () => ytReady = true }
                 });
             }
         }
 
         function openBox() {
-            document.getElementById('intro-overlay').classList.add('hidden');
-            const hasAudio = '{{has_audio}}' === 'true';
+            document.getElementById('intro-overlay').style.opacity = '0';
             setTimeout(() => {
+                document.getElementById('intro-overlay').style.display = 'none';
+                const hasAudio = '{{has_audio}}' === 'true';
                 if (hasAudio) {
                     document.getElementById('audio-ui').style.display = 'flex';
+                    if (activePlatform === 'youtube' && ytPlayer && ytReady) ytPlayer.playVideo();
+                    else audio.play().catch(() => {});
+                    updateUI(true);
                 }
-                if (activePlatform === 'youtube' && ytPlayer) ytPlayer.playVideo();
-                else audio.play().catch(() => { });
-                updateUI(true);
-            }, 500);
+            }, 800);
         }
 
         function updateUI(playing) {
@@ -121,63 +200,101 @@
             document.getElementById('pause-icon').style.display = playing ? 'block' : 'none';
         }
 
-        document.getElementById('play-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isPlaying) {
-                if (activePlatform === 'youtube') ytPlayer.pauseVideo();
-                else audio.pause();
+        document.getElementById('play-btn').onclick = () => {
+            if (activePlatform === 'youtube') {
+                if (isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
             } else {
-                if (activePlatform === 'youtube') ytPlayer.playVideo();
-                else audio.play();
+                if (audio.paused) audio.play(); else audio.pause();
             }
             updateUI(!isPlaying);
-        });
+        };
 
         if (activePlatform === 'native') {
             audio.ontimeupdate = () => {
                 const progress = (audio.currentTime / audio.duration) * 100;
                 document.getElementById('progress-bar').style.width = progress + '%';
-                const mins = Math.floor(audio.currentTime / 60);
-                const secs = Math.floor(audio.currentTime % 60);
+                const mins = Math.floor(audio.currentTime / 60), secs = Math.floor(audio.currentTime % 60);
                 document.getElementById('time-display').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
             };
         }
 
+        // Puzzle Logic
         const board = document.getElementById('board');
-        let tiles = ['❤️', '💖', '✨', '⭐', '🎈', '🌹', '🦋', '💐', ' '];
-        let state = [...tiles].sort(() => Math.random() - 0.5);
+        const imgSrc = "{{image_src}}";
+        let state = [0, 1, 2, 3, 4, 5, 6, 7, 8]; // 8 is the empty one
+        
+        function shuffle(array) {
+            // Fisher-Yates shuffle
+            for (let i = array.length - 2; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            
+            // Check solvability for 3x3 (inversions must be even)
+            let inversions = 0;
+            for (let i = 0; i < array.length - 1; i++) {
+                if (array[i] === 8) continue;
+                for (let j = i + 1; j < array.length - 1; j++) {
+                    if (array[j] === 8) continue;
+                    if (array[i] > array[j]) inversions++;
+                }
+            }
+            
+            if (inversions % 2 !== 0) {
+                // If odd, swap two elements (not the blank) to make it even
+                [array[0], array[1]] = [array[1], array[0]];
+            }
+            return array;
+        }
+
+        state = shuffle(state);
 
         function render() {
             board.innerHTML = '';
-            state.forEach((char, i) => {
+            state.forEach((tileIdx, currentPos) => {
                 const div = document.createElement('div');
-                div.className = 'puzzle-tile';
-                if (char === ' ') div.style.background = 'transparent';
-                else div.textContent = char;
-                div.onclick = () => move(i);
+                div.className = 'puzzle-tile' + (tileIdx === 8 ? ' empty' : '');
+                
+                if (tileIdx !== 8) {
+                    div.style.backgroundImage = 'url("' + imgSrc + '")';
+                    const row = Math.floor(tileIdx / 3);
+                    const col = tileIdx % 3;
+                    div.style.backgroundPosition = '-' + (col * 106.6) + 'px -' + (row * 106.6) + 'px';
+                }
+                
+                div.onclick = () => move(currentPos);
                 board.appendChild(div);
             });
             checkWin();
         }
 
-        function move(idx) {
-            const empty = state.indexOf(' ');
-            const valid = [idx-1, idx+1, idx-3, idx+3];
-            if (valid.includes(empty)) {
-                if (idx%3===0 && empty===idx-1) return;
-                if (idx%3===2 && empty===idx+1) return;
-                state[empty] = state[idx];
-                state[idx] = ' ';
+        function move(pos) {
+            const emptyPos = state.indexOf(8);
+            const canMove = (
+                (pos === emptyPos - 1 && pos % 3 !== 2) ||
+                (pos === emptyPos + 1 && pos % 3 !== 0) ||
+                (pos === emptyPos - 3) ||
+                (pos === emptyPos + 3)
+            );
+
+            if (canMove) {
+                [state[pos], state[emptyPos]] = [state[emptyPos], state[pos]];
                 render();
             }
         }
 
         function checkWin() {
-            if (state.join('') === tiles.join('')) {
-                document.getElementById('game-ui').style.display = 'none';
-                document.getElementById('message-box').style.display = 'block';
+            const isWin = state.every((val, idx) => val === idx);
+            if (isWin) {
+                document.getElementById('game-ui').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('game-ui').style.display = 'none';
+                    document.getElementById('win-ui').style.display = 'block';
+                    document.getElementById('audio-ui').style.transform = 'translateY(100px)';
+                }, 800);
             }
         }
+
         render();
     </script>
 </body>
