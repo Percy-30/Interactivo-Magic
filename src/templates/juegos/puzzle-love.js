@@ -49,11 +49,14 @@
             z-index: 10; 
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(20px); 
-            padding: 12px; 
+            padding: 2.5rem 1.5rem; 
             border-radius: 25px; 
             border: 1px solid rgba(255, 255, 255, 0.1); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             transition: transform 0.8s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .puzzle-board { 
