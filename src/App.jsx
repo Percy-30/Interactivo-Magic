@@ -137,13 +137,13 @@ const TEMPLATES = [
     id: 'ruleta-love',
     category: 'juegos',
     name: 'Ruleta del Amor 💖',
-    description: 'Una ruleta que siempre sale Sí.',
+    description: 'Pregunta lo que quieras, ¡el destino dirá que SÍ!',
     icon: <RefreshCcw />,
     color: '#ff007f',
     content: RULETA_LOVE_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
-    extraLabel: 'Mensaje central'
+    extraLabel: 'Título de Victoria'
   },
   {
     id: 'forgive-penguins',
