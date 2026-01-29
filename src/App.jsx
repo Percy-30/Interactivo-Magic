@@ -105,7 +105,7 @@ const TEMPLATES = [
     icon: <Sparkles />,
     color: '#ff00ff',
     content: PROPOSAL_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Frase bajo la propuesta'
   },
