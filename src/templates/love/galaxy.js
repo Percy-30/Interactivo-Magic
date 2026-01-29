@@ -460,7 +460,6 @@
                 <img src="{{image_src}}" alt="Foto" onerror="this.parentElement.style.display='none'">
             </div>
             <div class="message-text">{{message}}</div>
-            <div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.8; font-weight: 800;">{{extra_text}}</div>
             <div class="sender-label">Enviado con ❤️ por:</div>
             <div class="sender-name">{{sender}}</div>
             <a href="/" class="create-btn">Crea tu propio mensaje ✨</a>
