@@ -200,6 +200,7 @@
                 document.getElementById('intro-overlay').style.display = 'none';
                 const hasAudio = '{{has_audio}}' === 'true';
                 if (hasAudio) {
+                    document.getElementById('audio-ui').style.display = 'flex';
                     if (activePlatform === 'youtube' && ytPlayer && ytReady) ytPlayer.playVideo();
                     else audio.play().catch(() => {});
                     updateUI(true);
@@ -209,6 +210,27 @@
 
         function updateUI(playing) {
             isPlaying = playing;
+            document.getElementById('play-icon').style.display = playing ? 'none' : 'block';
+            document.getElementById('pause-icon').style.display = playing ? 'block' : 'none';
+        }
+
+        document.getElementById('play-btn').onclick = () => {
+            if (activePlatform === 'youtube') {
+                if (isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
+            } else {
+                if (audio.paused) audio.play(); else audio.pause();
+            }
+            updateUI(!isPlaying);
+        };
+
+        if (activePlatform === 'native') {
+            audio.ontimeupdate = () => {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progress-bar').style.width = progress + '%';
+                const mins = Math.floor(audio.currentTime / 60);
+                const secs = Math.floor(audio.currentTime % 60);
+                document.getElementById('time-display').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+            };
         }
 
         // Proposal Logic
