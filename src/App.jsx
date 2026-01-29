@@ -46,8 +46,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: GALAXY_TEMPLATE,
     hasImage: false,
-    hasExtra: true,
-    extraLabel: 'Frase flotante'
+    hasExtra: false
   },
   {
     id: 'book-love',
@@ -83,7 +82,8 @@ const TEMPLATES = [
     content: GALAXY_GENERATOR_TEMPLATE,
     hasImage: false,
     hasExtra: true,
-    extraLabel: 'Frase de fondo'
+    extraLabel: 'Palabras flotantes (separadas por comas)',
+    hideRecipientName: false
   },
   {
     id: 'musical-sphere',
@@ -747,9 +747,15 @@ function App() {
 
   const handleGenerate = async () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = '¿Cómo se llama la persona especial?';
+    if (!selectedTemplate.hideRecipientName && (!formData.name || !formData.name.trim())) {
+      newErrors.name = '¿Cómo se llama la persona especial?';
+    }
     if (!formData.sender.trim()) newErrors.sender = 'Dinos quién envía el mensaje';
     if (!formData.message.trim()) newErrors.message = '¡Escribe unas palabras mágicas!';
+
+    if (selectedTemplate.id === 'galaxy-gen' && (!formData.extraText || !formData.extraText.trim())) {
+      newErrors.extraText = 'Por favor, ingresa algunas palabras para la galaxia.';
+    }
 
     if (formData.hasAudio) {
       if (formData.audioOption === 'upload' && !formData.audioFile) {
@@ -1162,25 +1168,27 @@ function App() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Nombre del Destinatario</label>
-                    <input
-                      name="name"
-                      placeholder="Ej: Mi Amor"
-                      value={formData.name}
-                      onFocus={() => isMobileApp && hideBannerAd()}
-                      onBlur={() => isMobileApp && showBannerAd()}
-                      onChange={(e) => {
-                        setFormData({ ...formData, name: e.target.value });
-                        if (errors.name) setErrors({ ...errors, name: null });
-                      }}
-                      style={{
-                        borderColor: errors.name ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
-                        boxShadow: errors.name ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
-                      }}
-                    />
-                    {errors.name && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.name}</p>}
-                  </div>
+                  {!selectedTemplate.hideRecipientName && (
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Nombre del Destinatario</label>
+                      <input
+                        name="name"
+                        placeholder="Ej: Mi Amor"
+                        value={formData.name}
+                        onFocus={() => isMobileApp && hideBannerAd()}
+                        onBlur={() => isMobileApp && showBannerAd()}
+                        onChange={(e) => {
+                          setFormData({ ...formData, name: e.target.value });
+                          if (errors.name) setErrors({ ...errors, name: null });
+                        }}
+                        style={{
+                          borderColor: errors.name ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                          boxShadow: errors.name ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
+                        }}
+                      />
+                      {errors.name && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.name}</p>}
+                    </div>
+                  )}
                   <div>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Tu Nombre</label>
                     <input
@@ -1234,23 +1242,41 @@ function App() {
                             placeholder="A"
                             maxLength={1}
                             value={formData.extraText}
-                            onChange={(e) => setFormData({ ...formData, extraText: e.target.value })}
+                            onChange={(e) => {
+                              setFormData({ ...formData, extraText: e.target.value });
+                              if (errors.extraText) setErrors({ ...errors, extraText: null });
+                            }}
                             onFocus={() => isMobileApp && hideBannerAd()}
                             onBlur={() => isMobileApp && showBannerAd()}
-                            style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}
+                            style={{
+                              textAlign: 'center',
+                              fontSize: '1.2rem',
+                              fontWeight: 'bold',
+                              borderColor: errors.extraText ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                              boxShadow: errors.extraText ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
+                            }}
                           />
                         ) : (
                           <textarea
                             name="extraText"
                             rows="3"
-                            placeholder="Ej: Escribe aquí la frase o nota especial..."
+                            placeholder={selectedTemplate.id === 'galaxy-gen' ? 'Ej: Amor, Paz, Felicidad, Ternura, Mi Vida, Linda...' : 'Ej: Escribe aquí la frase o nota especial...'}
                             value={formData.extraText}
-                            onChange={(e) => setFormData({ ...formData, extraText: e.target.value })}
+                            onChange={(e) => {
+                              setFormData({ ...formData, extraText: e.target.value });
+                              if (errors.extraText) setErrors({ ...errors, extraText: null });
+                            }}
                             onFocus={() => isMobileApp && hideBannerAd()}
                             onBlur={() => isMobileApp && showBannerAd()}
-                            style={{ fontSize: '0.9rem', borderColor: 'rgba(255,255,255,0.12)', resize: 'none' }}
+                            style={{
+                              fontSize: '0.9rem',
+                              borderColor: errors.extraText ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                              boxShadow: errors.extraText ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none',
+                              resize: 'none'
+                            }}
                           />
                         )}
+                        {errors.extraText && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.extraText}</p>}
                       </div>
                     )}
 
@@ -1502,6 +1528,8 @@ function App() {
                                         placeholder="Escribe el mensaje..."
                                         value={item.content}
                                         rows={3}
+                                        onFocus={() => isMobileApp && hideBannerAd()}
+                                        onBlur={() => isMobileApp && showBannerAd()}
                                         onChange={(e) => {
                                           const newItems = [...formData.items];
                                           newItems[realIndex].content = e.target.value;
@@ -1633,6 +1661,8 @@ function App() {
                                               style={{ marginTop: '0.5rem' }}
                                               placeholder="Pega link de la foto aquí..."
                                               value={item.content}
+                                              onFocus={() => isMobileApp && hideBannerAd()}
+                                              onBlur={() => isMobileApp && showBannerAd()}
                                               onChange={(e) => {
                                                 const newItems = [...formData.items];
                                                 newItems[realIndex].content = e.target.value;
@@ -1703,7 +1733,7 @@ function App() {
                   )}
 
                   {/* Audio Selection Section */}
-                  <div style={{
+                  <div id="audio-section" style={{
                     padding: '1.5rem',
                     background: 'rgba(255, 255, 255, 0.03)',
                     borderRadius: '20px',
@@ -1824,6 +1854,7 @@ function App() {
 
                         {formData.audioOption === 'youtube' && (
                           <input
+                            name="youtube"
                             placeholder="Link de YouTube (ej. https://youtube.com/...)"
                             value={formData.youtubeUrl}
                             onFocus={() => isMobileApp && hideBannerAd()}

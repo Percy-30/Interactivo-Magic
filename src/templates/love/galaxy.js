@@ -81,22 +81,81 @@
             z-index: 5;
         }
 
-        .black-hole {
+        .sun-core {
             position: absolute;
-            width: 120px;
-            height: 120px;
-            background: #000;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #ffcc00 0%, #ff6600 60%, #ff0000 100%);
             border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255, 100, 0, 0.8), inset 0 0 20px rgba(255, 100, 0, 0.5);
+            box-shadow: 0 0 80px rgba(255, 100, 0, 0.9), inset 0 0 40px rgba(255, 200, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255, 100, 0, 0.3);
+            z-index: 10;
+            animation: sun-pulse 4s ease-in-out infinite;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes sun-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(255, 100, 0, 0.7); }
+            50% { transform: scale(1.1); box-shadow: 0 0 110px rgba(255, 100, 0, 1); }
+        }
+
+        .heart-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: heart-beat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heart-beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .css-heart {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: #ff0055;
+            transform: rotate(-45deg);
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+        }
+
+        .css-heart::before,
+        .css-heart::after {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: #ff0055;
+            border-radius: 50%;
+        }
+
+        .css-heart::before { top: -45px; left: 0; }
+        .css-heart::after { top: 0; left: 45px; }
+
+        .name-container {
+            position: relative;
+            z-index: 15;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-align: center;
+            width: 130px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            text-transform: uppercase;
+            padding-bottom: 5px;
+            line-height: 1.1;
+            word-wrap: break-word;
         }
 
         @keyframes pulse-glow {
             0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.2); opacity: 0.9; }
+            50% { transform: scale(1.3); opacity: 0.9; }
         }
 
         .crown {
@@ -388,10 +447,12 @@
     <div class="galaxy-center">
         <div class="core-glow"></div>
         <div class="hearts-origin" id="hearts-container"></div>
-        <div class="black-hole">
-            <div class="content">
-                <div class="crown">👑</div>
-                <h1>{{name}}</h1>
+        <div class="sun-core">
+            <div class="heart-wrapper">
+                <div class="css-heart"></div>
+                <div class="name-container">
+                    {{name}}
+                </div>
             </div>
         </div>
         <div class="message-card">
@@ -498,7 +559,13 @@
 
 const heartsContainer = document.getElementById('hearts-container');
 const orbit = document.getElementById('orbit');
-const elements = [
+
+// Parse custom words from user input
+const customWordsRaw = '{{extra_text}}'.trim();
+const customWords = customWordsRaw ? customWordsRaw.split(',').map(w => w.trim()).filter(w => w) : [];
+
+// Default elements if no custom words provided
+const defaultElements = [
     '❤️', '✨', '💖', '🌟', '✨', '💘', '💝', '💎', '💫', '🌹', '✨', '🔥', '🌈', '🌠', '🛸', '🚀',
     'Pasión', 'Libertad', 'Magia', 'Eres todo', 'Contigo',
     'Eternidad', 'Felicidad', 'Gracias', 'Mi mundo', 'Sueños',
@@ -510,6 +577,12 @@ const elements = [
     'Mi Vida', 'Mi Rey', 'Mi Reina', 'Para Siempre', 'Inolvidable', 'Dicha',
     'Lealtad', 'Confianza', 'Alma Gemela', 'Destino', 'Pasión'
 ];
+
+// Mix custom words with emojis for visual variety
+const emojis = ['❤️', '✨', '💖', '🌟', '💘', '💝', '💎', '💫', '🌹'];
+const elements = customWords.length > 0 
+    ? [...customWords, ...emojis, ...customWords, ...emojis]  // Repeat custom words with emojis
+    : defaultElements;
 
 function createFloatingElement() {
     const el = document.createElement('div');
