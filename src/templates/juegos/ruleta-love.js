@@ -12,6 +12,8 @@
             --secondary: #00f2ff;
             --accent: #7000ff;
             --bg: #050508;
+            --success: #2ecc71;
+            --error: #e74c3c;
         }
 
         body { 
@@ -59,8 +61,8 @@
         /* Wheel Styles */
         .wheel-outer {
             position: relative;
-            width: 340px;
-            height: 340px;
+            width: 320px;
+            height: 320px;
             padding: 15px;
             border-radius: 50%;
             background: linear-gradient(135deg, #1a1a2e, #0f0f1b);
@@ -115,15 +117,16 @@
             height: 100%;
             border-radius: 50%;
             position: absolute;
+            /* Alternate SÍ / NO colors */
             background: conic-gradient(
-                #ff5e9e 0deg 45deg,
-                #4db8ff 45deg 90deg,
-                #9d5eff 90deg 135deg,
-                #ffb84d 135deg 180deg,
-                #ff5e9e 180deg 225deg,
-                #4db8ff 225deg 270deg,
-                #9d5eff 270deg 315deg,
-                #ffb84d 315deg 360deg
+                #ff4d94 0deg 45deg,
+                #333 45deg 90deg,
+                #ff4d94 90deg 135deg,
+                #333 135deg 180deg,
+                #ff4d94 180deg 225deg,
+                #333 225deg 270deg,
+                #ff4d94 270deg 315deg,
+                #333 315deg 360deg
             );
         }
 
@@ -182,7 +185,25 @@
 
         .spin-btn:hover:not(:disabled) { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 40px rgba(255, 77, 148, 0.6); }
         .spin-btn:active:not(:disabled) { transform: scale(0.95); }
-        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            background: rgba(255, 77, 148, 0.9);
+            padding: 12px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-weight: bold;
+            transform: translateY(-100px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .toast.show { transform: translateY(0); }
 
         /* Success Card Styles */
         .success-overlay {
@@ -254,6 +275,7 @@
 </head>
 <body>
     <div class="hearts-bg" id="hearts-bg"></div>
+    <div class="toast" id="toast">¡Casi! Inténtalo de nuevo... ✨</div>
 
     <div id="intro-overlay" onclick="startExperience()">
         <div style="text-align: center;">
@@ -318,14 +340,14 @@
     <script>
         const wheel = document.getElementById('wheel');
         const sections = [
-            { text: "SÍ 💖", win: true },
-            { text: "NO 🙊", win: false },
-            { text: "TAL VEZ 🤔", win: false },
-            { text: "NO 💔", win: false },
-            { text: "SÍ 💕", win: true },
-            { text: "NO 🙈", win: false },
-            { text: "INTENTA ✨", win: false },
-            { text: "NO 😢", win: false }
+            { text: "SÍ", win: true },
+            { text: "NO", win: false },
+            { text: "SÍ", win: true },
+            { text: "NO", win: false },
+            { text: "SÍ", win: true },
+            { text: "NO", win: false },
+            { text: "SÍ", win: true },
+            { text: "NO", win: false }
         ];
 
         // Generate Wheel Segments
@@ -409,33 +431,66 @@
                 document.getElementById('progress-bar').style.width = progress + '%';
                 const mins = Math.floor(audio.currentTime / 60);
                 const secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('time-display').textContent = mins + ":" + (secs < 10 ? '0' : '') + secs;
+                document.getElementById('time-display').textContent = mins + ":" + (secs < 10 ? '0' : "") + secs;
             };
         }
 
         /* --- Spin Logic --- */
         let canSpin = true;
+        let currentRotation = 0;
+        let attemptCount = 0;
+
         function spinWheel() {
             if (!canSpin) return;
             const btn = document.getElementById('spin-btn');
             const wheelContainer = document.getElementById('wheel-container');
+            const toast = document.getElementById('toast');
             
             canSpin = false;
             btn.disabled = true;
             btn.innerHTML = "¡EL DESTINO DECIDE! 🎲";
+            toast.classList.remove('show');
 
-            const winningIndices = [0, 4];
-            const targetIndex = winningIndices[Math.floor(Math.random() * winningIndices.length)];
-            const rotations = 8;
+            attemptCount++;
+            
+            // Logic: we want some variation but ensure success eventually or randomly.
+            // For fun, let's make it land on NO if it's the first time and they are unlucky (50/50).
+            // But if it's the second time, or if they are lucky, land on SÍ.
+            
+            let possibleIndices = [];
+            if (attemptCount === 1) {
+                // First try: Can be SÍ or NO.
+                possibleIndices = [0, 1, 2, 3, 4, 5, 6, 7];
+            } else {
+                // Second try onwards: More likely to be SÍ. Actually let's force SÍ on 2nd try if it was NO.
+                possibleIndices = [0, 2, 4, 6]; 
+            }
+
+            const targetIndex = possibleIndices[Math.floor(Math.random() * possibleIndices.length)];
+            const isWin = sections[targetIndex].win;
+            
+            const rotations = 8 + attemptCount;
             const segmentAngle = 45;
             const offset = 22.5; 
             
+            // Calculate total rotation
             const targetRotation = (270 - (targetIndex * segmentAngle) - offset) + (360 * rotations);
+            currentRotation = targetRotation;
             
             wheelContainer.style.transform = "rotate(" + targetRotation + "deg)";
 
             setTimeout(() => {
-                showSuccess();
+                if (isWin) {
+                    showSuccess();
+                } else {
+                    // It was a NO
+                    toast.classList.add('show');
+                    btn.disabled = false;
+                    btn.innerHTML = "✨ REINTENTAR ✨";
+                    canSpin = true;
+                    // Hide toast after 3s
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                }
             }, 5500);
         }
 
