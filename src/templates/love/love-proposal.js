@@ -113,7 +113,7 @@
         <h1>Para: {{name}}</h1>
         <div class="proposal-msg">{{message}}</div>
         <div class="btns">
-            <button id="yesBtn">¡SÍ! ❤️</button>
+            <button id="yesBtn">SÍ ❤️</button>
             <button id="noBtn">NO 😢</button>
         </div>
         <div class="sender">Enviado con Amor por: <span class="sender-name">{{sender}}</span></div>
@@ -240,15 +240,24 @@
         const success = document.getElementById('success');
 
         const moveNo = () => {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 100);
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-            noBtn.style.zIndex = '999';
+            // Instant hide to prevent clicks
+            noBtn.style.opacity = '0';
+            noBtn.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+                const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 100);
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = x + 'px';
+                noBtn.style.top = y + 'px';
+                noBtn.style.zIndex = '9999';
+                noBtn.style.opacity = '1';
+                noBtn.style.pointerEvents = 'auto';
+            }, 50); // Very fast teleport
         };
-        noBtn.addEventListener('mouseover', moveNo);
+        noBtn.addEventListener('mouseenter', moveNo);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });
+        noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNo(); });
 
         yesBtn.addEventListener('click', () => {
             mainCard.style.opacity = '0';
