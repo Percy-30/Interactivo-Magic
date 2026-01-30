@@ -16,16 +16,22 @@
             height: 100vh; 
             overflow: hidden; 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center; 
+            transition: background 1.5s ease;
         }
+
+        body.happy { background: radial-gradient(circle at center, #2d0a1a 0%, #05020a 100%); }
 
         .backdrop {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #2d0a1a 0%, #05020a 100%);
+            background: radial-gradient(circle at center, #210505 0%, #000 100%);
             z-index: 0;
+            transition: opacity 1.5s ease;
         }
+        body.happy .backdrop { opacity: 0.3; }
 
         .scene {
             position: relative;
@@ -35,65 +41,130 @@
             align-items: center;
             width: 100%;
             padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+        body.happy .scene { opacity: 1; pointer-events: auto; }
+
+        /* Interaction Zone (Angry Face) */
+        #angry-zone {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            cursor: pointer;
+            transition: all 1s ease;
+        }
+        #angry-zone.calmed { opacity: 0; pointer-events: none; transform: scale(1.5); }
+
+        .angry-face {
+            font-size: 140px;
+            filter: drop-shadow(0 0 40px #f44336);
+            animation: move-angry 0.1s infinite;
+            position: relative;
+        }
+        @keyframes move-angry {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(3px, 3px); }
+            50% { transform: translate(-3px, -3px); }
+            75% { transform: translate(-3px, 3px); }
+            100% { transform: translate(3px, -3px); }
         }
 
+        .calm-meter {
+            width: 250px;
+            height: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-top: 3rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        .calm-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #f44336, #ff80ab);
+            transition: width 0.3s ease;
+        }
+        .calm-hint {
+            color: #f44336;
+            font-weight: 900;
+            letter-spacing: 5px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            height: 20px;
+        }
+
+        /* 3D Envelope */
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
             perspective: 2000px;
-            transition: transform 0.5s;
         }
 
         .envelope {
-            width: 340px;
-            height: 240px;
-            background: #f44336; 
+            width: 320px;
+            height: 220px;
+            background: #d32f2f;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            border-radius: 8px;
-            transition: all 0.5s;
-            border: 2px solid #d32f2f;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            border-radius: 12px;
+            transition: transform 0.8s;
+            border: 1px solid rgba(255,255,255,0.1);
+            background-image: linear-gradient(135deg, #f44336 50%, #d32f2f 50%);
         }
 
-        .envelope-top {
+        .envelope-flap {
             position: absolute;
             top: 0; left: 0; width: 0; height: 0;
-            border-left: 170px solid transparent;
-            border-right: 170px solid transparent;
-            border-top: 130px solid #d32f2f;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #c62828;
             transform-origin: top;
             transition: transform 0.6s 0.2s;
             z-index: 5;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
         }
-
-        .envelope.open .envelope-top { transform: rotateX(180deg); z-index: 0; }
-        .envelope.open { background: #c62828; }
+        .envelope.open .envelope-flap { transform: rotateX(170deg); z-index: 0; }
+        
+        .envelope-flap::after {
+            content: "❤️";
+            position: absolute;
+            top: -100px; left: -15px;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
 
         .letter-container {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 320px;
-            height: 220px;
-            background: white;
+            bottom: 5px; left: 5px;
+            width: 310px; height: 210px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             z-index: 2;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .envelope.open .letter-container {
-            transform: translateY(-80px); /* Lower displacement to prevent opening "too high" */
+            transform: translateY(-130px) scale(1.1);
             height: 480px;
             width: 340px;
-            left: 0;
+            left: -10px;
             z-index: 200;
-            box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+            box-shadow: 0 50px 150px rgba(0,0,0,0.9);
         }
 
+        /* Dynamic Pages (Book Style) */
         .pages {
-            width: calc({{total_pages}} * 100%); /* Dynamic width */
+            width: calc({{total_pages}} * 100%);
             height: 100%;
             display: flex;
             transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -110,14 +181,14 @@
         }
 
         .page h2 { font-family: 'Dancing Script', cursive; color: #d32f2f; margin-bottom: 20px; font-size: 2.2rem; border-bottom: 2px solid #fce4ec; padding-bottom: 5px; text-align: center; }
-        .page p { font-size: 1.15rem; line-height: 1.6; color: #444; font-weight: 600; margin-bottom: 20px; text-align: center; }
+        .page p { font-size: 1.15rem; line-height: 1.6; color: #444; font-weight: 600; margin-bottom: 15px; text-align: center; }
         
         .photo-area {
             width: 100%;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 20px;
-            border: 4px solid #fce4ec;
+            margin-bottom: 15px;
+            border: 4px solid #fff;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             flex-shrink: 0;
         }
@@ -127,65 +198,62 @@
             display: flex;
             justify-content: space-between;
             margin-top: auto;
-            padding-top: 20px;
-            gap: 15px;
+            padding-top: 15px;
+            gap: 10px;
         }
 
         .btn-page {
-            padding: 12px 20px;
+            padding: 10px 18px;
             background: #d32f2f;
             color: white;
             border: none;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
             font-weight: 800;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3);
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
             transition: all 0.3s;
         }
-        .btn-page:hover { transform: scale(1.05); background: #f44336; }
+        .btn-page:disabled { opacity: 0.3; cursor: default; }
 
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0a0514;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 5000; transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;
-        }
-        #intro-overlay.hidden { opacity: 0; visibility: hidden; transform: scale(1.1); }
-
-        .box-emoji { font-size: 130px; filter: drop-shadow(0 0 35px #f44336); animation: angry-shake 2.5s infinite; }
-        @keyframes angry-shake {
-            0%, 100% { transform: rotate(0); }
-            10%, 30%, 50%, 70%, 90% { transform: rotate(-8deg); }
-            20%, 40%, 60%, 80% { transform: rotate(8deg); }
+        /* Magic Items */
+        .heart-float { position: fixed; pointer-events: none; z-index: 50; animation: heart-up linear forwards; }
+        @keyframes heart-up {
+            from { transform: translateY(0) scale(1); opacity: 1; }
+            to { transform: translateY(-300px) scale(0); opacity: 0; }
         }
 
-        .magic-item { position: fixed; top: -50px; pointer-events: none; z-index: 4000; animation: magic-fall linear forwards; }
-        @keyframes magic-fall { to { transform: translateY(110vh) rotate(360deg); } }
+        .angry-particle { position: fixed; pointer-events: none; z-index: 100; animation: anger-pop 1s forwards; color: #f44336; }
+        @keyframes anger-pop {
+            0% { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
 
-        .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(20px); padding: 15px 25px; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; gap: 15px; z-index: 1000; color: white; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .play-btn { width: 50px; height: 50px; background: #f44336; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 15px rgba(244, 67, 54, 0.4); }
-        .progress-bar-container { flex-grow: 1; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: #f44336; transition: width 0.1s linear; }
-
-        .sender-tag { font-weight: 900; color: #d32f2f; margin-top: 15px; text-align: right; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* HUD */
+        .audio-hud { position: fixed; bottom: 30px; width: 90%; max-width: 350px; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; gap: 15px; z-index: 1000; color: white; opacity: 0; transition: opacity 2s; }
+        body.happy .audio-hud { opacity: 1; }
+        .play-btn { width: 45px; height: 45px; background: #f44336; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .hud-bar-bg { flex: 1; height: 5px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+        .hud-bar { height: 100%; background: #f44336; width: 0%; transition: width 0.1s linear; }
 
         @media (max-width: 500px) {
-            .envelope { width: 300px; height: 210px; }
-            .envelope-top { border-left-width: 150px; border-right-width: 150px; border-top-width: 115px; }
-            .letter-container { width: 280px; height: 190px; }
-            .envelope.open .letter-container { width: 320px; height: 450px; transform: translateY(-70px); }
-            .box-emoji { font-size: 100px; }
+            .envelope { width: 280px; height: 190px; }
+            .envelope-flap { border-left-width: 140px; border-right-width: 140px; border-top-width: 105px; }
+            .letter-container { width: 270px; height: 180px; }
+            .envelope.open .letter-container { width: 310px; transform: translateY(-110px); }
+            .angry-face { font-size: 100px; }
         }
     </style>
 </head>
 <body>
-    <div id="intro-overlay" onclick="openBox()">
-        <div class="box-emoji">😠</div>
-        <div style="color: white; font-size: 2.2rem; font-weight: 900; margin-top: 3rem; text-align: center; width: 85%;">¡Tengo una sorpresa para mi Enojona!</div>
-        <div style="color: #f44336; letter-spacing: 6px; margin-top: 1.5rem; font-weight: 900; font-size: 1.1rem; animation: pulse 2s infinite;">TOCA PARA ABRIR ❤️</div>
+    <div id="angry-zone" onclick="calmDown(event)">
+        <div class="angry-face" id="angry-emoji">😠</div>
+        <div class="calm-meter">
+            <div class="calm-bar" id="calm-bar"></div>
+        </div>
+        <div class="calm-hint" id="calm-hint">¡HAZLE CARIÑITOS! ❤️</div>
     </div>
 
     <div class="backdrop"></div>
@@ -193,7 +261,7 @@
     <div class="scene">
         <div class="envelope-wrapper" onclick="toggleLetter()">
             <div class="envelope" id="envelope">
-                <div class="envelope-top"></div>
+                <div class="envelope-flap"></div>
                 <div class="letter-container">
                     <div class="pages" id="pages">
                         {{dynamic_pages}}
@@ -203,84 +271,88 @@
         </div>
     </div>
 
-    <div class="audio-controls" style="display: none;" id="audio-ui">
-        <div class="play-btn" id="play-btn">
-            <span id="play-icon" style="font-size: 1.2rem;">▶️</span><span id="pause-icon" style="display:none; font-size: 1.2rem;">||</span>
-        </div>
-        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="audio-hud" id="audio-ui">
+        <div class="play-btn" id="play-toggle">▶</div>
+        <div class="hud-bar-bg"><div class="hud-bar" id="hud-bar"></div></div>
     </div>
 
-    <audio id="bg-audio" src="{{audio_src}}" loop></audio>
-    <div id="yt-player" style="position:fixed; opacity:0; pointer-events:none;"></div>
+    <audio id="player" src="{{audio_src}}" loop></audio>
+    <div id="yt-wrap" style="display:none"><div id="yt-player"></div></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         const hasAudio = '{{has_audio}}' === 'true';
         const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
         const totalPages = parseInt('{{total_pages}}') || 1;
-        let audio = document.getElementById('bg-audio');
-        let ytPlayer = null;
-        let ytReady = false;
+        
+        let clicks = 0;
+        const targetClicks = 15;
+        let isCalmed = false;
 
-        window.onYouTubeIframeAPIReady = function() {
-            if (youtubeId && youtubeId.length > 2) {
-                ytPlayer = new YT.Player('yt-player', {
-                    height: '0', width: '0', videoId: youtubeId,
-                    playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                    events: {
-                        'onReady': () => { 
-                            ytReady = true; 
-                            if(window.playOnReady) { ytPlayer.playVideo(); updateUI(true); } 
-                        },
-                        'onStateChange': (e) => updateUI(e.data === 1)
-                    }
-                });
+        function calmDown(e) {
+            if(isCalmed) return;
+            clicks++;
+            
+            const pct = (clicks / targetClicks) * 100;
+            document.getElementById('calm-bar').style.width = pct + '%';
+            
+            // Interaction Feedback
+            const h = document.createElement('div');
+            h.className = 'heart-float';
+            h.innerHTML = '❤️';
+            h.style.left = e.clientX + 'px';
+            h.style.top = e.clientY + 'px';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 1000);
+
+            // Clicks progress
+            if(clicks === 5) document.getElementById('calm-hint').innerText = '¡UN POQUITO MÁS! 😠';
+            if(clicks === 10) document.getElementById('calm-hint').innerText = '¡YA CASI SE CALMA! 🤭';
+
+            if(clicks >= targetClicks) {
+                isCalmed = true;
+                const zone = document.getElementById('angry-zone');
+                document.getElementById('angry-emoji').innerText = '😍';
+                document.getElementById('angry-emoji').style.animation = 'none';
+                document.getElementById('calm-hint').innerText = '¡LISTO! ❤️✨';
+                
+                setTimeout(() => {
+                    zone.classList.add('calmed');
+                    document.body.classList.add('happy');
+                    startHappyFlow();
+                }, 1000);
             }
-        };
-
-        if (youtubeId && youtubeId.length > 2) {
-            const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-            document.head.appendChild(tag);
         }
 
-        function updateUI(playing) {
-            document.getElementById('play-icon').style.display = playing ? 'none' : 'inline';
-            document.getElementById('pause-icon').style.display = playing ? 'inline' : 'none';
-        }
+        function startHappyFlow() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            if(hasAudio) initializeAudio();
 
-        window.openBox = function() {
-            const overlay = document.getElementById('intro-overlay');
-            overlay.classList.add('hidden');
-            setTimeout(() => { overlay.style.display = 'none'; }, 1000);
+            // Rain of hearts
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.style.position = 'fixed';
+                h.style.top = '-20px';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = (10 + Math.random() * 20) + 'px';
+                h.style.zIndex = '5';
+                h.style.opacity = '0.6';
+                h.innerText = ['❤️', '💖', '✨', '🌸'][Math.floor(Math.random()*4)];
+                h.style.animation = 'magic-fall ' + (3 + Math.random() * 3) + 's linear forwards';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 6000);
+            }, 400);
 
-            if (hasAudio) {
-                document.getElementById('audio-ui').style.display = 'flex';
-                if (ytPlayer && ytReady) { 
-                    ytPlayer.playVideo(); 
-                    updateUI(true); 
-                } 
-                else if (audio && audio.src) { 
-                    audio.play().catch(() => {}); 
-                    updateUI(true); 
-                }
-                else { 
-                    window.playOnReady = true; 
-                }
-            }
-            startMagicalRain();
-
+            // Open envelope automatically after delay
             setTimeout(() => {
                 document.getElementById('envelope').classList.add('open');
-            }, 1300);
-        };
+            }, 1500);
+        }
 
+        // Letter Logic
         function toggleLetter() {
-            const env = document.getElementById('envelope');
-            const isOpen = env.classList.toggle('open');
-            if (!isOpen) {
-                setTimeout(() => {
-                    document.getElementById('pages').style.transform = 'translateX(0)';
-                }, 500);
-            }
+            document.getElementById('envelope').classList.toggle('open');
         }
 
         window.goToPage = function(index, e) {
@@ -289,39 +361,50 @@
             document.getElementById('pages').style.transform = 'translateX(' + pct + '%)';
         }
 
-        function startMagicalRain() {
-            setInterval(() => {
-                const p = document.createElement('div');
-                p.className = 'magic-item';
-                p.innerHTML = ['😠', '❤️', '✨', '😠', '✨'][Math.floor(Math.random()*5)];
-                const startX = Math.random() * 100;
-                const duration = 4 + Math.random() * 4;
-                p.style.left = startX + 'vw';
-                p.style.fontSize = (15 + Math.random() * 30) + 'px';
-                p.style.animationDuration = duration + 's';
-                p.style.opacity = 0.4 + Math.random() * 0.6;
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), duration * 1000);
-            }, 300);
+        // Audio System
+        const player = document.getElementById('player');
+        let ytPlayer = null;
+
+        function initializeAudio() {
+            if(youtubeId && youtubeId.length > 5) {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.body.appendChild(tag);
+                window.onYouTubeIframeAPIReady = () => {
+                    ytPlayer = new YT.Player('yt-player', {
+                        videoId: youtubeId, height: '0', width: '0',
+                        playerVars: { autoplay: 1, loop: 1, playlist: youtubeId },
+                        events: { 'onReady': () => toggleMusic(true) }
+                    });
+                };
+            } else {
+                player.play().catch(() => {});
+                toggleMusic(true);
+            }
         }
 
-        document.getElementById('play-btn').onclick = (e) => {
+        function toggleMusic(play) {
+            const btn = document.getElementById('play-toggle');
+            if(play) {
+                btn.textContent = '||';
+                if(ytPlayer) ytPlayer.playVideo(); else player.play();
+            } else {
+                btn.textContent = '▶';
+                if(ytPlayer) ytPlayer.pauseVideo(); else player.pause();
+            }
+        }
+
+        document.getElementById('play-toggle').onclick = (e) => {
             e.stopPropagation();
-            if (ytPlayer && ytReady) { 
-                if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); else ytPlayer.playVideo(); 
-            }
-            else { 
-                if (audio.paused) audio.play(); else audio.pause(); 
-            }
+            const btn = document.getElementById('play-toggle');
+            toggleMusic(btn.textContent === '▶');
         };
 
-        if (audio) { 
-            audio.onplay = () => updateUI(true);
-            audio.onpause = () => updateUI(false);
-            audio.ontimeupdate = () => { 
-                document.getElementById('progress-bar').style.width = (audio.currentTime / audio.duration) * 100 + '%'; 
-            }; 
+        if(!youtubeId || youtubeId.length < 5) {
+            player.ontimeupdate = () => {
+                document.getElementById('hud-bar').style.width = (player.currentTime / player.duration) * 100 + "%";
+            };
         }
     </script>
 </body>
-</html>`;
+</html>\`;

@@ -179,6 +179,7 @@ const TEMPLATES = [
     color: '#ff4000',
     content: ENOJONA_TEMPLATE,
     hasImage: true,
+    hasItems: true,
     hasExtra: true,
     extraLabel: 'Texto final'
   },
