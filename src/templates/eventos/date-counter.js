@@ -10,7 +10,7 @@ export const DATE_COUNTER_TEMPLATE = `<!DOCTYPE html>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            background: #000; 
+            background: #0a0a12; 
             color: white; 
             font-family: 'Outfit', sans-serif; 
             height: 100vh; 
@@ -27,15 +27,15 @@ export const DATE_COUNTER_TEMPLATE = `<!DOCTYPE html>
             background-image: url('{{image_src}}');
             background-size: cover;
             background-position: center;
-            filter: brightness(0.4) blur(2px);
+            filter: brightness(0.5) blur(8px); /* Higher blur for premium feel */
             z-index: 0;
-            display: {{image_display}};
+            transform: scale(1.1); /* Prevent white edges from blur */
         }
 
         .overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
             z-index: 1;
         }
 
@@ -44,19 +44,50 @@ export const DATE_COUNTER_TEMPLATE = `<!DOCTYPE html>
             z-index: 10;
             text-align: center;
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Neon Clock Style */
-        .clock-container {
-            width: 180px; height: 180px;
+        /* Premium Clock Style */
+        .clock-ring {
+            width: 200px; height: 200px;
             border-radius: 50%;
-            border: 4px solid #fff;
-            margin: 0 auto 2rem;
+            border: 2px solid rgba(255,255,255,0.1);
+            margin: 0 auto 2.5rem;
             position: relative;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2);
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+        }
+
+        .clock-ring::before {
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, #00f2ff, #ff4d94, #ffeead) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            animation: rotate-border 4s linear infinite;
+        }
+        @keyframes rotate-border { 100% { transform: rotate(360deg); } }
+
+        .clock-inner-photo {
+            width: 170px; height: 170px;
+            border-radius: 50%;
+            background-image: url('{{image_src}}');
+            background-size: cover;
+            background-position: center;
+            border: 3px solid white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            z-index: 2;
         }
 
         .hand {
@@ -64,147 +95,124 @@ export const DATE_COUNTER_TEMPLATE = `<!DOCTYPE html>
             bottom: 50%;
             left: 50%;
             transform-origin: bottom center;
+            background: white;
             border-radius: 4px;
+            z-index: 10;
         }
-        .hour { width: 4px; height: 40px; background: #00f2ff; box-shadow: 0 0 10px #00f2ff; z-index: 3; }
-        .min { width: 3px; height: 60px; background: #ff4d94; box-shadow: 0 0 10px #ff4d94; z-index: 2; }
-        .sec { width: 1.5px; height: 75px; background: #ffeead; box-shadow: 0 0 5px #ffeead; z-index: 1; }
-        .center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background: white; border-radius: 50%; z-index: 5; box-shadow: 0 0 10px white; }
+        .hour { width: 4px; height: 40px; }
+        .min { width: 3px; height: 60px; }
+        .sec { width: 1.5px; height: 75px; background: #ff4d94; box-shadow: 0 0 10px #ff4d94; }
+        .center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background: white; border-radius: 50%; z-index: 15; box-shadow: 0 0 15px white; }
 
         .title-neon {
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             margin-bottom: 2rem;
-            background: linear-gradient(to right, #ff4d94, #ff80bf, #ff4d94);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(255, 77, 148, 0.4);
-            animation: pulse 2s infinite ease-in-out;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px #ff4d94;
+            animation: pulse-light 2s infinite ease-in-out;
         }
+        @keyframes pulse-light { 0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px #ff4d94; } 50% { opacity: 0.8; text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px #ff4d94; } }
 
-        .message-box {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.4rem;
-            margin-bottom: 2.5rem;
-            color: rgba(255,255,255,0.9);
-            line-height: 1.4;
-        }
-
-        /* Countdown Grid */
+        /* Counter Grid */
         .counter-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: 15px;
+            width: 100%;
         }
 
         .counter-item {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1.2rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
-        .counter-val { font-size: 2.2rem; font-weight: 900; display: block; margin-bottom: 2px; }
-        .counter-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.6; letter-spacing: 2px; color: #ff80bf; }
+        .counter-val { font-size: 2.5rem; font-weight: 900; display: block; margin-bottom: 5px; color: #fff; }
+        .counter-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #ff80bf; letter-spacing: 3px; }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.02); } }
+        .sender-tag { margin-top: 3rem; font-weight: 800; color: rgba(255,255,255,0.5); letter-spacing: 4px; font-size: 0.8rem; text-transform: uppercase; }
 
-        /* Intro */
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: opacity 0.8s; }
+        /* Intro Overlay */
+        #intro-overlay { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1); }
         #intro-overlay.hidden { opacity: 0; pointer-events: none; }
 
-        .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 350px; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 30px; display: flex; align-items: center; gap: 15px; z-index: 1000; color: white; border: 1px solid rgba(255,255,255,0.1); }
-        .play-btn { width: 40px; height: 40px; background: #ff4d94; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; }
-        .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: #ff4d94; }
+        .intro-icon { font-size: 100px; filter: drop-shadow(0 0 30px #00f2ff); animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        /* HUD Music */
+        .music-hud { position: fixed; bottom: 30px; width: 90%; max-width: 380px; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); padding: 15px 25px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; gap: 20px; z-index: 1000; transition: opacity 2s; opacity: 0; }
+        body.ready .music-hud { opacity: 1; }
+        .play-toggle { width: 50px; height: 50px; background: #ff4d94; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; font-size: 1.2rem; }
+        .progress-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+        .progress-fill { height: 100%; background: #ff4d94; width: 0%; border-radius: 2px; transition: width 0.1s linear; }
+
+        @media (max-width: 500px) {
+            .clock-ring { width: 160px; height: 160px; margin-bottom: 2rem; }
+            .clock-inner-photo { width: 130px; height: 130px; }
+            .counter-val { font-size: 1.8rem; }
+            .title-neon { font-size: 1.8rem; }
+        }
     </style>
 </head>
-<body>
-    <div id="intro-overlay" onclick="openBox()">
-        <div style="font-size: 80px; filter: drop-shadow(0 0 20px #00f2ff);">⏰</div>
-        <div style="color: white; font-size: 1.8rem; font-weight: 900; margin-top: 2rem; letter-spacing: 2px; text-align: center;">NUESTRO TIEMPO JUNTOS</div>
-        <div style="color: #ff4d94; margin-top: 1rem; font-weight: bold; letter-spacing: 5px; animation: pulse 1.5s infinite;">TOCA PARA VER ❤️</div>
+<body class="is-loading">
+    <div id="intro-overlay" onclick="startExperience()">
+        <div class="intro-icon">📅</div>
+        <div style="color: white; font-size: 1.8rem; font-weight: 900; margin-top: 2rem; letter-spacing: 4px; text-align: center;">NUESTRO CONTADOR</div>
+        <div style="color: #ff4d94; margin-top: 1.5rem; font-weight: 900; letter-spacing: 6px; animation: pulse-light 1.5s infinite;">TOCA PARA VER ❤️</div>
     </div>
 
     <div class="background-photo"></div>
     <div class="overlay"></div>
 
     <div class="container">
-        <div class="clock-container">
+        <div class="clock-ring">
             <div class="center-dot"></div>
             <div class="hand hour" id="hour"></div>
             <div class="hand min" id="min"></div>
             <div class="hand sec" id="sec"></div>
+            <div class="clock-inner-photo"></div>
         </div>
 
         <h1 class="title-neon">{{extra_text}}</h1>
         
-        <div class="message-box" style="{{message_display}}">
-            {{message}}
-        </div>
-
         <div class="counter-grid">
             <div class="counter-item"><span class="counter-val" id="days">0</span><span class="counter-label">Días</span></div>
             <div class="counter-item"><span class="counter-val" id="hours">0</span><span class="counter-label">Horas</span></div>
-            <div class="counter-item"><span class="counter-val" id="mins">0</span><span class="counter-label">Minutos</span></div>
-            <div class="counter-item"><span class="counter-val" id="secs">0</span><span class="counter-label">Segundos</span></div>
+            <div class="counter-item"><span class="counter-val" id="mins">0</span><span class="counter-label">Min</span></div>
+            <div class="counter-item"><span class="counter-val" id="secs">0</span><span class="counter-label">Seg</span></div>
         </div>
 
-        <div style="margin-top: 3rem; font-weight: 900; color: #ff4d94; letter-spacing: 3px; font-size: 0.9rem; text-transform: uppercase;">
-             De: {{sender}}
-        </div>
+        <div class="sender-tag">De: {{sender}} ❤️</div>
     </div>
 
-    <div class="audio-controls" style="display: none;" id="audio-ui">
-        <div class="play-btn" id="play-btn">
-            <span id="play-icon">▶</span><span id="pause-icon" style="display:none">||</span>
-        </div>
-        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="music-hud" id="music-ui">
+        <div class="play-toggle" id="play-btn">▶</div>
+        <div class="progress-bg"><div class="progress-fill" id="progress-bar"></div></div>
     </div>
 
-    <canvas id="particles" class="particles"></canvas>
+    <audio id="player" src="{{audio_src}}" loop></audio>
+    <div id="yt-wrap" style="display:none"><div id="yt-player"></div></div>
 
-    <audio id="bg-audio" src="{{audio_src}}" loop></audio>
-    <div id="yt-player" style="position:fixed; opacity:0; pointer-events:none;"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         const hasAudio = '{{has_audio}}' === 'true';
         const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
-        let audio = document.getElementById('bg-audio');
-        let ytPlayer = null;
-        let ytReady = false;
-
-        // Simple Clock Logic
-        function updateClock() {
-            const now = new Date();
-            const h = now.getHours();
-            const m = now.getMinutes();
-            const s = now.getSeconds();
-            
-            document.getElementById('hour').style.transform = 'translate(-50%, 0) rotate(' + (h * 30 + m/2) + 'deg)';
-            document.getElementById('min').style.transform = 'translate(-50%, 0) rotate(' + (m * 6) + 'deg)';
-            document.getElementById('sec').style.transform = 'translate(-50%, 0) rotate(' + (s * 6) + 'deg)';
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // Date Counter Logic
-        let userDate = '{{start_date}}';
-        let startDate = new Date();
+        const startDateString = '{{start_date}}';
         
-        if (userDate && userDate !== '') {
-            startDate = new Date(userDate + 'T00:00:00');
-        } else {
-            startDate.setFullYear(startDate.getFullYear() - 1); // 1 year ago default
-        }
+        const player = document.getElementById('player');
+        let ytPlayer = null;
 
-        function updateCounter() {
+        // Counter Logic
+        const startDate = startDateString ? new Date(startDateString + 'T00:00:00') : new Date();
+
+        function updateContent() {
             const now = new Date();
             const diff = now - startDate;
             
@@ -217,103 +225,66 @@ export const DATE_COUNTER_TEMPLATE = `<!DOCTYPE html>
             document.getElementById('hours').textContent = h;
             document.getElementById('mins').textContent = m;
             document.getElementById('secs').textContent = s;
-        }
-        setInterval(updateCounter, 1000);
-        updateCounter();
 
-        // Global Audio System
-        window.onYouTubeIframeAPIReady = function() {
-            if (youtubeId && youtubeId.length > 2) {
-                ytPlayer = new YT.Player('yt-player', {
-                    height: '0', width: '0', videoId: youtubeId,
-                    playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                    events: {
-                        'onReady': () => { 
-                            ytReady = true; 
-                            if(window.playOnReady) { ytPlayer.playVideo(); updateUI(true); } 
-                        },
-                        'onStateChange': (e) => updateUI(e.data === 1)
-                    }
-                });
-            }
-        };
-
-        if (youtubeId && youtubeId.length > 2) {
-            const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-            document.head.appendChild(tag);
+            // Clock hands
+            const ch = now.getHours();
+            const cm = now.getMinutes();
+            const cs = now.getSeconds();
+            document.getElementById('hour').style.transform = 'translate(-50%, 0) rotate(' + (ch * 30 + cm/2) + 'deg)';
+            document.getElementById('min').style.transform = 'translate(-50%, 0) rotate(' + (cm * 6) + 'deg)';
+            document.getElementById('sec').style.transform = 'translate(-50%, 0) rotate(' + (cs * 6) + 'deg)';
         }
 
-        function updateUI(playing) {
-            document.getElementById('play-icon').style.display = playing ? 'none' : 'inline';
-            document.getElementById('pause-icon').style.display = playing ? 'inline' : 'none';
-        }
+        setInterval(updateContent, 1000);
+        updateContent();
 
-        window.openBox = function() {
+        function startExperience() {
             document.getElementById('intro-overlay').classList.add('hidden');
-            if (hasAudio) {
-                document.getElementById('audio-ui').style.display = 'flex';
-                if (ytPlayer && ytReady) { 
-                    ytPlayer.playVideo(); 
-                    updateUI(true); 
-                } 
-                else if (audio && audio.src) { 
-                    audio.play().catch(() => {}); 
-                    updateUI(true); 
+            document.body.classList.add('ready');
+            
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ff4d94', '#00f2ff', '#ffffff'] });
+
+            if(hasAudio) {
+                if(youtubeId && youtubeId.length > 5) {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    document.body.appendChild(tag);
+                    window.onYouTubeIframeAPIReady = () => {
+                        ytPlayer = new YT.Player('yt-player', {
+                            videoId: youtubeId, height: '0', width: '0',
+                            playerVars: { autoplay: 1, loop: 1, playlist: youtubeId },
+                            events: { 'onReady': () => toggleMusic(true) }
+                        });
+                    };
+                } else {
+                    player.play().catch(() => {});
+                    toggleMusic(true);
                 }
-                else { 
-                    window.playOnReady = true; 
-                }
             }
-            startParticles();
-        };
+        }
 
-        function startParticles() {
-            const canvas = document.getElementById('particles');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const hearts = [];
-            for(let i=0; i<30; i++) {
-                hearts.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: 5 + Math.random() * 10,
-                    speed: 0.5 + Math.random() * 1.5,
-                    opacity: 0.2 + Math.random() * 0.5
-                });
+        function toggleMusic(play) {
+            const btn = document.getElementById('play-btn');
+            if(play) {
+                btn.textContent = '||';
+                if(ytPlayer) ytPlayer.playVideo(); else player.play();
+            } else {
+                btn.textContent = '▶';
+                if(ytPlayer) ytPlayer.pauseVideo(); else player.pause();
             }
-
-            function draw() {
-                ctx.clearRect(0,0,canvas.width, canvas.height);
-                hearts.forEach(h => {
-                    ctx.fillStyle = 'rgba(255, 77, 148, '+h.opacity+')';
-                    ctx.font = h.size + 'px serif';
-                    ctx.fillText('❤️', h.x, h.y);
-                    h.y -= h.speed;
-                    if(h.y < -20) h.y = canvas.height + 20;
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
         }
 
         document.getElementById('play-btn').onclick = () => {
-            if (ytPlayer && ytReady) { 
-                if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); else ytPlayer.playVideo(); 
-            }
-            else { 
-                if (audio.paused) audio.play(); else audio.pause(); 
-            }
+            const btn = document.getElementById('play-btn');
+            toggleMusic(btn.textContent === '▶');
         };
 
-        if (audio) { 
-            audio.onplay = () => updateUI(true);
-            audio.onpause = () => updateUI(false);
-            audio.ontimeupdate = () => { 
-                document.getElementById('progress-bar').style.width = (audio.currentTime / audio.duration) * 100 + '%'; 
-            }; 
+        if(!youtubeId || youtubeId.length < 5) {
+            player.ontimeupdate = () => {
+                const pct = (player.currentTime / player.duration) * 100;
+                document.getElementById('progress-bar').style.width = pct + '%';
+            };
         }
     </script>
 </body>
-</html>`;
+</html>\`;

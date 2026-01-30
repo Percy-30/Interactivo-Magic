@@ -190,7 +190,7 @@ const TEMPLATES = [
     icon: <Clock />,
     color: '#00ffcc',
     content: DATE_COUNTER_TEMPLATE,
-    hasImage: false,
+    hasImage: true,
     hasExtra: true,
     extraLabel: 'Título del evento'
   },
