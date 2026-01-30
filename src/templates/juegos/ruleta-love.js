@@ -45,6 +45,28 @@
             100% { transform: translateY(110vh) scale(1.5); opacity: 0; }
         }
 
+        /* Victory Rain */
+        .victory-rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 7000;
+            display: none;
+        }
+        .victory-rain.active { display: block; }
+
+        .rain-heart {
+            position: absolute;
+            font-size: 24px;
+            animation: rain-fall 4s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 77, 148, 0.4));
+        }
+        @keyframes rain-fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.5); opacity: 0; }
+        }
+
         .main-container {
             position: relative;
             z-index: 10;
@@ -113,7 +135,7 @@
         }
 
         .beating-heart {
-            font-size: 2.2rem;
+            font-size: 2.22rem;
             animation: bpm 1.2s ease-in-out infinite;
         }
         @keyframes bpm {
@@ -171,7 +193,7 @@
             transform: translateY(60px);
             transition: 1s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
         .premium-success.active .glass-card { transform: translateY(0); }
 
@@ -184,12 +206,14 @@
         }
         .photo-aura {
             position: absolute;
-            inset: -10px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--primary));
+            inset: -20px;
+            background: radial-gradient(circle, rgba(255, 77, 148, 0.4) 0%, transparent 70%);
             border-radius: 50%;
-            filter: blur(15px);
-            opacity: 0.3;
-            animation: rotate-slow 10s linear infinite;
+            animation: aura-pulse 3s ease-in-out infinite;
+        }
+        @keyframes aura-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.3); opacity: 0.8; }
         }
 
         .victory-photo {
@@ -205,6 +229,18 @@
 
         .success-title { font-size: 2.5rem; font-weight: 900; margin: 0 0 1rem; color: #000; line-height: 1.1; letter-spacing: -1px; }
         .success-desc { font-size: 1.15rem; color: rgba(0,0,0,0.6); line-height: 1.8; margin-bottom: 2rem; font-weight: 500; }
+
+        /* Floating ornaments */
+        .ornament {
+            position: absolute;
+            font-size: 30px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+            animation: ornament-float 3s ease-in-out infinite;
+        }
+        @keyframes ornament-float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
 
         /* Toast */
         .clean-toast {
@@ -272,6 +308,7 @@
     </div>
 
     <div class="hearts-scene" id="h-flow"></div>
+    <div class="victory-rain" id="victory-rain-layer"></div>
     <div class="clean-toast" id="toast-notif">¡ups! casi... intenta de nuevo ✨</div>
 
     <div class="main-container">
@@ -304,6 +341,12 @@
 
     <div class="premium-success" id="success-view">
         <div class="glass-card">
+            <!-- Ornaments -->
+            <span class="ornament" style="top: -20px; left: -20px; animation-delay: 0s;">💖</span>
+            <span class="ornament" style="top: -20px; right: -20px; animation-delay: 0.5s;">✨</span>
+            <span class="ornament" style="bottom: -20px; left: -20px; animation-delay: 1s;">🌹</span>
+            <span class="ornament" style="bottom: -20px; right: -20px; animation-delay: 1.5s;">💍</span>
+
             <div class="photo-wrap">
                 <div class="photo-aura"></div>
                 <img src="{{image_src}}" class="victory-photo" alt="Love" onerror="this.style.display='none'">
@@ -477,28 +520,22 @@
             toast.classList.remove('show');
             shell.classList.add('is-spinning');
 
-            // Truly Random Logic after 1st try (which is rigged to be a fake loss for tension)
             let wIdx;
             if (count === 1) {
-                // Force a NO on 1st try for "tension"
                 wIdx = [0, 1, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
             } else {
-                // Higher SÍ probability but still "random feeling"
                 const rand = Math.random();
-                if (rand < 0.7) wIdx = [2, 7][Math.floor(Math.random() * 2)]; // 70% chance of SÍ
-                else wIdx = [0, 1, 3, 4, 5, 6][Math.floor(Math.random() * 6)]; // 30% chance of NO again
+                if (rand < 0.75) wIdx = [2, 7][Math.floor(Math.random() * 2)];
+                else wIdx = [0, 1, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
             }
 
-            // Fixed Rotation Logic: Cumulative and Forward-Only
             const jitter = (Math.random() * 30) - 15;
             const targetSegmentAngle = (270 - (wIdx * 45 + 22.5 + jitter));
             
-            // Calculate necessary jump to reach the target angle in a forward direction
             const currentMod = totalRot % 360;
             let additive = targetSegmentAngle - currentMod;
             if (additive <= 0) additive += 360;
             
-            // Add at least 7 full spins (2520 degrees) for a "Professional" length
             const fullSpins = 360 * 7;
             totalRot += fullSpins + additive;
             
@@ -506,7 +543,6 @@
 
             setTimeout(() => {
                 shell.classList.remove('is-spinning');
-                // LOGIC FIX: Only show surprise if the landed segment IS a win
                 if(slices[wIdx].w) {
                     revealSuccess();
                 } else {
@@ -520,7 +556,7 @@
         }
 
         function revealSuccess() {
-            const stop = Date.now() + 6500;
+            const stop = Date.now() + 8000;
             const colors = ['#ff4d94', '#4db8ff', '#ffffff', '#ffdf8d', '#af9aff'];
             
             const frame = () => {
@@ -529,6 +565,20 @@
                 if (Date.now() < stop) requestAnimationFrame(frame);
             };
             frame();
+
+            // Start Victory Rain
+            const rainLayer = document.getElementById('victory-rain-layer');
+            rainLayer.classList.add('active');
+            for(let i=0; i<25; i++) {
+                setTimeout(() => {
+                    const rh = document.createElement('div');
+                    rh.className = 'rain-heart';
+                    rh.innerHTML = ['❤️', '💖', '✨', '🌸', '💝'][Math.floor(Math.random() * 5)];
+                    rh.style.left = Math.random() * 100 + 'vw';
+                    rh.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    rainLayer.appendChild(rh);
+                }, i * 300);
+            }
             
             document.getElementById('success-view').classList.add('active');
         }
