@@ -154,7 +154,7 @@ const TEMPLATES = [
     color: '#0080ff',
     content: FORGIVE_ME_PENGUINS_TEMPLATE,
     hasImage: true,
-    hasItems: true,
+    hasDualImage: true,
     hasExtra: true,
     extraLabel: 'Título de perdón'
   },
@@ -605,6 +605,10 @@ function App() {
     imageOption: 'url', // 'url', 'upload'
     imageSrc: '',
     imageFile: null,
+    hasImage2: false,
+    imageOption2: 'url',
+    imageSrc2: '',
+    imageFile2: null,
     items: []
   });
   const [searchTerm, setSearchTerm] = useState('');
@@ -730,8 +734,10 @@ function App() {
       src: formData.audioOption === 'upload' ? 'uploaded' : (formData.audioOption === 'default' ? 'default' : null),
       yt: formData.audioOption === 'youtube' ? extractSocialId(formData.youtubeUrl, 'youtube') : null,
       img: formData.imageSrc || null,
+      img2: formData.imageSrc2 || null,
       et: formData.extraText || null,
-      et2: formData.extraText2 || null
+      et2: formData.extraText2 || null,
+      it: formData.items && formData.items.length > 0 ? formData.items : null
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -1463,8 +1469,142 @@ function App() {
                     </div>
                   )}
 
+                  {/* Second Image Section (Dual Image) */}
+                  {selectedTemplate.hasDualImage && (
+                    <div style={{
+                      padding: '1.5rem',
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '20px',
+                      border: errors.image2 ? '1px solid var(--primary)' : '1px solid rgba(255, 255, 255, 0.1)',
+                      marginBottom: '1rem'
+                    }}>
+                      {errors.image2 && (
+                        <div style={{ color: 'var(--primary)', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: '500' }}>
+                          ⚠️ {errors.image2}
+                        </div>
+                      )}
+                      <div
+                        onClick={() => setFormData({ ...formData, hasImage2: !formData.hasImage2 })}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: formData.hasImage2 ? '1.2rem' : '0',
+                          padding: '1rem',
+                          background: formData.hasImage2 ? 'rgba(77, 148, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                          borderRadius: '15px',
+                          cursor: 'pointer',
+                          border: formData.hasImage2 ? '2px solid #00aaff' : '1px solid rgba(255, 255, 255, 0.1)',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                          <div style={{
+                            width: '45px',
+                            height: '45px',
+                            borderRadius: '12px',
+                            background: formData.hasImage2 ? '#00aaff' : 'rgba(0, 170, 255, 0.2)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Image size={24} color="white" />
+                          </div>
+                          <div>
+                            <p style={{ fontWeight: '800', fontSize: '1.1rem', margin: 0, color: 'white' }}>Foto de Resultado</p>
+                          </div>
+                        </div>
+                        <div style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          border: '2px solid white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: formData.hasImage2 ? 'white' : 'transparent'
+                        }}>
+                          {formData.hasImage2 && <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#00aaff' }} />}
+                        </div>
+                      </div>
+
+                      {formData.hasImage2 && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                        >
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem', marginBottom: '1.2rem' }}>
+                            {[
+                              { id: 'url', label: 'Link Web', help: 'Pinterest/Google' },
+                              { id: 'upload', label: 'Sube foto', help: 'Desde galería' }
+                            ].map(opt => (
+                              <button
+                                key={opt.id}
+                                onClick={() => setFormData({ ...formData, imageOption2: opt.id })}
+                                style={{
+                                  padding: '0.8rem',
+                                  borderRadius: '12px',
+                                  border: formData.imageOption2 === opt.id ? '2px solid #00aaff' : '1px solid rgba(255,255,255,0.1)',
+                                  background: formData.imageOption2 === opt.id ? 'rgba(0, 170, 255, 0.1)' : 'transparent',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.3s'
+                                }}
+                              >
+                                <p style={{ fontWeight: '700', fontSize: '0.9rem', margin: '0 0 2px 0', color: formData.imageOption2 === opt.id ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
+                                <p style={{ fontSize: '0.65rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
+                              </button>
+                            ))}
+                          </div>
+
+                          {formData.imageOption2 === 'url' ? (
+                            <>
+                              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Link de la Imagen</label>
+                              <input
+                                placeholder="https://ejemplo.com/foto.jpg"
+                                value={formData.imageSrc2}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => {
+                                  setFormData({ ...formData, imageSrc2: e.target.value, hasImage2: true });
+                                  if (errors.image2) setErrors({ ...errors, image2: null });
+                                }}
+                                style={{ fontSize: '0.9rem', padding: '0.9rem' }}
+                              />
+                            </>
+                          ) : (
+                            <div style={{
+                              padding: '1rem',
+                              border: '1px dashed rgba(255,255,255,0.2)',
+                              borderRadius: '12px',
+                              textAlign: 'center'
+                            }}>
+                              <p style={{ fontSize: '0.85rem', marginBottom: '1rem', color: 'var(--text-muted)' }}>Selecciona una foto de resultado (Máx 2MB sugerido)</p>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                id="image-upload-2"
+                                style={{ display: 'none' }}
+                                onChange={async (e) => {
+                                  const file = e.target.files[0];
+                                  if (file) {
+                                    const compressed = await compressImage(file);
+                                    setFormData({ ...formData, imageFile2: file, imageSrc2: compressed, hasImage2: true });
+                                    if (errors.image2) setErrors({ ...errors, image2: null });
+                                  }
+                                }}
+                              />
+                              <label htmlFor="image-upload-2" className="btn glass" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem', width: '100%', justifyContent: 'center' }}>
+                                {formData.imageFile2 ? `📸 ${formData.imageFile2.name}` : 'Seleccionar Foto'}
+                              </label>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Dynamic Items Section for Books */}
-                  {selectedTemplate.hasItems && (
+                  {selectedTemplate.hasItems && !selectedTemplate.hasDualImage && (
                     <div className="dynamic-content-container">
                       {/* Section 1: Paragraphs */}
                       <div className="dynamic-section-group text-accent">

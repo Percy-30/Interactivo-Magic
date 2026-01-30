@@ -250,7 +250,7 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             <h2 class="victory-msg">¡GRACIAS! ❤️</h2>
             
             <!-- Result Photo Area -->
-            <img src="{{item_image_0}}" class="victory-photo-circle" id="result-photo" onerror="this.src='{{image_src}}'; this.onerror=function(){this.src='https://media.tenor.com/_q1fJ7eXRE8AAAAd/love-penguin.gif'}">
+            <img src="{{img2}}" class="victory-photo-circle" id="result-photo" onerror="this.src='{{image_src}}'; this.onerror=function(){this.src='https://media.tenor.com/_q1fJ7eXRE8AAAAd/love-penguin.gif'}">
             
             <div class="message" style="color: #333; margin-top: 1.5rem;">{{extra_text}}</div>
             <p style="color: rgba(0,0,0,0.5); font-style: italic; max-width: 300px; margin: 0 auto;">{{message}}</p>
