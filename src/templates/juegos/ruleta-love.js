@@ -87,11 +87,14 @@
 
         .rim-dot { fill: #000; transition: fill 0.3s ease; }
         .is-spinning .rim-dot {
-            animation: dot-glow 0.8s infinite alternate;
+            animation: dot-rainbow 1.5s infinite linear;
         }
-        @keyframes dot-glow {
-            from { fill: #000; }
-            to { fill: var(--primary); transform: scale(1.2); }
+        
+        @keyframes dot-rainbow {
+            0% { fill: #ff4d94; transform: scale(1.1); }
+            33% { fill: #4db8ff; transform: scale(1); }
+            66% { fill: #ffdf8d; transform: scale(1.1); }
+            100% { fill: #ff4d94; transform: scale(1); }
         }
 
         .center-portal {
@@ -158,32 +161,50 @@
         .premium-success.active { display: flex; opacity: 1; }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             border: 2px solid white;
             padding: 3rem 2rem;
-            border-radius: 40px;
-            box-shadow: 0 30px 80px rgba(255, 77, 148, 0.15);
-            max-width: 420px;
+            border-radius: 45px;
+            box-shadow: 0 35px 90px rgba(255, 77, 148, 0.18);
+            max-width: 440px;
             width: 90%;
-            transform: translateY(50px);
+            transform: translateY(60px);
             transition: 1s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
         .premium-success.active .glass-card { transform: translateY(0); }
 
-        .victory-photo {
-            width: 190px;
-            height: 190px;
-            border-radius: 50%;
-            border: 8px solid #fff;
-            box-shadow: 0 20px 50px rgba(255, 77, 148, 0.25);
-            margin-bottom: 2.5rem;
-            object-fit: cover;
-            animation: rotate-slow 20s linear infinite;
+        /* Fancy victory photo */
+        .photo-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2.5rem;
         }
-        @keyframes rotate-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .photo-aura {
+            position: absolute;
+            inset: -10px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--primary));
+            border-radius: 50%;
+            filter: blur(15px);
+            opacity: 0.3;
+            animation: rotate-slow 10s linear infinite;
+        }
 
-        .success-title { font-size: 2.4rem; font-weight: 900; margin: 0 0 1rem; color: #000; line-height: 1.1; }
-        .success-desc { font-size: 1.1rem; color: rgba(0,0,0,0.6); line-height: 1.8; margin-bottom: 2rem; font-weight: 500; }
+        .victory-photo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 15px 40px rgba(255, 77, 148, 0.2);
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        .success-title { font-size: 2.5rem; font-weight: 900; margin: 0 0 1rem; color: #000; line-height: 1.1; letter-spacing: -1px; }
+        .success-desc { font-size: 1.15rem; color: rgba(0,0,0,0.6); line-height: 1.8; margin-bottom: 2rem; font-weight: 500; }
 
         /* Toast */
         .clean-toast {
@@ -283,11 +304,14 @@
 
     <div class="premium-success" id="success-view">
         <div class="glass-card">
-            <img src="{{image_src}}" class="victory-photo" alt="Wedding" onerror="this.style.display='none'">
-            <div style="color: var(--primary); font-weight: 900; letter-spacing: 4px; font-size: 0.8rem; margin-bottom: 0.8rem; text-transform: uppercase;">DE: {{sender}}</div>
+            <div class="photo-wrap">
+                <div class="photo-aura"></div>
+                <img src="{{image_src}}" class="victory-photo" alt="Love" onerror="this.style.display='none'">
+            </div>
+            <div style="color: var(--primary); font-weight: 900; letter-spacing: 4px; font-size: 0.8rem; margin-bottom: 1rem; text-transform: uppercase;">DE: {{sender}}</div>
             <h2 class="success-title">{{extra_text}}</h2>
             <p class="success-desc">{{message}}</p>
-            <div style="font-size: 3.5rem; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));">💖✨💍</div>
+            <div style="font-size: 3.5rem; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));">💖✨💍</div>
         </div>
     </div>
 
@@ -353,7 +377,6 @@
             txt.textContent = s.t;
             inner.appendChild(txt);
 
-            // Rim Dots
             const dx = r * Math.cos(Math.PI * sAng / 180);
             const dy = r * Math.sin(Math.PI * sAng / 180);
             const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -364,7 +387,6 @@
             inner.appendChild(dot);
         });
 
-        // Closure dot
         const lDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         lDot.setAttribute("cx", 180); lDot.setAttribute("cy", 0);
         lDot.setAttribute("r", "6"); lDot.setAttribute("class", "rim-dot");
@@ -373,13 +395,12 @@
         const flow = document.getElementById('h-flow');
         for(let i=0; i<15; i++) {
             const h = document.createElement('div');
-            h.className = 'falling-heart';
+            h.className = 'h-particle';
             h.innerHTML = '❤️';
             h.style.left = Math.random() * 100 + 'vw';
             h.style.animationDuration = (Math.random() * 6 + 6) + 's';
             h.style.animationDelay = (Math.random() * 5) + 's';
             h.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            h.className = 'h-particle';
             flow.appendChild(h);
         }
 
@@ -456,25 +477,36 @@
             toast.classList.remove('show');
             shell.classList.add('is-spinning');
 
+            // Truly Random Logic after 1st try (which is rigged to be a fake loss for tension)
             let wIdx;
-            if(count === 1) wIdx = [0,1,3,4,5,6][Math.floor(Math.random() * 6)];
-            else wIdx = [2,7][Math.floor(Math.random() * 2)];
+            if (count === 1) {
+                // Force a NO on 1st try for "tension"
+                wIdx = [0, 1, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
+            } else {
+                // Higher SÍ probability but still "random feeling"
+                const rand = Math.random();
+                if (rand < 0.7) wIdx = [2, 7][Math.floor(Math.random() * 2)]; // 70% chance of SÍ
+                else wIdx = [0, 1, 3, 4, 5, 6][Math.floor(Math.random() * 6)]; // 30% chance of NO again
+            }
 
-            // Professional Physics: random spin within the winning segment for "Professional feel"
-            // Rot 0 is RIGHT. Pointer is TOP (270deg).
-            // Segment i center is i*45 + 22.5. We add a small random jitter within the segment (+/- 15 deg)
+            // Fixed Rotation Logic: Cumulative and Forward-Only
             const jitter = (Math.random() * 30) - 15;
-            const targetAng = (270 - (wIdx * 45 + 22.5 + jitter));
+            const targetSegmentAngle = (270 - (wIdx * 45 + 22.5 + jitter));
             
-            // Professional Logic: Always do at least 6 FULL rotations relative to CURRENT position
-            // So if totalRot is 2000, we go to at least 2000 + (360 * 6) + targetAng
-            const extraSpins = 360 * (7 + Math.floor(Math.random() * 3));
-            totalRot = (Math.floor(totalRot / 360) * 360) + extraSpins + targetAng;
+            // Calculate necessary jump to reach the target angle in a forward direction
+            const currentMod = totalRot % 360;
+            let additive = targetSegmentAngle - currentMod;
+            if (additive <= 0) additive += 360;
+            
+            // Add at least 7 full spins (2520 degrees) for a "Professional" length
+            const fullSpins = 360 * 7;
+            totalRot += fullSpins + additive;
             
             svg.style.transform = "rotate(" + totalRot + "deg)";
 
             setTimeout(() => {
                 shell.classList.remove('is-spinning');
+                // LOGIC FIX: Only show surprise if the landed segment IS a win
                 if(slices[wIdx].w) {
                     revealSuccess();
                 } else {
@@ -488,13 +520,16 @@
         }
 
         function revealSuccess() {
-            const stop = Date.now() + 6000;
-            const colors = ['#ff4d94', '#4db8ff', '#ffffff', '#ffdf8d'];
-            (function r() {
-                confetti({ particleCount: 5, angle: 60, spread: 65, origin: { x: 0 }, colors: colors });
-                confetti({ particleCount: 5, angle: 120, spread: 65, origin: { x: 1 }, colors: colors });
-                if(Date.now() < stop) requestAnimationFrame(r);
-            })();
+            const stop = Date.now() + 6500;
+            const colors = ['#ff4d94', '#4db8ff', '#ffffff', '#ffdf8d', '#af9aff'];
+            
+            const frame = () => {
+                confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0, y: 0.6 }, colors: colors });
+                confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1, y: 0.6 }, colors: colors });
+                if (Date.now() < stop) requestAnimationFrame(frame);
+            };
+            frame();
+            
             document.getElementById('success-view').classList.add('active');
         }
     </script>
