@@ -68,18 +68,16 @@
             box-shadow: 0 20px 60px rgba(255, 77, 148, 0.1);
         }
 
-        /* Pointer - Blue Pin */
+        /* Pointer - Improved Blue Diamond */
         .pointer-top {
             position: absolute;
-            top: -15px;
+            top: -18px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: var(--secondary);
-            clip-path: polygon(50% 100%, 0% 50%, 50% 0%, 100% 50%);
+            width: 44px;
+            height: 44px;
             z-index: 100;
-            border: 4px solid white;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
         }
 
         #wheel-svg {
@@ -235,7 +233,11 @@
         </div>
 
         <div class="wheel-wrap">
-            <div class="pointer-top"></div>
+            <div class="pointer-top">
+                <svg viewBox="0 0 44 44">
+                    <path d="M 22 44 L 0 22 L 22 0 L 44 22 Z" fill="#4db8ff" stroke="white" stroke-width="4"/>
+                </svg>
+            </div>
             <div class="center-circle">
                 <span class="pulse-heart">💓</span>
             </div>
@@ -291,7 +293,6 @@
 
         const rootGroup = document.getElementById('svg-root');
 
-        // Draw segments
         config.forEach((s, i) => {
             const startAngle = i * 45;
             const endAngle = (i + 1) * 45;
@@ -308,7 +309,6 @@
             path.setAttribute("class", "segment");
             rootGroup.appendChild(path);
 
-            // Labels - Vertical reading from center
             const textAngle = startAngle + 22.5;
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             const tr = 115;
@@ -323,7 +323,6 @@
             text.textContent = s.txt;
             rootGroup.appendChild(text);
 
-            // Rim Dots
             const dotX = r * Math.cos(Math.PI * startAngle / 180);
             const dotY = r * Math.sin(Math.PI * startAngle / 180);
             const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -334,7 +333,6 @@
             rootGroup.appendChild(dot);
         });
 
-        // Add 8th dot for closure
         const lastDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         const lx = 180 * Math.cos(Math.PI * 360 / 180);
         const ly = 180 * Math.sin(Math.PI * 360 / 180);
@@ -344,7 +342,6 @@
         lastDot.setAttribute("fill", "#000");
         rootGroup.appendChild(lastDot);
 
-        // Falling hearts
         const flow = document.getElementById('hearts-flow');
         for(let i=0; i<12; i++) {
             const h = document.createElement('div');
@@ -357,10 +354,8 @@
             flow.appendChild(h);
         }
 
-        /* Logic */
         const native = document.getElementById('native-player');
         let yt = null;
-        let running = false;
 
         function unlock() {
             document.getElementById('splash').classList.add('hide');
@@ -433,9 +428,6 @@
             if(spinNum === 1) winIdx = [0,1,3,4,5,6][Math.floor(Math.random() * 6)];
             else winIdx = [2,7][Math.floor(Math.random() * 2)];
 
-            // Rot 0 is RIGHT. Pointer is TOP (270deg).
-            // Segment i center is i*45 + 22.5.
-            // Angle needed = 270 - center
             const finalAng = (270 - (winIdx * 45 + 22.5)) + (360 * (6 + spinNum));
             svg.style.transform = "rotate(" + finalAng + "deg)";
 
