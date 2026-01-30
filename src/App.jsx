@@ -149,11 +149,12 @@ const TEMPLATES = [
     id: 'forgive-penguins',
     category: 'divertido',
     name: 'Perdón Mi Amor 🐧',
-    description: 'Divertidos pingüinos para disculparse (Botón esquivo).',
+    description: 'Divertidos pingüinos para disculparse (Doble Foto - Botón esquivo).',
     icon: <Smile />,
     color: '#0080ff',
     content: FORGIVE_ME_PENGUINS_TEMPLATE,
     hasImage: true,
+    hasItems: true,
     hasExtra: true,
     extraLabel: 'Título de perdón'
   },

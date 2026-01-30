@@ -11,7 +11,7 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             --primary: #ff85a1;
             --secondary: #0080ff;
             --bg: #ffeef2;
-            --card-bg: #fff;
+            --card-bg: #ffffff;
         }
 
         body {
@@ -47,23 +47,34 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
         .card {
             background: var(--card-bg);
             padding: 2rem;
-            border-radius: 35px;
-            box-shadow: 0 15px 35px rgba(255, 133, 161, 0.15);
+            border-radius: 40px;
+            box-shadow: 0 20px 45px rgba(255, 133, 161, 0.12);
             position: relative;
             transition: transform 0.3s ease;
         }
 
-        .penguin-img {
+        /* Dual Photo Styling */
+        .photo-container {
+            position: relative;
             width: 100%;
             max-width: 250px;
-            border-radius: 20px;
-            margin-bottom: 1.5rem;
+            margin: 0 auto 1.5rem;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            background: #fdfdfd;
+        }
+        
+        .img-block {
+            width: 100%;
+            aspect-ratio: 1/1;
             object-fit: cover;
+            display: block;
         }
 
         .message {
             color: var(--primary);
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: 2rem;
             line-height: 1.4;
@@ -74,12 +85,12 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             justify-content: center;
             align-items: center;
             gap: 20px;
-            height: 80px;
+            height: 100px;
         }
 
         button {
-            padding: 12px 35px;
-            border-radius: 25px;
+            padding: 14px 40px;
+            border-radius: 30px;
             border: none;
             font-family: 'Outfit', sans-serif;
             font-weight: 900;
@@ -94,8 +105,8 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
         #yesBtn {
             background-color: var(--primary);
             color: white;
-            box-shadow: 0 8px 20px rgba(255, 133, 161, 0.3);
-            min-width: 100px;
+            box-shadow: 0 10px 25px rgba(255, 133, 161, 0.3);
+            min-width: 110px;
             justify-content: center;
             z-index: 100;
         }
@@ -116,34 +127,37 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             justify-content: center;
             padding: 2rem;
         }
+        .success-screen.active { display: flex; }
 
-        .success-screen.active {
-            display: flex;
-        }
-
-        .victory-photo {
-            width: 180px;
-            height: 180px;
+        .victory-photo-circle {
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            border: 6px solid white;
-            box-shadow: 0 10px 30px rgba(255, 133, 161, 0.2);
-            margin-bottom: 1.5rem;
+            border: 8px solid white;
+            box-shadow: 0 15px 40px rgba(255, 133, 161, 0.25);
+            margin-bottom: 2rem;
             object-fit: cover;
+            animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes bounceIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
         }
 
         .victory-msg {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: var(--primary);
             margin-bottom: 1rem;
+            letter-spacing: -1px;
         }
 
         .sender-tag {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 900;
             color: rgba(0,0,0,0.3);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 0.5rem;
         }
 
@@ -171,22 +185,22 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             width: 85%;
             max-width: 400px;
             background: white;
-            padding: 10px 20px;
+            padding: 12px 25px;
             border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             z-index: 1000;
         }
         .play-btn {
-            width: 40px; height: 40px;
+            width: 45px; height: 45px;
             background: var(--primary);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: white; cursor: pointer;
         }
-        .progress { flex: 1; height: 4px; background: #f0f0f0; border-radius: 10px; overflow: hidden; }
+        .progress { flex: 1; height: 5px; background: #f5f5f5; border-radius: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; }
 
         /* Intro wall */
@@ -200,16 +214,16 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease;
         }
         #wall.hide { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
     <div id="wall" onclick="startApp()">
-        <div style="font-size: 80px; animation: bounce 2s infinite;">🐧</div>
-        <h2 style="font-weight: 900; margin-top: 1rem;">¿Me perdonas?</h2>
-        <p style="color: var(--primary); font-weight: 900; letter-spacing: 3px; font-size: 0.7rem;">TOCA PARA ABRIR</p>
+        <div style="font-size: 100px; animation: bounce 2s infinite;">🐧</div>
+        <h2 style="font-weight: 900; margin-top: 1.5rem; font-size: 2rem;">¿Me perdonas?</h2>
+        <div style="color: var(--primary); font-weight: 900; letter-spacing: 5px; margin-top: 1.5rem; font-size: 0.8rem;">TOCA PARA ABRIR</div>
     </div>
 
     <div class="hearts-bg" id="hearts-box"></div>
@@ -217,7 +231,11 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
     <div class="container" id="game-ui">
         <h1 class="main-title">¿Me perdonas mi Amor? 💔</h1>
         <div class="card" id="main-card">
-            <img id="penguin-gif" src="https://media.tenor.com/79yQ8hLzX_gAAAAd/mochi-mochi-mochi-peach-cat.gif" class="penguin-img" alt="Triste">
+            <!-- Cover Photo Area -->
+            <div class="photo-container" id="cover-area">
+                <img id="cover-photo" src="{{image_src}}" class="img-block" onerror="this.src='https://media.tenor.com/XU684T4zQ_4AAAAC/penguin-crying.gif'">
+            </div>
+            
             <div class="message">Dame otra oportunidad 💐</div>
             <div class="btns">
                 <button id="noBtn">No 💔</button>
@@ -228,12 +246,15 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
 
     <div class="container success-screen" id="success-ui">
         <div class="card">
-            <img id="happy-penguin" src="https://media.tenor.com/_q1fJ7eXRE8AAAAd/love-penguin.gif" class="penguin-img" alt="Feliz">
             <div class="sender-tag">De: {{sender}}</div>
             <h2 class="victory-msg">¡GRACIAS! ❤️</h2>
-            <img src="{{image_src}}" class="victory-photo" alt="Foto" id="victory-photo" onerror="this.style.display='none'">
-            <div class="message" style="color: #333;">{{extra_text}}</div>
-            <p style="color: rgba(0,0,0,0.5); font-style: italic;">{{message}}</p>
+            
+            <!-- Result Photo Area -->
+            <img src="{{item_image_0}}" class="victory-photo-circle" id="result-photo" onerror="this.src='{{image_src}}'; this.onerror=function(){this.src='https://media.tenor.com/_q1fJ7eXRE8AAAAd/love-penguin.gif'}">
+            
+            <div class="message" style="color: #333; margin-top: 1.5rem;">{{extra_text}}</div>
+            <p style="color: rgba(0,0,0,0.5); font-style: italic; max-width: 300px; margin: 0 auto;">{{message}}</p>
+            <div style="font-size: 3rem; margin-top: 2rem;">🐧💖✨</div>
         </div>
     </div>
 
@@ -255,32 +276,29 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
 
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
-        const gif = document.getElementById('penguin-gif');
-        const mainCard = document.getElementById('main-card');
-        
-        gif.src = penguinGifs.sad;
+        const coverImg = document.getElementById('cover-photo');
 
         let level = 0;
         let scale = 1;
 
         function moveNo() {
             level++;
-            
-            // Random teleport
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 80);
             
             noBtn.style.position = 'fixed';
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
             noBtn.style.zIndex = '9999';
 
-            // Make Yes Button grow
-            scale += 0.15;
+            scale += 0.2;
             yesBtn.style.transform = "scale(" + scale + ")";
 
-            // Change Penguin to more sad
-            if(level > 3) gif.src = penguinGifs.crying;
+            // If user didn't upload a cover photo, we swap between sad penguin states
+            if(!'{{image_src}}' || '{{image_src}}'.includes('{{')) {
+                if(level > 4) coverImg.src = penguinGifs.crying;
+                else if(level > 1) coverImg.src = penguinGifs.sad;
+            }
         }
 
         noBtn.addEventListener('mouseenter', moveNo);
@@ -290,26 +308,20 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             document.getElementById('game-ui').style.display = 'none';
             document.getElementById('success-ui').classList.add('active');
             
-            // Celebration
-            const duration = 15 * 1000;
+            const duration = 12 * 1000;
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
             const interval = setInterval(function() {
                 const timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
-                const particleCount = 50 * (timeLeft / duration);
-                confetti({...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }});
-                confetti({...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }});
+                const pc = 45 * (timeLeft / duration);
+                confetti({...defaults, particleCount: pc, origin: { x: Math.random(), y: Math.random() - 0.2 }});
             }, 250);
 
-            // Audio trigger if not already
             toggleMusic(true);
         };
 
-        // Standard logic for audio/splash
         const player = document.getElementById('player');
         let ytPlayer = null;
 
@@ -352,28 +364,27 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
         }
 
         document.getElementById('audio-trigger').onclick = () => {
-            const current = document.getElementById('audio-trigger').textContent === '||';
-            toggleMusic(!current);
+            const cur = document.getElementById('audio-trigger').textContent === '||';
+            toggleMusic(!cur);
         };
 
         if(!("{{youtube_id}}")) {
             player.ontimeupdate = () => {
-                const perc = (player.currentTime / player.duration) * 100;
-                document.getElementById('p-bar').style.width = perc + "%";
+                const p = (player.currentTime / player.duration) * 100;
+                document.getElementById('p-bar').style.width = p + "%";
             };
         }
 
-        // Floating hearts
         setInterval(() => {
             const h = document.createElement('div');
             h.className = 'heart-bit';
-            h.innerHTML = ['❤️', '💖', '🐧', '🌸'][Math.floor(Math.random() * 4)];
+            h.innerHTML = ['❤️', '💖', '✨', '🐧'][Math.floor(Math.random() * 4)];
             h.style.left = Math.random() * 100 + 'vw';
             h.style.fontSize = (Math.random() * 20 + 20) + 'px';
             h.style.animationDuration = (Math.random() * 3 + 3) + 's';
             document.getElementById('hearts-box').appendChild(h);
             setTimeout(() => h.remove(), 5000);
-        }, 500);
+        }, 600);
     </script>
 </body>
 </html>`;
