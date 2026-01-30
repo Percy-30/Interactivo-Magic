@@ -28,24 +28,24 @@
             padding: 20px;
         }
 
-        /* Hearts flow */
-        .hearts-layer {
+        /* Hearts background */
+        .hearts-scene {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
         }
-        .falling-heart {
+        .h-particle {
             position: absolute;
-            animation: fall-vertical linear infinite;
+            animation: fall-p linear infinite;
         }
-        @keyframes fall-vertical {
+        @keyframes fall-p {
             0% { transform: translateY(-50px) scale(0.5); opacity: 0; }
-            20% { opacity: 0.7; }
-            100% { transform: translateY(110vh) scale(1.2); opacity: 0; }
+            20% { opacity: 0.6; }
+            100% { transform: translateY(110vh) scale(1.5); opacity: 0; }
         }
 
-        .container {
+        .main-container {
             position: relative;
             z-index: 10;
             display: flex;
@@ -54,22 +54,21 @@
             width: 100%;
         }
 
-        .title-group { text-align: center; margin-bottom: 2rem; }
-        .title-group h1 { font-size: 2.22rem; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
-        .title-group p { color: rgba(0,0,0,0.4); font-size: 1rem; margin-top: 5px; }
+        .top-section { text-align: center; margin-bottom: 2rem; }
+        .top-section h1 { font-size: 2.5rem; font-weight: 900; margin: 0; letter-spacing: -1px; }
+        .top-section p { color: rgba(0,0,0,0.4); font-size: 1.1rem; margin-top: 5px; font-weight: 500; }
 
-        /* The Perfect Wheel */
-        .wheel-wrap {
+        /* The Roulette */
+        .wheel-shell {
             position: relative;
             width: 320px;
             height: 320px;
             background: white;
             border-radius: 50%;
-            box-shadow: 0 20px 60px rgba(255, 77, 148, 0.1);
+            box-shadow: 0 25px 60px rgba(255, 77, 148, 0.12);
         }
 
-        /* Pointer - Improved Blue Diamond */
-        .pointer-top {
+        .diamond-pointer {
             position: absolute;
             top: -18px;
             left: 50%;
@@ -77,16 +76,25 @@
             width: 44px;
             height: 44px;
             z-index: 100;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
         }
 
-        #wheel-svg {
+        #the-svg {
             width: 100%;
             height: 100%;
-            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+            transition: transform 6s cubic-bezier(0.15, 0, 0, 1);
         }
 
-        .center-circle {
+        .rim-dot { fill: #000; transition: fill 0.3s ease; }
+        .is-spinning .rim-dot {
+            animation: dot-glow 0.8s infinite alternate;
+        }
+        @keyframes dot-glow {
+            from { fill: #000; }
+            to { fill: var(--primary); transform: scale(1.2); }
+        }
+
+        .center-portal {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -98,47 +106,45 @@
             align-items: center;
             justify-content: center;
             z-index: 50;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
         }
 
-        .pulse-heart {
-            font-size: 2rem;
-            animation: heart-beat 1.5s ease-in-out infinite;
+        .beating-heart {
+            font-size: 2.2rem;
+            animation: bpm 1.2s ease-in-out infinite;
         }
-        @keyframes heart-beat {
+        @keyframes bpm {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+            50% { transform: scale(1.18); }
         }
 
-        /* Labels & Dots */
-        .segment { stroke: white; stroke-width: 4; }
-        .segment-label { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 14px; fill: #000; letter-spacing: 0.5px; }
-
-        /* Button */
-        .spin-trigger {
+        /* Buttons & Actions */
+        .action-spin-btn {
             margin-top: 3.5rem;
-            background: black;
-            color: white;
-            padding: 1rem 4rem;
-            border-radius: 50px;
+            background: #000;
+            color: #fff;
+            padding: 1.1rem 4.5rem;
+            border-radius: 60px;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            gap: 12px;
-            transition: transform 0.2s;
+            gap: 15px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .spin-trigger:active { transform: scale(0.95); }
-        .spin-trigger:disabled { opacity: 0.5; filter: grayscale(1); }
+        .action-spin-btn:hover:not(:disabled) { transform: translateY(-5px); box-shadow: 0 20px 45px rgba(0,0,0,0.25); }
+        .action-spin-btn:active:not(:disabled) { transform: scale(0.95); }
+        .action-spin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* Success Card */
-        .win-screen {
+        /* Professional Success UI */
+        .premium-success {
             position: fixed;
             inset: 0;
-            background: rgba(255, 245, 248, 0.98);
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(25px);
             z-index: 6000;
             display: none;
             flex-direction: column;
@@ -147,48 +153,83 @@
             padding: 2rem;
             text-align: center;
             opacity: 0;
-            transition: 0.8s all ease;
+            transition: 1s all ease;
         }
-        .win-screen.show { display: flex; opacity: 1; }
+        .premium-success.active { display: flex; opacity: 1; }
 
-        .win-photo {
-            width: 200px;
-            height: 200px;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid white;
+            padding: 3rem 2rem;
+            border-radius: 40px;
+            box-shadow: 0 30px 80px rgba(255, 77, 148, 0.15);
+            max-width: 420px;
+            width: 90%;
+            transform: translateY(50px);
+            transition: 1s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .premium-success.active .glass-card { transform: translateY(0); }
+
+        .victory-photo {
+            width: 190px;
+            height: 190px;
             border-radius: 50%;
-            border: 8px solid white;
-            box-shadow: 0 20px 50px rgba(255, 77, 148, 0.2);
-            margin-bottom: 2rem;
+            border: 8px solid #fff;
+            box-shadow: 0 20px 50px rgba(255, 77, 148, 0.25);
+            margin-bottom: 2.5rem;
             object-fit: cover;
+            animation: rotate-slow 20s linear infinite;
         }
+        @keyframes rotate-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* Player Bar */
-        .audio-bar {
+        .success-title { font-size: 2.4rem; font-weight: 900; margin: 0 0 1rem; color: #000; line-height: 1.1; }
+        .success-desc { font-size: 1.1rem; color: rgba(0,0,0,0.6); line-height: 1.8; margin-bottom: 2rem; font-weight: 500; }
+
+        /* Toast */
+        .clean-toast {
             position: fixed;
-            bottom: 35px;
+            top: 30px;
+            background: #fff;
+            padding: 14px 35px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            font-weight: 900;
+            transform: translateY(-160px);
+            transition: 0.6s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999;
+        }
+        .clean-toast.show { transform: translateY(0); }
+
+        /* Audio HUD */
+        .audio-hud {
+            position: fixed;
+            bottom: 40px;
             width: 85%;
             max-width: 400px;
-            background: white;
+            background: #fff;
             padding: 12px 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+            border-radius: 35px;
+            box-shadow: 0 10px 45px rgba(0,0,0,0.06);
             display: flex;
             align-items: center;
             gap: 15px;
             z-index: 1000;
+            border: 1px solid rgba(0,0,0,0.03);
         }
-        .play-pause {
-            width: 45px; height: 45px;
+        .play-toggle {
+            width: 48px; height: 48px;
             background: var(--primary);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: white; cursor: pointer;
+            color: white; cursor: pointer; font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(255, 77, 148, 0.3);
         }
-        .progress-track { flex-grow: 1; height: 4px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); width: 0%; }
-        .player-label { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+        .track-bg { flex-grow: 1; height: 6px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
+        .track-fill { height: 100%; background: var(--primary); width: 0%; border-radius: 10px; }
+        .hud-label { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; }
 
         /* Splash */
-        #splash {
+        #splash-wall {
             position: fixed;
             inset: 0;
             background: var(--bg);
@@ -199,260 +240,262 @@
             justify-content: center;
             cursor: pointer;
         }
-        #splash.hide { opacity: 0; pointer-events: none; transition: 0.8s opacity ease; }
-
-        .toast {
-            position: fixed;
-            top: 30px;
-            background: white;
-            padding: 15px 35px;
-            border-radius: 50px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            font-weight: 900;
-            transform: translateY(-150px);
-            transition: 0.5s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 9000;
-        }
-        .toast.visible { transform: translateY(0); }
+        #splash-wall.fade { opacity: 0; pointer-events: none; transition: 1s all ease; }
     </style>
 </head>
 <body>
-    <div id="splash" onclick="unlock()">
-        <div style="font-size: 100px; animation: bounce 2s infinite;">🎡</div>
-        <div style="font-size: 2.2rem; font-weight: 900; margin-top: 1.5rem;">ruleta del amor</div>
-        <div style="color: var(--primary); font-weight: 900; letter-spacing: 4px; margin-top: 1.2rem; font-size: 0.8rem;">TOCA PARA EMPEZAR</div>
+    <div id="splash-wall" onclick="ignite()">
+        <div style="font-size: 110px; animation: bounce 2s infinite;">🎡</div>
+        <div style="font-size: 2.2rem; font-weight: 900; margin-top: 2rem;">ruleta del amor</div>
+        <div style="color: var(--primary); font-weight: 900; letter-spacing: 5px; margin-top: 1.5rem; font-size: 0.9rem;">TOCA PARA EMPEZAR</div>
     </div>
 
-    <div class="hearts-layer" id="hearts-flow"></div>
-    <div class="toast" id="info-toast">¡ups! casi... intenta de nuevo ✨</div>
+    <div class="hearts-scene" id="h-flow"></div>
+    <div class="clean-toast" id="toast-notif">¡ups! casi... intenta de nuevo ✨</div>
 
-    <div class="container">
-        <div class="title-group">
+    <div class="main-container">
+        <div class="top-section">
             <h1>{{name}}</h1>
             <p>✨ gira la ruleta y deja que el destino decida...</p>
         </div>
 
-        <div class="wheel-wrap">
-            <div class="pointer-top">
+        <div class="wheel-shell" id="wheel-shell">
+            <div class="diamond-pointer">
                 <svg viewBox="0 0 44 44">
                     <path d="M 22 44 L 0 22 L 22 0 L 44 22 Z" fill="#4db8ff" stroke="white" stroke-width="4"/>
                 </svg>
             </div>
-            <div class="center-circle">
-                <span class="pulse-heart">💓</span>
+            <div class="center-portal">
+                <span class="beating-heart">💓</span>
             </div>
-            <svg id="wheel-svg" viewBox="0 0 400 400">
-                <g id="svg-root" transform="translate(200, 200)">
-                    <!-- Content built by JS -->
+            <svg id="the-svg" viewBox="0 0 400 400">
+                <g id="svg-inner" transform="translate(200, 200)">
+                    <!-- Content by JS -->
                 </g>
             </svg>
         </div>
 
-        <button class="spin-trigger" id="spin-btn" onclick="fireSpin()">
+        <button class="action-spin-btn" id="spin-master-btn" onclick="triggerSpin()">
             <span>💘 Girar</span> ✨
         </button>
-        <div style="margin-top: 0.8rem; font-size: 10px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 2px;">TU AUDIO MÁGICO</div>
+        <div style="margin-top: 1rem; font-size: 11px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; opacity: 0.6;">TU AUDIO MÁGICO</div>
     </div>
 
-    <div class="win-screen" id="win-screen">
-        <img src="{{image_src}}" class="win-photo" alt="Success" onerror="this.style.display='none'">
-        <div style="color: var(--primary); font-weight: 900; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 0.5rem;">DE: {{sender}}</div>
-        <h2 style="font-size: 2.6rem; font-weight: 900; margin: 0 0 1rem;">{{extra_text}}</h2>
-        <p style="font-size: 1.15rem; color: rgba(0,0,0,0.6); max-width: 320px; line-height: 1.7;">{{message}}</p>
-        <div style="font-size: 3.5rem; margin-top: 2.5rem;">💖✨💍</div>
+    <div class="premium-success" id="success-view">
+        <div class="glass-card">
+            <img src="{{image_src}}" class="victory-photo" alt="Wedding" onerror="this.style.display='none'">
+            <div style="color: var(--primary); font-weight: 900; letter-spacing: 4px; font-size: 0.8rem; margin-bottom: 0.8rem; text-transform: uppercase;">DE: {{sender}}</div>
+            <h2 class="success-title">{{extra_text}}</h2>
+            <p class="success-desc">{{message}}</p>
+            <div style="font-size: 3.5rem; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));">💖✨💍</div>
+        </div>
     </div>
 
-    <div class="audio-bar" id="player-bar" style="display: none;">
-        <div class="play-pause" id="audio-btn">
+    <div class="audio-hud" id="hud-panel" style="display: none;">
+        <div class="hud-label">Sintiendo la música</div>
+        <div class="play-toggle" id="hud-btn">
             <span id="p-ic">▶</span>
             <span id="s-ic" style="display:none">||</span>
         </div>
-        <div class="progress-track">
-            <div class="progress-bar" id="p-bar"></div>
+        <div class="track-bg">
+            <div class="track-fill" id="t-progress"></div>
         </div>
-        <div style="font-size: 12px; font-weight: 900; color: rgba(0,0,0,0.3); min-width: 35px;" id="time-txt">0:00</div>
+        <div style="font-size: 13px; font-weight: 900; color: rgba(0,0,0,0.2); min-width: 35px;" id="t-time">0:00</div>
     </div>
 
-    <audio id="native-player" src="{{audio_src}}" loop></audio>
-    <div id="yt-container" style="display:none">
-        <div id="yt-frame"></div>
-    </div>
+    <audio id="core-player" src="{{audio_src}}" loop></audio>
+    <div id="yt-ghost-box" style="display:none"><div id="yt-instance"></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        const config = [
-            { txt: "No 💔", color: "#ff9aaf", win: false },
-            { txt: "No 💔", color: "#8de6ff", win: false },
-            { txt: "SÍ 💖", color: "#ffaf9a", win: true },
-            { txt: "No 💔", color: "#ffe69a", win: false },
-            { txt: "No 💔", color: "#af9aff", win: false },
-            { txt: "No 💔", color: "#faff8d", win: false },
-            { txt: "No 💔", color: "#8dffc4", win: false },
-            { txt: "SÍ 💖", color: "#ff8db4", win: true }
+        const slices = [
+            { t: "No 💔", c: "#ff9aaf", w: false },
+            { t: "No 💔", c: "#8de6ff", w: false },
+            { t: "SÍ 💖", c: "#ffaf9a", w: true },
+            { t: "No 💔", c: "#ffe69a", w: false },
+            { t: "No 💔", c: "#af9aff", w: false },
+            { t: "No 💔", c: "#faff8d", w: false },
+            { t: "No 💔", c: "#8dffc4", w: false },
+            { t: "SÍ 💖", c: "#ff8db4", w: true }
         ];
 
-        const rootGroup = document.getElementById('svg-root');
+        const inner = document.getElementById('svg-inner');
 
-        config.forEach((s, i) => {
-            const startAngle = i * 45;
-            const endAngle = (i + 1) * 45;
-            
+        slices.forEach((s, i) => {
+            const sAng = i * 45;
+            const eAng = (i + 1) * 45;
             const r = 180;
-            const x1 = r * Math.cos(Math.PI * startAngle / 180);
-            const y1 = r * Math.sin(Math.PI * startAngle / 180);
-            const x2 = r * Math.cos(Math.PI * endAngle / 180);
-            const y2 = r * Math.sin(Math.PI * endAngle / 180);
+            const x1 = r * Math.cos(Math.PI * sAng / 180);
+            const y1 = r * Math.sin(Math.PI * sAng / 180);
+            const x2 = r * Math.cos(Math.PI * eAng / 180);
+            const y2 = r * Math.sin(Math.PI * eAng / 180);
             
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", "M 0 0 L " + x1 + " " + y1 + " A " + r + " " + r + " 0 0 1 " + x2 + " " + y2 + " Z");
-            path.setAttribute("fill", s.color);
-            path.setAttribute("class", "segment");
-            rootGroup.appendChild(path);
+            const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            p.setAttribute("d", "M 0 0 L " + x1 + " " + y1 + " A " + r + " " + r + " 0 0 1 " + x2 + " " + y2 + " Z");
+            p.setAttribute("fill", s.c);
+            p.setAttribute("stroke", "white");
+            p.setAttribute("stroke-width", "4");
+            inner.appendChild(p);
 
-            const textAngle = startAngle + 22.5;
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            const tAng = sAng + 22.5;
+            const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
             const tr = 115;
-            const tx = tr * Math.cos(Math.PI * textAngle / 180);
-            const ty = tr * Math.sin(Math.PI * textAngle / 180);
+            const tx = tr * Math.cos(Math.PI * tAng / 180);
+            const ty = tr * Math.sin(Math.PI * tAng / 180);
             
-            text.setAttribute("x", tx);
-            text.setAttribute("y", ty);
-            text.setAttribute("transform", "rotate(" + (textAngle + 90) + "," + tx + "," + ty + ")");
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("class", "segment-label");
-            text.textContent = s.txt;
-            rootGroup.appendChild(text);
+            txt.setAttribute("x", tx);
+            txt.setAttribute("y", ty);
+            txt.setAttribute("transform", "rotate(" + (tAng + 90) + "," + tx + "," + ty + ")");
+            txt.setAttribute("text-anchor", "middle");
+            txt.setAttribute("class", "segment-label");
+            txt.style.fontWeight = "900";
+            txt.style.fontSize = "15px";
+            txt.textContent = s.t;
+            inner.appendChild(txt);
 
-            const dotX = r * Math.cos(Math.PI * startAngle / 180);
-            const dotY = r * Math.sin(Math.PI * startAngle / 180);
+            // Rim Dots
+            const dx = r * Math.cos(Math.PI * sAng / 180);
+            const dy = r * Math.sin(Math.PI * sAng / 180);
             const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            dot.setAttribute("cx", dotX);
-            dot.setAttribute("cy", dotY);
-            dot.setAttribute("r", "5");
-            dot.setAttribute("fill", "#000");
-            rootGroup.appendChild(dot);
+            dot.setAttribute("cx", dx);
+            dot.setAttribute("cy", dy);
+            dot.setAttribute("r", "6");
+            dot.setAttribute("class", "rim-dot");
+            inner.appendChild(dot);
         });
 
-        const lastDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        const lx = 180 * Math.cos(Math.PI * 360 / 180);
-        const ly = 180 * Math.sin(Math.PI * 360 / 180);
-        lastDot.setAttribute("cx", lx);
-        lastDot.setAttribute("cy", ly);
-        lastDot.setAttribute("r", "5");
-        lastDot.setAttribute("fill", "#000");
-        rootGroup.appendChild(lastDot);
+        // Closure dot
+        const lDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        lDot.setAttribute("cx", 180); lDot.setAttribute("cy", 0);
+        lDot.setAttribute("r", "6"); lDot.setAttribute("class", "rim-dot");
+        inner.appendChild(lDot);
 
-        const flow = document.getElementById('hearts-flow');
-        for(let i=0; i<12; i++) {
+        const flow = document.getElementById('h-flow');
+        for(let i=0; i<15; i++) {
             const h = document.createElement('div');
             h.className = 'falling-heart';
             h.innerHTML = '❤️';
             h.style.left = Math.random() * 100 + 'vw';
-            h.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            h.style.animationDuration = (Math.random() * 6 + 6) + 's';
             h.style.animationDelay = (Math.random() * 5) + 's';
             h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            h.className = 'h-particle';
             flow.appendChild(h);
         }
 
-        const native = document.getElementById('native-player');
-        let yt = null;
+        const player = document.getElementById('core-player');
+        let ytObj = null;
 
-        function unlock() {
-            document.getElementById('splash').classList.add('hide');
+        function ignite() {
+            document.getElementById('splash-wall').classList.add('fade');
             if('{{has_audio}}' === 'true') {
-                document.getElementById('player-bar').style.display = 'flex';
-                playMusic();
+                document.getElementById('hud-panel').style.display = 'flex';
+                streamMusic();
             }
         }
 
-        function playMusic() {
+        function streamMusic() {
             const yId = "{{youtube_id}}";
             if(yId) {
                 const s = document.createElement('script');
                 s.src = "https://www.youtube.com/iframe_api";
                 document.body.appendChild(s);
                 window.onYouTubeIframeAPIReady = () => {
-                    yt = new YT.Player('yt-frame', {
+                    ytObj = new YT.Player('yt-instance', {
                         videoId: yId, height: '0', width: '0',
                         playerVars: { autoplay: 1, loop: 1, playlist: yId },
-                        events: { 'onReady': () => uiState(true) }
+                        events: { 'onReady': () => setUI(true) }
                     });
                 };
             } else {
-                native.play().then(() => uiState(true)).catch(() => {});
+                player.play().then(() => setUI(true)).catch(() => {});
             }
         }
 
-        function uiState(on) {
-            document.getElementById('p-ic').style.display = on ? 'none' : 'block';
-            document.getElementById('s-ic').style.display = on ? 'block' : 'none';
+        function setUI(play) {
+            document.getElementById('p-ic').style.display = play ? 'none' : 'block';
+            document.getElementById('s-ic').style.display = play ? 'block' : 'none';
         }
 
-        document.getElementById('audio-btn').onclick = () => {
-            const active = document.getElementById('p-ic').style.display === 'none';
-            if(active) {
-                if(yt) yt.pauseVideo(); else native.pause();
-                uiState(false);
+        document.getElementById('hud-btn').onclick = () => {
+            const isP = document.getElementById('p-ic').style.display === 'none';
+            if(isP) {
+                if(ytObj) ytObj.pauseVideo(); else player.pause();
+                setUI(false);
             } else {
-                if(yt) yt.playVideo(); else native.play();
-                uiState(true);
+                if(ytObj) ytObj.playVideo(); else player.play();
+                setUI(true);
             }
         };
 
         if(!("{{youtube_id}}")) {
-            native.ontimeupdate = () => {
-                const p = (native.currentTime / native.duration) * 100;
-                document.getElementById('p-bar').style.width = p + "%";
-                const m = Math.floor(native.currentTime / 60);
-                const s = Math.floor(native.currentTime % 60);
-                document.getElementById('time-txt').textContent = m + ":" + (s < 10 ? '0' : '') + s;
+            player.ontimeupdate = () => {
+                const perc = (player.currentTime / player.duration) * 100;
+                document.getElementById('t-progress').style.width = perc + "%";
+                const mm = Math.floor(player.currentTime / 60);
+                const ss = Math.floor(player.currentTime % 60);
+                document.getElementById('t-time').textContent = mm + ":" + (ss<10?'0':'') + ss;
             };
         }
 
-        let spinNum = 0;
-        let busy = false;
+        let totalRot = 0;
+        let count = 0;
+        let acting = false;
 
-        function fireSpin() {
-            if(busy) return;
-            busy = true;
-            spinNum++;
+        function triggerSpin() {
+            if(acting) return;
+            acting = true;
+            count++;
             
-            const btn = document.getElementById('spin-btn');
-            const svg = document.getElementById('wheel-svg');
-            const toast = document.getElementById('info-toast');
+            const btn = document.getElementById('spin-master-btn');
+            const svg = document.getElementById('the-svg');
+            const shell = document.getElementById('wheel-shell');
+            const toast = document.getElementById('toast-notif');
             
             btn.disabled = true;
-            toast.classList.remove('visible');
+            toast.classList.remove('show');
+            shell.classList.add('is-spinning');
 
-            let winIdx;
-            if(spinNum === 1) winIdx = [0,1,3,4,5,6][Math.floor(Math.random() * 6)];
-            else winIdx = [2,7][Math.floor(Math.random() * 2)];
+            let wIdx;
+            if(count === 1) wIdx = [0,1,3,4,5,6][Math.floor(Math.random() * 6)];
+            else wIdx = [2,7][Math.floor(Math.random() * 2)];
 
-            const finalAng = (270 - (winIdx * 45 + 22.5)) + (360 * (6 + spinNum));
-            svg.style.transform = "rotate(" + finalAng + "deg)";
+            // Professional Physics: random spin within the winning segment for "Professional feel"
+            // Rot 0 is RIGHT. Pointer is TOP (270deg).
+            // Segment i center is i*45 + 22.5. We add a small random jitter within the segment (+/- 15 deg)
+            const jitter = (Math.random() * 30) - 15;
+            const targetAng = (270 - (wIdx * 45 + 22.5 + jitter));
+            
+            // Professional Logic: Always do at least 6 FULL rotations relative to CURRENT position
+            // So if totalRot is 2000, we go to at least 2000 + (360 * 6) + targetAng
+            const extraSpins = 360 * (7 + Math.floor(Math.random() * 3));
+            totalRot = (Math.floor(totalRot / 360) * 360) + extraSpins + targetAng;
+            
+            svg.style.transform = "rotate(" + totalRot + "deg)";
 
             setTimeout(() => {
-                if(config[winIdx].win) {
-                    doSuccess();
+                shell.classList.remove('is-spinning');
+                if(slices[wIdx].w) {
+                    revealSuccess();
                 } else {
-                    toast.classList.add('visible');
+                    toast.classList.add('show');
                     btn.disabled = false;
                     btn.innerHTML = "<span>💘 Reintentar</span> ✨";
-                    busy = false;
-                    setTimeout(() => toast.classList.remove('visible'), 3000);
+                    acting = false;
+                    setTimeout(() => toast.classList.remove('show'), 3500);
                 }
-            }, 5500);
+            }, 6200);
         }
 
-        function doSuccess() {
-            const finish = Date.now() + 5000;
-            const pal = ['#ff4d94', '#4db8ff', '#ffffff'];
+        function revealSuccess() {
+            const stop = Date.now() + 6000;
+            const colors = ['#ff4d94', '#4db8ff', '#ffffff', '#ffdf8d'];
             (function r() {
-                confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: pal });
-                confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: pal });
-                if(Date.now() < finish) requestAnimationFrame(r);
+                confetti({ particleCount: 5, angle: 60, spread: 65, origin: { x: 0 }, colors: colors });
+                confetti({ particleCount: 5, angle: 120, spread: 65, origin: { x: 1 }, colors: colors });
+                if(Date.now() < stop) requestAnimationFrame(r);
             })();
-            document.getElementById('win-screen').classList.add('show');
+            document.getElementById('success-view').classList.add('active');
         }
     </script>
 </body>
