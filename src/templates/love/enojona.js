@@ -179,6 +179,12 @@
         .letter-sender { text-align: right; margin-top: 20px; font-weight: 900; color: rgba(0,0,0,0.3); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
 
         /* Magic Items */
+        .magic-float { position: fixed; pointer-events: none; z-index: 5; animation: magic-down linear forwards; opacity: 0.6; }
+        @keyframes magic-down {
+            from { transform: translateY(-10vh) rotate(0deg); }
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
         .heart-float { position: fixed; pointer-events: none; z-index: 50; animation: heart-up linear forwards; }
         @keyframes heart-up {
             from { transform: translateY(0) scale(1); opacity: 1; }
@@ -248,6 +254,24 @@
         let clicks = 0;
         const targetClicks = 15;
         let isCalmed = false;
+        let rainInterval;
+
+        function startRain(emoji) {
+            if(rainInterval) clearInterval(rainInterval);
+            rainInterval = setInterval(() => {
+                const h = document.createElement('div');
+                h.className = 'magic-float';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = (15 + Math.random() * 20) + 'px';
+                h.innerText = emoji;
+                h.style.animationDuration = (3 + Math.random() * 3) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 6000);
+            }, 400);
+        }
+
+        // Start with angry rain
+        startRain('😠');
 
         function calmDown(e) {
             if(isCalmed) return;
@@ -271,6 +295,7 @@
 
             if(clicks >= targetClicks) {
                 isCalmed = true;
+                clearInterval(rainInterval);
                 const zone = document.getElementById('angry-zone');
                 document.getElementById('angry-emoji').innerText = '😍';
                 document.getElementById('angry-emoji').style.animation = 'none';
@@ -289,17 +314,17 @@
             
             if(hasAudio) initializeAudio();
 
-            // Rain of hearts
-            setInterval(() => {
+            // Switch to happy rain
+            startRain(['❤️', '💖', '✨', '🌸'][Math.floor(Math.random()*4)]);
+            // Re-randomize items in the interval
+            clearInterval(rainInterval);
+            rainInterval = setInterval(() => {
                 const h = document.createElement('div');
-                h.style.position = 'fixed';
-                h.style.top = '-20px';
+                h.className = 'magic-float';
                 h.style.left = Math.random() * 100 + 'vw';
-                h.style.fontSize = (10 + Math.random() * 20) + 'px';
-                h.style.zIndex = '5';
-                h.style.opacity = '0.6';
+                h.style.fontSize = (10 + Math.random() * 25) + 'px';
                 h.innerText = ['❤️', '💖', '✨', '🌸'][Math.floor(Math.random()*4)];
-                h.style.animation = 'heart-up ' + (3 + Math.random() * 3) + 's linear reverse forwards';
+                h.style.animationDuration = (3 + Math.random() * 3) + 's';
                 document.body.appendChild(h);
                 setTimeout(() => h.remove(), 6000);
             }, 400);
@@ -361,4 +386,4 @@
         }
     </script>
 </body>
-</html>\`;
+</html>`;
