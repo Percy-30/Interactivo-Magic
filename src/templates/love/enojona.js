@@ -129,6 +129,9 @@
             transition: transform 0.6s 0.2s;
             z-index: 5;
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .envelope.open .envelope-flap { transform: rotateX(170deg); z-index: 0; }
         
@@ -142,10 +145,10 @@
 
         .letter-container {
             position: absolute;
-            bottom: 5px; left: 5px;
+            top: 5px;
+            left: 5px;
             width: 310px; height: 210px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
             z-index: 2;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
@@ -154,81 +157,32 @@
         }
 
         .envelope.open .letter-container {
-            transform: translateY(-130px) scale(1.1);
-            height: 480px;
-            width: 340px;
-            left: -10px;
-            z-index: 200;
-            box-shadow: 0 50px 150px rgba(0,0,0,0.9);
-        }
-
-        /* Dynamic Pages (Book Style) */
-        .pages {
-            width: calc({{total_pages}} * 100%);
-            height: 100%;
-            display: flex;
-            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-        }
-
-        .page {
-            width: calc(100% / {{total_pages}});
-            height: 100%;
-            padding: 30px 25px;
-            color: #333;
-            display: flex;
-            flex-direction: column;
+            position: fixed; /* Guarantee viewport center */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.1);
+            height: auto;
+            max-height: 85vh; 
+            width: 350px;
+            z-index: 5000;
+            box-shadow: 0 50px 200px rgba(0,0,0,0.9);
+            margin: 0;
+            padding: 25px;
             overflow-y: auto;
         }
 
-        .page h2 { font-family: 'Dancing Script', cursive; color: #d32f2f; margin-bottom: 20px; font-size: 2.2rem; border-bottom: 2px solid #fce4ec; padding-bottom: 5px; text-align: center; }
-        .page p { font-size: 1.15rem; line-height: 1.6; color: #444; font-weight: 600; margin-bottom: 15px; text-align: center; }
-        
-        .photo-area {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            border: 4px solid #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-        .photo-area img { width: 100%; height: auto; display: block; }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: auto;
-            padding-top: 15px;
-            gap: 10px;
-        }
-
-        .btn-page {
-            padding: 10px 18px;
-            background: #d32f2f;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
-            transition: all 0.3s;
-        }
-        .btn-page:disabled { opacity: 0.3; cursor: default; }
+        /* Content Styling (Similar to Flowers) */
+        .letter-header { font-family: 'Dancing Script', cursive; color: #d32f2f; font-size: 2rem; border-bottom: 1px solid #ffebee; margin-bottom: 15px; text-align: center; }
+        .letter-body { line-height: 1.6; font-weight: 600; color: #444; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
+        .letter-image { width: 100%; border-radius: 12px; margin-bottom: 15px; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .letter-extra { margin-top: 10px; color: #f44336; font-weight: 900; text-align: center; font-style: italic; }
+        .letter-sender { text-align: right; margin-top: 20px; font-weight: 900; color: rgba(0,0,0,0.3); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
 
         /* Magic Items */
         .heart-float { position: fixed; pointer-events: none; z-index: 50; animation: heart-up linear forwards; }
         @keyframes heart-up {
             from { transform: translateY(0) scale(1); opacity: 1; }
             to { transform: translateY(-300px) scale(0); opacity: 0; }
-        }
-
-        .angry-particle { position: fixed; pointer-events: none; z-index: 100; animation: anger-pop 1s forwards; color: #f44336; }
-        @keyframes anger-pop {
-            0% { transform: translate(0,0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
         /* HUD */
@@ -242,7 +196,12 @@
             .envelope { width: 280px; height: 190px; }
             .envelope-flap { border-left-width: 140px; border-right-width: 140px; border-top-width: 105px; }
             .letter-container { width: 270px; height: 180px; }
-            .envelope.open .letter-container { width: 310px; transform: translateY(-110px); }
+            .envelope.open .letter-container { 
+                position: fixed;
+                width: 92%; 
+                max-width: 340px;
+                transform: translate(-50%, -50%) scale(1); 
+            }
             .angry-face { font-size: 100px; }
         }
     </style>
@@ -263,9 +222,11 @@
             <div class="envelope" id="envelope">
                 <div class="envelope-flap"></div>
                 <div class="letter-container">
-                    <div class="pages" id="pages">
-                        {{dynamic_pages}}
-                    </div>
+                    <div class="letter-header">Para: {{name}}</div>
+                    <div class="letter-body">{{message}}</div>
+                    <img src="{{image_src}}" class="letter-image" onerror="this.style.display='none'">
+                    <div class="letter-extra">{{extra_text}}</div>
+                    <div class="letter-sender">De: {{sender}} ❤️</div>
                 </div>
             </div>
         </div>
@@ -283,7 +244,6 @@
     <script>
         const hasAudio = '{{has_audio}}' === 'true';
         const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
-        const totalPages = parseInt('{{total_pages}}') || 1;
         
         let clicks = 0;
         const targetClicks = 15;
@@ -339,7 +299,7 @@
                 h.style.zIndex = '5';
                 h.style.opacity = '0.6';
                 h.innerText = ['❤️', '💖', '✨', '🌸'][Math.floor(Math.random()*4)];
-                h.style.animation = 'magic-fall ' + (3 + Math.random() * 3) + 's linear forwards';
+                h.style.animation = 'heart-up ' + (3 + Math.random() * 3) + 's linear reverse forwards';
                 document.body.appendChild(h);
                 setTimeout(() => h.remove(), 6000);
             }, 400);
@@ -353,12 +313,6 @@
         // Letter Logic
         function toggleLetter() {
             document.getElementById('envelope').classList.toggle('open');
-        }
-
-        window.goToPage = function(index, e) {
-            if (e) e.stopPropagation();
-            const pct = -(index * (100 / totalPages));
-            document.getElementById('pages').style.transform = 'translateX(' + pct + '%)';
         }
 
         // Audio System
