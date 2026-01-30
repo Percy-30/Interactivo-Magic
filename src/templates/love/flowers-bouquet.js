@@ -150,28 +150,42 @@
         .envelope {
             width: 250px;
             height: 160px;
-            background: #fff;
+            background: #d32f2f; /* Deep Red */
             position: relative;
             cursor: pointer;
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             border-radius: 4px;
             background-image: 
-                linear-gradient(135deg, #ffffff 50%, #f0f0f0 50%),
-                linear-gradient(to top, #ffffff, #fcfcfc);
+                linear-gradient(135deg, #f44336 50%, #d32f2f 50%);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .envelope-flap {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #fdfdfd;
+            background: #e53935;
             clip-path: polygon(0 0, 50% 50%, 100% 0);
             z-index: 10;
             transition: transform 0.6s ease;
             transform-origin: top;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        .envelope-flap::after {
+            content: "❤️";
+            position: absolute;
+            top: 30%;
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: opacity 0.3s;
+        }
+        
+        .envelope.open .envelope-flap::after { opacity: 0; }
 
         .envelope.open .envelope-flap {
             transform: rotateX(160deg);
@@ -426,4 +440,4 @@
         }
     </script>
 </body>
-</html>\`;
+</html>`;
