@@ -17,7 +17,7 @@ const TemplateEngine = {
                 if (match) {
                     const fileId = match[1];
                     console.log('[TemplateEngine] Google Drive detected, ID:', fileId);
-                    // Use thumbnail endpoint which works better for embedding
+                    // thumbnail works best for mixed content, but uc is also common
                     return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
                 }
             }

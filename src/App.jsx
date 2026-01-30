@@ -191,6 +191,9 @@ const TEMPLATES = [
     color: '#00ffcc',
     content: DATE_COUNTER_TEMPLATE,
     hasImage: true,
+    hasDate: true,
+    hideRecipientName: false,
+    hideMessage: true,
     hasExtra: true,
     extraLabel: 'Título del evento'
   },
@@ -596,12 +599,7 @@ function App() {
     message: '',
     extraText: '',
     extraText2: '',
-    hasAudio: true,
-    audioOption: 'youtube', // 'upload', 'youtube'
-    audioSrc: '',
-    youtubeUrl: '',
-    audioFile: null,
-    hasImage: false,
+    startDate: new Date().toISOString().split('T')[0],
     imageOption: 'url', // 'url', 'upload'
     imageSrc: '',
     imageFile: null,
@@ -758,10 +756,12 @@ function App() {
       newErrors.name = '¿Cómo se llama la persona especial?';
     }
     if (!formData.sender.trim()) newErrors.sender = 'Dinos quién envía el mensaje';
-    if (!formData.message.trim()) newErrors.message = '¡Escribe unas palabras mágicas!';
+    if (!selectedTemplate.hideMessage && !formData.message.trim()) {
+      newErrors.message = '¡Escribe unas palabras mágicas!';
+    }
 
-    if (selectedTemplate.id === 'galaxy-gen' && (!formData.extraText || !formData.extraText.trim())) {
-      newErrors.extraText = 'Por favor, ingresa algunas palabras para la galaxia.';
+    if ((selectedTemplate.id === 'galaxy-gen' || selectedTemplate.id === 'date-counter') && (!formData.extraText || !formData.extraText.trim())) {
+      newErrors.extraText = 'Por favor, ingresa un título para tu mensaje.';
     }
 
     if (selectedTemplate.id === 'musical-sphere' && !formData.youtubeUrl.trim()) {
@@ -1223,27 +1223,29 @@ function App() {
                     />
                     {errors.sender && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.sender}</p>}
                   </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Mensaje Especial</label>
-                    <textarea
-                      name="message"
-                      rows="4"
-                      placeholder="Escribe algo lindo...."
-                      value={formData.message}
-                      onFocus={() => isMobileApp && hideBannerAd()}
-                      onBlur={() => isMobileApp && showBannerAd()}
-                      onChange={(e) => {
-                        setFormData({ ...formData, message: e.target.value });
-                        if (errors.message) setErrors({ ...errors, message: null });
-                      }}
-                      style={{
-                        borderColor: errors.message ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
-                        boxShadow: errors.message ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none',
-                        resize: 'none'
-                      }}
-                    />
-                    {errors.message && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.message}</p>}
-                  </div>
+                  {!selectedTemplate.hideMessage && (
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Mensaje Especial</label>
+                      <textarea
+                        name="message"
+                        rows="4"
+                        placeholder="Escribe algo lindo...."
+                        value={formData.message}
+                        onFocus={() => isMobileApp && hideBannerAd()}
+                        onBlur={() => isMobileApp && showBannerAd()}
+                        onChange={(e) => {
+                          setFormData({ ...formData, message: e.target.value });
+                          if (errors.message) setErrors({ ...errors, message: null });
+                        }}
+                        style={{
+                          borderColor: errors.message ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                          boxShadow: errors.message ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none',
+                          resize: 'none'
+                        }}
+                      />
+                      {errors.message && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.message}</p>}
+                    </div>
+                  )}
 
                   <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                     {selectedTemplate.hasExtra && (
@@ -1323,6 +1325,30 @@ function App() {
                       </div>
                     )}
                   </div>
+
+                  {selectedTemplate.hasDate && (
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Fecha del Evento</label>
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={formData.startDate}
+                        onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                        onFocus={() => isMobileApp && hideBannerAd()}
+                        onBlur={() => isMobileApp && showBannerAd()}
+                        style={{
+                          fontSize: '1rem',
+                          padding: '0.9rem',
+                          colorScheme: 'dark',
+                          width: '100%',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '12px',
+                          color: 'white'
+                        }}
+                      />
+                    </div>
+                  )}
 
                   {/* Image Section */}
                   {selectedTemplate.hasImage && (
