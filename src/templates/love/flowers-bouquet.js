@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Un Ramo para Ti, {{name}}</title>
+    <title>Ramo Origami de Amor 🌸 - {{name}}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;700;900&display=swap');
         
@@ -16,6 +16,7 @@
             height: 100vh; 
             overflow: hidden; 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center; 
         }
@@ -23,13 +24,22 @@
         .backdrop {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a050d 0%, #000 100%);
+            background: radial-gradient(circle at center, #0a0514 0%, #000 100%);
             z-index: 0;
         }
 
-        .bouquet-scene {
+        /* Fireworks Canvas */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .main-scene {
             position: relative;
             width: 100%;
+            max-width: 500px;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -38,32 +48,36 @@
             z-index: 10;
         }
 
-        .header-text {
+        .top-banner {
             position: absolute;
-            top: 40px;
+            top: 10%;
             text-align: center;
             z-index: 50;
+            animation: glow-pulse 2s infinite alternate;
         }
 
-        .header-text h1 {
-            font-size: 2.8rem;
+        .top-banner h1 {
+            font-size: 2.5rem;
             font-weight: 900;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-            letter-spacing: 5px;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 0, 255, 0.5);
+            letter-spacing: 4px;
         }
 
-        .flowers-container {
-            position: absolute;
-            bottom: -20px;
+        @keyframes glow-pulse {
+            from { opacity: 0.8; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Origami Flower Styling */
+        .flowers-box {
+            position: relative;
             width: 100%;
-            max-width: 600px;
-            height: 85vh;
+            height: 70vh;
             display: flex;
             justify-content: center;
             align-items: flex-end;
             z-index: 20;
-            pointer-events: none;
         }
 
         .flower {
@@ -71,275 +85,345 @@
             bottom: 0px;
             left: 50%;
             transform-origin: bottom center;
-            /* Use custom properties to not override rotate in animation */
             transform: translate(-50%, 0) rotate(var(--angle)) scale(var(--scale));
-            animation: sway 6s ease-in-out infinite alternate;
+            animation: sway 5s ease-in-out infinite alternate;
             animation-delay: var(--delay);
         }
 
         @keyframes sway {
-            0% { transform: translate(-50%, 0) rotate(calc(var(--angle) - 4deg)) scale(var(--scale)); }
-            100% { transform: translate(-50%, 0) rotate(calc(var(--angle) + 4deg)) scale(var(--scale)); }
+            0% { transform: translate(-50%, 0) rotate(calc(var(--angle) - 3deg)) scale(var(--scale)); }
+            100% { transform: translate(-50%, 0) rotate(calc(var(--angle) + 3deg)) scale(var(--scale)); }
         }
 
         .flower-head {
-            width: 110px; height: 110px;
+            width: 90px; height: 90px;
             position: relative;
-            clip-path: polygon(50% 0%, 58% 12%, 75% 6%, 79% 21%, 94% 25%, 90% 42%, 100% 50%, 90% 58%, 94% 75%, 79% 79%, 75% 94%, 58% 88%, 50% 100%, 42% 88%, 25% 94%, 21% 79%, 6% 75%, 10% 58%, 0% 50%, 10% 42%, 6% 25%, 21% 21%, 25% 6%, 42% 12%);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--color);
+            /* Origami-style jagged edges */
+            clip-path: polygon(50% 0%, 65% 15%, 85% 10%, 80% 30%, 100% 40%, 85% 55%, 90% 75%, 70% 70%, 55% 90%, 45% 90%, 30% 70%, 10% 75%, 15% 55%, 0% 40%, 20% 30%, 15% 10%, 35% 15%);
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .heart-svg {
+        .flower-head::after {
+            content: "";
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 45px; height: 45px;
-            fill: #ff0000;
-            z-index: 10;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4));
+            inset: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .flower-heart {
+            width: 35px; height: 35px;
+            fill: #e91e63;
+            filter: drop-shadow(0 0 10px rgba(233, 30, 99, 0.5));
+            z-index: 5;
         }
 
         .stem {
-            width: 10px;
-            background: linear-gradient(to right, #1b5e20, #2e7d32, #1b5e20);
+            width: 8px;
+            background: linear-gradient(to right, #2d5a27, #3e8e41, #2d5a27);
             margin: 0 auto;
-            border-radius: 5px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            border-radius: 4px;
         }
 
         .leaf {
             position: absolute;
-            width: 45px; height: 25px;
-            background: #2e7d32;
-            border-radius: 60% 0;
+            width: 35px; height: 18px;
+            background: #3e8e41;
+            border-radius: 50% 0;
             z-index: -1;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
         }
 
-        .envelope-wrapper {
+        /* Letter Styling OVER the bouquet */
+        .card-container {
             position: absolute;
-            top: 40%;
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 100;
-            cursor: pointer;
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
         .envelope {
-            width: 300px; height: 200px;
-            background: #fff59d;
+            width: 250px;
+            height: 160px;
+            background: #fff;
             position: relative;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            border-radius: 5px;
-            border: 1px solid #fbc02d;
+            cursor: pointer;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            border-radius: 4px;
+            background-image: 
+                linear-gradient(135deg, #ffffff 50%, #f0f0f0 50%),
+                linear-gradient(to top, #ffffff, #fcfcfc);
         }
 
-        .envelope-top {
+        .envelope-flap {
             position: absolute;
-            top: 0; left: 0; width: 0; height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 100px solid #fdd835;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #fdfdfd;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            z-index: 10;
+            transition: transform 0.6s ease;
             transform-origin: top;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 5;
+            border-bottom: 2px solid #eee;
         }
 
-        .envelope.open .envelope-top { transform: rotateX(180deg); z-index: 0; }
+        .envelope.open .envelope-flap {
+            transform: rotateX(160deg);
+            z-index: 0;
+        }
 
-        .letter {
+        .letter-content {
             position: absolute;
-            bottom: 5px; left: 10px;
-            width: 280px; height: 190px;
-            background: white;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 2;
-            padding: 25px;
+            top: 10px; left: 10px;
+            width: 230px;
+            padding: 20px;
+            background: #fff;
             color: #333;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 2px;
+            max-height: 140px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .envelope.open .letter-content {
+            transform: translateY(-120px) scale(1.3);
+            max-height: 480px;
+            height: auto;
+            width: 280px;
+            left: -15px;
+            z-index: 200;
+            box-shadow: 0 50px 120px rgba(0,0,0,0.9);
+            pointer-events: auto;
             overflow-y: auto;
         }
 
-        .envelope.open .letter { 
-            transform: translateY(-160px); 
-            height: auto; 
-            max-height: 450px; 
-            z-index: 200; 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.9); 
-            width: 340px; 
-            left: -20px;
+        .letter-header { font-family: 'Dancing Script', cursive; color: #ff1a7d; font-size: 1.8rem; border-bottom: 1px solid #ffebee; margin-bottom: 12px; }
+        .letter-body { line-height: 1.6; font-weight: 500; color: #444; }
+        .letter-image { width: 100%; border-radius: 8px; margin-top: 15px; border: 3px solid #fff1f5; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .letter-extra { margin-top: 10px; color: #ff1a7d; font-weight: 900; text-align: center; }
+        .letter-sender { text-align: right; margin-top: 15px; font-weight: 900; color: rgba(0,0,0,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Intro wall */
+        #intro-wall {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: opacity 1s ease;
         }
+        #intro-wall.hide { opacity: 0; pointer-events: none; }
 
-        .letter h2 { font-family: 'Dancing Script', cursive; color: #ad1457; font-size: 2.2rem; margin-bottom: 15px; border-bottom: 2px solid #fce4ec; }
-        .letter p { font-size: 1.2rem; line-height: 1.6; color: #444; font-weight: 600; }
-        .sender-tag { color: #ff4081; font-weight: 800; text-align: right; margin-top: 20px; font-size: 0.9rem; text-transform: uppercase; }
-
-        .extra-photo { width: 100%; border-radius: 12px; margin-top: 20px; display: {{image_display}}; border: 4px solid #fce4ec; }
-
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 5000; transition: all 0.8s ease; cursor: pointer;
+        /* Audio HUD */
+        .audio-hud {
+            position: fixed; bottom: 30px; width: 85%; max-width: 380px;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 15px; z-index: 1000;
         }
-
-        #intro-overlay.hidden { opacity: 0; visibility: hidden; }
-
-        .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 350px; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; gap: 15px; z-index: 1000; color: white; }
-        .play-btn { width: 45px; height: 45px; background: #ff4081; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .progress-bar-container { flex-grow: 1; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: #ff4081; }
-
-        .magic-item { position: fixed; top: -50px; pointer-events: none; z-index: 4000; animation: magic-fall linear forwards; }
-        @keyframes magic-fall { to { transform: translateY(110vh) rotate(360deg); } }
+        .hud-btn {
+            width: 40px; height: 40px; background: #ff1a7d; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; cursor: pointer;
+        }
+        .hud-progress { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .hud-bar { height: 100%; background: #ff1a7d; width: 0%; transition: width 0.1s; }
 
         @media (max-width: 500px) {
-            .header-text h1 { font-size: 2rem; }
-            .flowers-container { max-width: 450px; }
+            .top-banner h1 { font-size: 1.8rem; }
+            .flower-head { width: 75px; height: 75px; }
         }
     </style>
 </head>
 <body>
-    <div id="intro-overlay" onclick="openBox()">
-        <div style="font-size: 110px; filter: drop-shadow(0 0 30px #ff4081); animation: float 3s infinite;">💐</div>
-        <div style="color: white; font-size: 2rem; font-weight: 900; margin-top: 3rem; text-align: center;">¡Un ramo para ti!</div>
-        <div style="color: #ff4d94; letter-spacing: 5px; margin-top: 1.5rem; font-weight: 800; font-size: 1.1rem;">TOCA PARA RECIBIR ❤️</div>
+    <div id="intro-wall" onclick="startSurprise()">
+        <div style="font-size: 100px; animation: bounce 3s infinite;">🌸</div>
+        <h2 style="font-weight: 900; margin-top: 2rem; color: #fff;">Un Ramo Especial</h2>
+        <div style="color: #ff1a7d; font-weight: 900; letter-spacing: 5px; margin-top: 1.5rem; font-size: 0.9rem;">TOCA PARA RECIBIR ❤️</div>
     </div>
 
     <div class="backdrop"></div>
-    
-    <div class="bouquet-scene">
-        <div class="header-text">
-            <h1>TE AMO</h1>
+    <canvas id="fireworks-canvas"></canvas>
+
+    <div class="main-scene">
+        <div class="top-banner">
+            <h1>TE AMO 😍💖</h1>
         </div>
 
-        <div class="envelope-wrapper" id="envWrap" onclick="toggleLetter()">
-            <div class="envelope" id="envelope">
-                <div class="envelope-top"></div>
-                <div class="letter">
-                    <h2>Para: {{name}}</h2>
-                    <p>{{message}}</p>
-                    <img src="{{image_src}}" class="extra-photo" onerror="this.style.display='none'">
-                    <p style="margin-top: 15px; color: #ad1457; font-weight: 800; text-align: center;">{{extra_text}}</p>
-                    <div class="sender-tag">De: {{sender}} ❤️</div>
+        <div class="card-container">
+            <div class="envelope" id="main-envelope" onclick="this.classList.toggle('open')">
+                <div class="envelope-flap"></div>
+                <div class="letter-content">
+                    <div class="letter-header">Para: {{name}}</div>
+                    <div class="letter-body">{{message}}</div>
+                    <img src="{{image_src}}" class="letter-image" onerror="this.style.display='none'">
+                    <div class="letter-extra">{{extra_text}}</div>
+                    <div class="letter-sender">De: {{sender}} ❤️</div>
                 </div>
             </div>
         </div>
 
-        <div class="flowers-container" id="bouquet"></div>
+        <div class="flowers-box" id="bouquet-area"></div>
     </div>
 
-    <div class="audio-controls" style="display: none;" id="audio-ui">
-        <div class="play-btn" id="play-btn">
-            <span id="play-icon">▶️</span><span id="pause-icon" style="display:none">||</span>
-        </div>
-        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="audio-hud" id="audio-ui" style="display: none;">
+        <div class="hud-btn" id="audio-toggle">▶</div>
+        <div class="hud-progress"><div class="hud-bar" id="hud-bar"></div></div>
     </div>
 
-    <audio id="bg-audio" src="{{audio_src}}" loop></audio>
-    <div id="yt-player" style="position:fixed; opacity:0; pointer-events:none;"></div>
+    <audio id="player" src="{{audio_src}}" loop></audio>
+    <div id="yt-wrap" style="display:none"><div id="yt-player"></div></div>
 
     <script>
-        const hasAudio = '{{has_audio}}' === 'true';
-        const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
-        let audio = document.getElementById('bg-audio');
-        let ytPlayer = null;
-
-        window.onYouTubeIframeAPIReady = function() {
-            if (youtubeId && youtubeId.length > 2) {
-                ytPlayer = new YT.Player('yt-player', {
-                    height: '0', width: '0', videoId: youtubeId,
-                    playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                    events: {
-                        'onReady': () => { if(window.playOnReady) { ytPlayer.playVideo(); updateUI(true); } },
-                        'onStateChange': (e) => updateUI(e.data === 1)
-                    }
-                });
-            }
-        };
-
-        if (youtubeId && youtubeId.length > 2) {
-            const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-            document.head.appendChild(tag);
-        }
-
-        function updateUI(playing) {
-            document.getElementById('play-icon').style.display = playing ? 'none' : 'inline';
-            document.getElementById('pause-icon').style.display = playing ? 'inline' : 'none';
-        }
-
-        window.openBox = function() {
-            const overlay = document.getElementById('intro-overlay');
-            overlay.classList.add('hidden');
-            setTimeout(() => overlay.style.display='none', 800);
-
-            if (hasAudio) {
-                document.getElementById('audio-ui').style.display = 'flex';
-                if (ytPlayer) { ytPlayer.playVideo(); updateUI(true); } 
-                else if (audio) { audio.play().catch(() => {}); updateUI(true); }
-                else { window.playOnReady = true; }
-            }
-            createBouquet();
-            startRain();
-        };
-
-        function toggleLetter() { document.getElementById('envelope').classList.toggle('open'); }
-
+        // Bouquet Setup
         function createBouquet() {
-            const container = document.getElementById('bouquet');
-            const colors = ['#ff4081', '#f06292', '#ffeb3b', '#4dd0e1', '#b39ddb', '#ffffff', '#81c784'];
-            const count = 30;
+            const container = document.getElementById('bouquet-area');
+            const colors = ['#ff85a1', '#ffd93d', '#6bf1ff', '#b4ff9f', '#d789ff', '#ffffff'];
+            const count = 35;
 
             for (let i = 0; i < count; i++) {
                 const f = document.createElement('div');
                 f.className = 'flower';
                 
-                // Spread 150 degrees
-                const angle = (i / count) * 150 - 75;
-                const dist = 320 + Math.random() * 280;
-                const scale = 0.6 + Math.random() * 0.5;
+                const angle = (i / count) * 160 - 80;
+                const dist = 350 + Math.random() * 300;
+                const scale = 0.5 + Math.random() * 0.6;
                 const delay = (Math.random() * -5) + 's';
-                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
                 f.style.setProperty('--angle', angle + 'deg');
                 f.style.setProperty('--scale', scale);
                 f.style.setProperty('--delay', delay);
+                f.style.setProperty('--color', color);
 
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                let flowerHtml = '<div class="stem" style="height: ' + dist + 'px; position: relative;">';
-                for(let j=0; j<3; j++) {
-                    const leafY = 70 + Math.random() * (dist - 140);
-                    const isRight = Math.random() > 0.5;
-                    const leafRot = isRight ? 40 : -40;
-                    flowerHtml += '<div class="leaf" style="bottom:'+leafY+'px; left:50%; transform: rotate('+(isRight?0:180)+'deg) translateX('+(isRight?'-10px':'10px')+') rotate('+leafRot+'deg)"></div>';
-                }
-                flowerHtml += '</div>';
-                flowerHtml += '<div class="flower-head" style="background:'+color+'; position: absolute; top:0; left:50%; transform: translate(-50%, -50%)">' +
-                             '<svg class="heart-svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' +
-                             '</div>';
-                f.innerHTML = flowerHtml;
+                let html = \`
+                    <div class="stem" style="height: \${dist}px; position: relative;">
+                        <div class="leaf" style="top: 20%; left: 0; transform: rotate(-45deg)"></div>
+                        <div class="leaf" style="top: 40%; right: 0; transform: scaleX(-1) rotate(-45deg)"></div>
+                    </div>
+                    <div class="flower-head" style="position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%)">
+                        <svg class="flower-heart" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                \`;
+                f.innerHTML = html;
                 container.appendChild(f);
             }
         }
 
-        function startRain() {
-            setInterval(() => {
-                const p = document.createElement('div');
-                p.className = 'magic-item';
-                p.innerHTML = ['🌸', '✨', '❤️', '🌺', '💖'][Math.floor(Math.random()*5)];
-                p.style.left = Math.random() * 100 + 'vw';
-                const dur = 5 + Math.random() * 4;
-                p.style.animationDuration = dur + 's';
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), dur * 1000);
-            }, 300);
+        // Fireworks Engine
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = resize;
+        resize();
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.vel = { x: Math.random() * 6 - 3, y: Math.random() * 6 - 3 };
+                this.life = 1;
+                this.decay = 0.01 + Math.random() * 0.02;
+            }
+            draw() {
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            update() {
+                this.x += this.vel.x;
+                this.y += this.vel.y;
+                this.vel.y += 0.05; // gravity
+                this.life -= this.decay;
+            }
         }
 
-        document.getElementById('play-btn').onclick = () => {
-            if (ytPlayer) { if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); else ytPlayer.playVideo(); }
-            else { if (audio.paused) audio.play(); else audio.pause(); }
+        function spawnFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * (canvas.height * 0.6);
+            const color = \`hsl(\${Math.random() * 360}, 100%, 60%)\`;
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            if (Math.random() < 0.03) spawnFirework();
+            requestAnimationFrame(animate);
+        }
+
+        // Main Control
+        function startSurprise() {
+            document.getElementById('intro-wall').classList.add('hide');
+            createBouquet();
+            animate();
+            if('{{has_audio}}' === 'true') {
+                document.getElementById('audio-ui').style.display = 'flex';
+                initializeAudio();
+            }
+        }
+
+        // Audio Logic
+        const player = document.getElementById('player');
+        let ytPlayer = null;
+
+        function initializeAudio() {
+            const yId = "{{youtube_id}}".replace(/[{}]/g, '');
+            if(yId) {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.body.appendChild(tag);
+                window.onYouTubeIframeAPIReady = () => {
+                    ytPlayer = new YT.Player('yt-player', {
+                        videoId: yId, height: '0', width: '0',
+                        playerVars: { autoplay: 1, loop: 1, playlist: yId },
+                        events: { 'onReady': () => toggleMusic(true) }
+                    });
+                };
+            } else {
+                player.play().catch(() => {});
+                toggleMusic(true);
+            }
+        }
+
+        function toggleMusic(play) {
+            const btn = document.getElementById('audio-toggle');
+            if(play) {
+                btn.textContent = '||';
+                if(ytPlayer) ytPlayer.playVideo(); else player.play();
+            } else {
+                btn.textContent = '▶';
+                if(ytPlayer) ytPlayer.pauseVideo(); else player.pause();
+            }
+        }
+
+        document.getElementById('audio-toggle').onclick = () => {
+            const active = document.getElementById('audio-toggle').textContent === '||';
+            toggleMusic(!active);
         };
-        if (audio) { audio.ontimeupdate = () => { document.getElementById('progress-bar').style.width = (audio.currentTime / audio.duration) * 100 + '%'; }; }
+
+        if(!("{{youtube_id}}")) {
+            player.ontimeupdate = () => {
+                document.getElementById('hud-bar').style.width = (player.currentTime / player.duration) * 100 + "%";
+            };
+        }
     </script>
 </body>
-</html>`;
+</html>\`;
