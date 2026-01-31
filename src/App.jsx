@@ -160,6 +160,18 @@ const TEMPLATES = [
     extraLabel: 'Título de perdón'
   },
   {
+    id: 'be-friends',
+    category: 'divertido',
+    name: '¿Amig@s? 👥',
+    description: 'Pide volver a ser amig@s de forma tierna (Doble Foto - Botón esquivo).',
+    icon: <Users />,
+    color: '#ff4d94',
+    content: BE_FRIENDS_TEMPLATE,
+    hasImage: true,
+    hasExtra: true,
+    extraLabel: 'Mensaje de éxito'
+  },
+  {
     id: 'flowers-ramo',
     category: 'amor',
     name: 'Ramo de Flores 🌸',
@@ -320,18 +332,6 @@ const TEMPLATES = [
     hasImage: false,
     hasExtra: true,
     extraLabel: 'Subtítulo'
-  },
-  {
-    id: 'be-friends',
-    category: 'divertido',
-    name: 'Amig@s? 👥',
-    description: 'Pide volver con este detalle.',
-    icon: <Users />,
-    color: '#9c27b0',
-    content: BE_FRIENDS_TEMPLATE,
-    hasImage: false,
-    hasExtra: true,
-    extraLabel: 'Posdata'
   },
   {
     id: 'heart-photo',

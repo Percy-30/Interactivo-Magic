@@ -23,6 +23,7 @@ import { MARVEL_BOOK_TEMPLATE } from './fun/marvel-book';
 import { FORGIVE_ME_CATS_TEMPLATE } from './fun/forgive-me-cats';
 import { FORGIVE_ME_PENGUINS_TEMPLATE } from './fun/forgive-me-penguins';
 import { SOCCER_CARD_TEMPLATE } from './fun/soccer-card';
+import { FRIENDS_REQUEST_TEMPLATE } from './fun/friends-request';
 import { ENCHANTED_LETTER_TEMPLATE } from './halloween/enchanted-letter';
 
 
@@ -52,7 +53,8 @@ export {
     SOCCER_CARD_TEMPLATE,
     DEDICATE_SONG_TEMPLATE,
     PROPOSAL_PREMIUM_TEMPLATE,
-    TE_AMO_PREMIUM_TEMPLATE
+    TE_AMO_PREMIUM_TEMPLATE,
+    FRIENDS_REQUEST_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
@@ -67,7 +69,7 @@ export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
 export const DEDICATE_SONG_LEGACY_ALIAS = LOVE_TEMPLATE.replace('🎁', '🎧');
 export const BE_MY_BOYFRIEND_TEMPLATE = PROPOSAL_TEMPLATE;
 export const TE_AMO_TEMPLATE = TE_AMO_PREMIUM_TEMPLATE;
-export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
+export const BE_FRIENDS_TEMPLATE = FRIENDS_REQUEST_TEMPLATE;
 export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
 export const OUR_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '📅');
 export const CHRISTMAS_TREE_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🎄').replace('#00f2ff', '#2e7d32');
