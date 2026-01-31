@@ -315,104 +315,261 @@ export const PHOTO_HEART_COLLAGE_TEMPLATE = `<!DOCTYPE html>
                 partBox.appendChild(d);
             }
 
-            // Audio Logic
+            // === AUDIO SYSTEM ===
             const player = document.getElementById('player');
-            const youtubeId = "{{youtube_id}}".replace(/[{}]/g, '');
+            const controls = document.getElementById('audio-controls');
+            const toggle = document.getElementById('audio-toggle');
+            const audioBar = document.getElementById('audio-bar');
+            const timeDisplay = document.getElementById('time-display');
+            const progressArea = document.getElementById('progress-area');
+            
+            const ytId = "{{youtube_id}}";
+            const hasYt = ytId && !ytId.includes('{{');
+            const audioSrc = "{{audio_src}}";
+            const hasNativeAudio = audioSrc && !audioSrc.includes('{{') && !audioSrc.includes('undefined');
+            const hasAudio = '{{has_audio}}' === 'true';
+            
             let ytPlayer = null;
+            let isYtReady = false;
             let isPlaying = false;
-            let platform = (youtubeId && youtubeId.length > 2) ? 'youtube' : 'native';
 
-            window.initApp = function() {
-                document.getElementById('wall').classList.add('hide');
-                confetti({
-                    particleCount: 100, spread: 70, origin: { y: 0.6 },
-                    colors: ['#ff4d94', '#ff00ff', '#ffd700']
-                });
+            console.log('[HEART 💫 AUDIO] ======== Audio Config ========');
+            console.log('  hasAudio:', hasAudio);
+            console.log('  hasYt:', hasYt);
+            console.log('  ytId:', ytId);
+            console.log('  hasNativeAudio:', hasNativeAudio);
+            console.log('[HEART 💫 AUDIO] ============================');
+
+            // === YOUTUBE PLAYER SETUP ===
+            if (hasYt && hasAudio) {
+                console.log('[HEART 💫 AUDIO] YouTube configuration detected');
                 
-                if('{{has_audio}}' === 'true') {
-                    document.getElementById('audio-controls').style.display = 'flex';
-                    setupAudio();
+                function createYouTubePlayer() {
+                    console.log('[HEART 💫 AUDIO] Creating YouTube player...');
+                    try {
+                        ytPlayer = new YT.Player('yt-player', {
+                            height: '0',
+                            width: '0',
+                            videoId: ytId,
+                            playerVars: {
+                                'autoplay': 0,
+                                'controls': 0,
+                                'loop': 1,
+                                'playlist': ytId
+                            },
+                            events: {
+                                'onReady': function(event) {
+                                    console.log('[HEART 💫 AUDIO] YT Player Ready!');
+                                    isYtReady = true;
+                                    if (toggle) toggle.textContent = '▶';
+                                },
+                                'onStateChange': function(event) {
+                                    if (!toggle) return;
+                                    if (event.data === YT.PlayerState.PLAYING) {
+                                        toggle.textContent = '||';
+                                        isPlaying = true;
+                                    } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                                        toggle.textContent = '▶';
+                                        isPlaying = false;
+                                    }
+                                },
+                                'onError': function(event) {
+                                    console.error('[HEART 💫 AUDIO] YT Player Error:', event.data);
+                                }
+                            }
+                        });
+                    } catch (err) {
+                        console.error('[HEART 💫 AUDIO] Error creating YT player:', err);
+                    }
                 }
-
-                const driveUrl = "{{drive_folder}}".replace(/[{}]/g, '');
-                if (driveUrl && driveUrl.length > 5) {
-                    document.getElementById('drive-section').style.display = 'block';
-                }
-            };
-
-            function setupAudio() {
-                if(platform === 'youtube') {
+                
+                // Check if YouTube API is already loaded
+                if (typeof YT !== 'undefined' && YT.Player) {
+                    console.log('[HEART 💫 AUDIO] YT API already loaded, creating player immediately');
+                    createYouTubePlayer();
+                } else {
+                    console.log('[HEART 💫 AUDIO] YT API not loaded yet, setting up callback');
                     const tag = document.createElement('script');
                     tag.src = "https://www.youtube.com/iframe_api";
                     document.body.appendChild(tag);
-                    window.onYouTubeIframeAPIReady = () => {
-                        window.ytPlayer = new YT.Player('yt-player', {
-                            videoId: youtubeId, height: '0', width: '0',
-                            playerVars: { autoplay: 1, loop: 1, playlist: youtubeId },
-                            events: { 
-                                'onReady': () => toggleMusic(true),
-                                'onStateChange': (e) => { updateAudioUI(e.data === 1); }
-                            }
-                        });
+                    
+                    window.onYouTubeIframeAPIReady = function() {
+                        console.log('[HEART 💫 AUDIO] YouTube API Ready callback fired');
+                        createYouTubePlayer();
                     };
-                } else {
-                    player.play().catch(() => {});
-                    toggleMusic(true);
                 }
             }
 
-            function toggleMusic(play) {
-                const btn = document.getElementById('audio-toggle');
-                if(play) {
-                    btn.textContent = '||';
-                    if(window.ytPlayer) window.ytPlayer.playVideo(); else player.play();
-                } else {
-                    btn.textContent = '▶';
-                    if(window.ytPlayer) window.ytPlayer.pauseVideo(); else player.pause();
+            // === WALL CLICK / APP INITIALIZATION ===
+            window.initApp = function() {
+                console.log('[HEART 💫 AUDIO] initApp() called');
+                
+                const wall = document.getElementById('wall');
+                if (wall) wall.classList.add('hide');
+
+                // Confetti
+                if (typeof confetti !== 'undefined') {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#ff4d94', '#ff00ff', '#ffd700']
+                    });
                 }
-                updateAudioUI(play);
-            }
 
-            function updateAudioUI(playing) {
-                isPlaying = playing;
-                document.getElementById('audio-toggle').textContent = playing ? '||' : '▶';
-                if(playing) startProgress();
-            }
+                // Show Drive link if available
+                const driveUrl = "{{drive_folder}}";
+                if (driveUrl && !driveUrl.includes('{{') && driveUrl.length > 5) {
+                    const driveSection = document.getElementById('drive-section');
+                    if (driveSection) driveSection.style.display = 'block';
+                }
 
-            function startProgress() {
-                setInterval(() => {
-                    if(!isPlaying) return;
-                    let c, d;
-                    if(platform === 'youtube' && window.ytPlayer && window.ytPlayer.getCurrentTime) {
-                        c = window.ytPlayer.getCurrentTime();
-                        d = window.ytPlayer.getDuration();
-                    } else {
-                        c = player.currentTime; d = player.duration;
+                // Setup audio if enabled
+                if (hasAudio) {
+                    if (controls) controls.style.display = 'flex';
+                    
+                    // Try YouTube
+                    if (hasYt) {
+                        console.log('[HEART 💫 AUDIO] YouTube detected, attempting playback...');
+                        
+                        if (isYtReady && ytPlayer && ytPlayer.playVideo) {
+                            console.log('[HEART 💫 AUDIO] YT Player ready, starting playback now');
+                            try {
+                                ytPlayer.playVideo();
+                                isPlaying = true;
+                                if (toggle) toggle.textContent = '||';
+                            } catch (err) {
+                                console.error('[HEART 💫 AUDIO] Error playing YouTube:', err);
+                            }
+                        } else {
+                            console.log('[HEART 💫 AUDIO] YT Player not ready yet, waiting...');
+                            
+                            let attempts = 0;
+                            const maxAttempts = 20;
+                            const retryInterval = setInterval(function() {
+                                attempts++;
+                                console.log('[HEART 💫 AUDIO] Retry attempt', attempts, '- isYtReady:', isYtReady);
+                                
+                                if (isYtReady && ytPlayer && ytPlayer.playVideo) {
+                                    console.log('[HEART 💫 AUDIO] YT Player NOW ready! Starting playback');
+                                    clearInterval(retryInterval);
+                                    try {
+                                        ytPlayer.playVideo();
+                                        isPlaying = true;
+                                        if (toggle) toggle.textContent = '||';
+                                    } catch (err) {
+                                        console.error('[HEART 💫 AUDIO] Error playing YouTube after retry:', err);
+                                    }
+                                } else if (attempts >= maxAttempts) {
+                                    console.error('[HEART 💫 AUDIO] YouTube player failed to load after', maxAttempts, 'attempts');
+                                    clearInterval(retryInterval);
+                                }
+                            }, 500);
+                        }
                     }
-                    if(d) {
-                        const p = (c/d) * 100;
-                        document.getElementById('audio-bar').style.width = p + "%";
-                        document.getElementById('time-display').innerText = formatTime(c);
+                    // Try Native Audio
+                    else if (hasNativeAudio && player && player.src) {
+                        console.log('[HEART 💫 AUDIO] Starting native audio playback...');
+                        player.play()
+                            .then(() => {
+                                console.log('[HEART 💫 AUDIO] Native audio playing');
+                                isPlaying = true;
+                                if (toggle) toggle.textContent = '||';
+                            })
+                            .catch(err => {
+                                console.log('[HEART 💫 AUDIO] Native audio blocked:', err.message);
+                            });
                     }
-                }, 500);
-            }
-
-            function formatTime(s) {
-                const min = Math.floor(s/60);
-                const sec = Math.floor(s%60);
-                return min + ":" + (sec < 10 ? '0' : '') + sec;
-            }
-
-            document.getElementById('audio-toggle').onclick = () => toggleMusic(!isPlaying);
-            document.getElementById('progress-area').onclick = (e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const pct = (e.clientX - rect.left) / rect.width;
-                if(platform === 'youtube' && window.ytPlayer) {
-                    window.ytPlayer.seekTo(pct * window.ytPlayer.getDuration());
-                } else {
-                    player.currentTime = pct * player.duration;
                 }
             };
+
+            // === PLAY/PAUSE TOGGLE ===
+            if (toggle) {
+                toggle.onclick = function() {
+                    console.log('[HEART 💫 AUDIO] Toggle clicked');
+                    
+                    if (hasYt && ytPlayer && isYtReady) {
+                        try {
+                            const state = ytPlayer.getPlayerState();
+                            if (state === YT.PlayerState.PLAYING) {
+                                ytPlayer.pauseVideo();
+                                isPlaying = false;
+                                toggle.textContent = '▶';
+                            } else {
+                                ytPlayer.playVideo();
+                                isPlaying = true;
+                                toggle.textContent = '||';
+                            }
+                        } catch (err) {
+                            console.error('[HEART 💫 AUDIO] Error toggling YT:', err);
+                        }
+                    } else if (player) {
+                        if (player.paused) {
+                            player.play()
+                                .then(() => {
+                                    isPlaying = true;
+                                    toggle.textContent = '||';
+                                })
+                                .catch(err => console.log('Play error:', err));
+                        } else {
+                            player.pause();
+                            isPlaying = false;
+                            toggle.textContent = '▶';
+                        }
+                    }
+                };
+            }
+
+            // === NATIVE AUDIO PROGRESS ===
+            if (player) {
+                player.ontimeupdate = function() {
+                    if (!audioBar || !timeDisplay) return;
+                    const progress = (player.currentTime / player.duration) * 100;
+                    audioBar.style.width = progress + '%';
+                    const min = Math.floor(player.currentTime / 60);
+                    const sec = Math.floor(player.currentTime % 60);
+                    timeDisplay.textContent = min + ':' + (sec < 10 ? '0' + sec : sec);
+                };
+            }
+
+            // === YOUTUBE PROGRESS UPDATE ===
+            setInterval(function() {
+                if (hasYt && ytPlayer && isYtReady && ytPlayer.getCurrentTime && isPlaying) {
+                    try {
+                        const curr = ytPlayer.getCurrentTime();
+                        const dur = ytPlayer.getDuration();
+                        if (audioBar && timeDisplay && dur > 0) {
+                            const progress = (curr / dur) * 100;
+                            audioBar.style.width = progress + '%';
+                            const min = Math.floor(curr / 60);
+                            const sec = Math.floor(curr % 60);
+                            timeDisplay.textContent = min + ':' + (sec < 10 ? '0' + sec : sec);
+                        }
+                    } catch (err) {
+                        // Ignore errors if player not ready
+                    }
+                }
+            }, 1000);
+
+            // === PROGRESS BAR CLICK (SEEK) ===
+            if (progressArea) {
+                progressArea.onclick = function(e) {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    
+                    if (hasYt && ytPlayer && isYtReady) {
+                        try {
+                            ytPlayer.seekTo(pct * ytPlayer.getDuration());
+                        } catch (err) {
+                            console.error('[HEART 💫 AUDIO] Seek error:', err);
+                        }
+                    } else if (player) {
+                        player.currentTime = pct * player.duration;
+                    }
+                };
+            }
+
+            console.log('[HEART 💫 AUDIO] Script initialized. Click the heart to start!');
         })();
     </script>
 </body>

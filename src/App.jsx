@@ -349,15 +349,17 @@ const TEMPLATES = [
   },
   {
     id: 'our-year',
-    category: 'eventos',
+    category: 'amor',
     name: 'Nuestro Año 💫',
-    description: '12 fotos por cada mes juntos.',
-    icon: <Image />,
-    color: '#2196f3',
+    description: '12 fotos por cada mes juntos (Mosaico Anual).',
+    icon: <Calendar />,
+    color: '#ff9a3d',
     content: OUR_YEAR_TEMPLATE,
-    hasImage: true,
+    hasImage: false,
+    hasItems: true,
+    itemsCount: 12,
     hasExtra: true,
-    extraLabel: 'Dedicatoria temporal'
+    extraLabel: 'Año (ej: 2025)'
   },
   {
     id: 'christmas',
@@ -664,19 +666,29 @@ function App() {
       const response = await fetch(proxyUrl);
       const html = await response.text();
 
-      const idRegex = /"([a-zA-Z0-9_-]{28,40})"/g;
+      const idRegex = /"([a-zA-Z0-9_-]{32,40})"/g;
       let match;
       const ids = new Set();
       while ((match = idRegex.exec(html)) !== null) {
         const id = match[1];
-        if (id !== folderId && id.length > 30) {
+        // Skip common IDs like folder itself and some UI elements
+        if (id !== folderId && !id.startsWith('drive_') && !id.startsWith('folder_')) {
           ids.add(id);
         }
       }
 
       const extractedIds = Array.from(ids);
       if (extractedIds.length > 0) {
-        const newItems = extractedIds.slice(0, 25).map(id => ({
+        // DRIVE METADATA FILTERING:
+        // Filter by typical Drive ID length (image IDs are usually 33 characters)
+        const sortedIds = extractedIds.filter(id => id.length >= 33);
+
+        // Metadata usually appears at the very beginning of the HTML response.
+        // If we have many IDs, skip the first ones which are often site assets (icons, etc.)
+        const skip = sortedIds.length > (selectedTemplate?.itemsCount || 5) + 5 ? 4 : 0;
+        const limit = selectedTemplate?.itemsCount || 25;
+
+        const newItems = sortedIds.slice(skip, skip + limit).map(id => ({
           id: Date.now() + Math.random(),
           type: 'image',
           content: `https://lh3.googleusercontent.com/u/0/d/${id}`
@@ -701,25 +713,41 @@ function App() {
   // Reset and initialize items when template changes
   useEffect(() => {
     if (selectedTemplate) {
-      setFormData(prev => ({
-        ...prev,
-        items: [],
-        // Pre-llenar campos de vitaminas si es el caso
-        ...(selectedTemplate.id === 'vitamins' ? {
-          vitamina_a_text: 'Abrazos',
-          vitamina_a_msg: 'Los más cálidos 🤗',
-          vitamina_a_emoji: '🤗',
-          vitamina_b_text: 'Besos',
-          vitamina_b_msg: 'Dulces y tiernos 😘',
-          vitamina_b_emoji: '😘',
-          vitamina_c_text: 'Caricias',
-          vitamina_c_msg: 'Suaves toda la noche 💕',
-          vitamina_c_emoji: '💕',
-          vitamina_d_text: 'Delicioso',
-          vitamina_d_msg: 'Las veces que tu quieras 😏💘',
-          vitamina_d_emoji: '🔥😈'
-        } : {})
-      }));
+      setFormData(prev => {
+        // Preserve critical user audio configuration
+        const preservedAudio = {
+          hasAudio: prev.hasAudio,
+          audioOption: prev.audioOption,
+          youtubeUrl: prev.youtubeUrl,
+          audioFile: prev.audioFile,
+          audioSrc: prev.audioSrc
+        };
+
+        console.log('[TEMPLATE CHANGE] Preserving audio config:', preservedAudio);
+
+        return {
+          ...prev,
+          ...preservedAudio, // Explicitly preserve audio
+          items: [], // Reset only items
+          // Pre-fill template-specific fields
+          ...(selectedTemplate.id === 'vitamins' ? {
+            vitamina_a_text: 'Abrazos',
+            vitamina_a_msg: 'Los más cálidos 🤗',
+            vitamina_a_emoji: '🤗',
+            vitamina_b_text: 'Besos',
+            vitamina_b_msg: 'Dulces y tiernos 😘',
+            vitamina_b_emoji: '😘',
+            vitamina_c_text: 'Caricias',
+            vitamina_c_msg: 'Suaves toda la noche 💕',
+            vitamina_c_emoji: '💕',
+            vitamina_d_text: 'Delicioso',
+            vitamina_d_msg: 'Las veces que tu quieras 😏💘',
+            vitamina_d_emoji: '🔥😈'
+          } : (selectedTemplate.id === 'our-year' ? {
+            extraText: new Date().getFullYear().toString()
+          } : {}))
+        };
+      });
       setExtraSlots(0); // Reset rewards too
     }
   }, [selectedTemplate]);
@@ -757,6 +785,7 @@ function App() {
             ...decoded,
             html: tpl.content,
             audioOption: reconstructedAudioOption,
+            audioSrc: decoded.asrc || '',
             imageSrc: decoded.img || '',
             extraText: decoded.et || '',
             extraText2: decoded.et2 || ''
@@ -837,7 +866,8 @@ function App() {
       et: formData.extraText || null,
       et2: formData.extraText2 || null,
       sd: formData.startDate || null,
-      it: formData.items && formData.items.length > 0 ? formData.items : null,
+      it: (formData.items && formData.items.length > 0) ? formData.items : null,
+      asrc: formData.audioOption === 'upload' ? formData.audioSrc : null,
       // Parámetros de Vitaminas
       va_text: formData.vitamina_a_text || null,
       va_msg: formData.vitamina_a_msg || null,
@@ -970,9 +1000,12 @@ function App() {
     const finalHtml = TemplateEngine.render(viewData.html, {
       ...viewData,
       pageOffset: selectedTemplate?.pageOffset || viewData.pageOffset,
+      hasAudio: viewData.audio || viewData.hasAudio,
       audio: viewData.audio || viewData.hasAudio,
-      audioSrc: viewData.audioSrc || (viewData.src !== 'default' && viewData.src !== 'uploaded' ? viewData.src : ''),
+      audioOption: viewData.audioOption,
+      audioSrc: viewData.audioSrc || viewData.asrc || (viewData.src !== 'default' && viewData.src !== 'uploaded' ? viewData.src : ''),
       youtubeUrl: viewData.youtubeUrl || (viewData.yt ? `https://youtube.com/watch?v=${viewData.yt}` : ''),
+      yt: viewData.yt,
       imageSrc: viewData.imageSrc || viewData.img || '',
       img: viewData.imageSrc || viewData.img || ''
     });
@@ -1340,8 +1373,8 @@ function App() {
                         onFocus={() => isMobileApp && hideBannerAd()}
                         onBlur={() => isMobileApp && showBannerAd()}
                         onChange={(e) => {
-                          setFormData({ ...formData, name: e.target.value });
-                          if (errors.name) setErrors({ ...errors, name: null });
+                          setFormData(prev => ({ ...prev, name: e.target.value }));
+                          if (errors.name) setErrors(prevErr => ({ ...prevErr, name: null }));
                         }}
                         style={{
                           borderColor: errors.name ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
@@ -1360,8 +1393,8 @@ function App() {
                       onFocus={() => isMobileApp && hideBannerAd()}
                       onBlur={() => isMobileApp && showBannerAd()}
                       onChange={(e) => {
-                        setFormData({ ...formData, sender: e.target.value });
-                        if (errors.sender) setErrors({ ...errors, sender: null });
+                        setFormData(prev => ({ ...prev, sender: e.target.value }));
+                        if (errors.sender) setErrors(prevErr => ({ ...prevErr, sender: null }));
                       }}
                       style={{
                         borderColor: errors.sender ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
@@ -1381,8 +1414,8 @@ function App() {
                         onFocus={() => isMobileApp && hideBannerAd()}
                         onBlur={() => isMobileApp && showBannerAd()}
                         onChange={(e) => {
-                          setFormData({ ...formData, message: e.target.value });
-                          if (errors.message) setErrors({ ...errors, message: null });
+                          setFormData(prev => ({ ...prev, message: e.target.value }));
+                          if (errors.message) setErrors(prevErr => ({ ...prevErr, message: null }));
                         }}
                         style={{
                           borderColor: errors.message ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
@@ -1420,6 +1453,28 @@ function App() {
                               boxShadow: errors.extraText ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
                             }}
                           />
+                        ) : selectedTemplate.id === 'our-year' ? (
+                          <select
+                            name="extraText"
+                            value={formData.extraText || new Date().getFullYear().toString()}
+                            onChange={(e) => {
+                              setFormData(prev => ({ ...prev, extraText: e.target.value }));
+                              if (errors.extraText) setErrors(prevErr => ({ ...prevErr, extraText: null }));
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '0.8rem',
+                              borderRadius: '12px',
+                              background: 'rgba(255, 255, 255, 0.05)',
+                              color: 'white',
+                              border: errors.extraText ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.12)',
+                              fontSize: '1rem'
+                            }}
+                          >
+                            {Array.from({ length: 11 }, (_, i) => 2020 + i).map(year => (
+                              <option key={year} value={year} style={{ background: '#1a1a1a' }}>{year}</option>
+                            ))}
+                          </select>
                         ) : (
                           <textarea
                             name="extraText"
@@ -1568,7 +1623,7 @@ function App() {
                             ].map(opt => (
                               <button
                                 key={opt.id}
-                                onClick={() => setFormData({ ...formData, imageOption: opt.id })}
+                                onClick={() => setFormData(prev => ({ ...prev, imageOption: opt.id }))}
                                 style={{
                                   padding: '0.8rem',
                                   borderRadius: '12px',
@@ -1604,8 +1659,8 @@ function App() {
                                 onFocus={() => isMobileApp && hideBannerAd()}
                                 onBlur={() => isMobileApp && showBannerAd()}
                                 onChange={(e) => {
-                                  setFormData({ ...formData, imageSrc: e.target.value, hasImage: true });
-                                  if (errors.image) setErrors({ ...errors, image: null });
+                                  setFormData(prev => ({ ...prev, imageSrc: e.target.value, hasImage: true }));
+                                  if (errors.image) setErrors(prevErr => ({ ...prevErr, image: null }));
                                 }}
                                 style={{ fontSize: '0.9rem', padding: '0.9rem' }}
                               />
@@ -1713,7 +1768,7 @@ function App() {
                             ].map(opt => (
                               <button
                                 key={opt.id}
-                                onClick={() => setFormData({ ...formData, imageOption2: opt.id })}
+                                onClick={() => setFormData(prev => ({ ...prev, imageOption2: opt.id }))}
                                 style={{
                                   padding: '0.8rem',
                                   borderRadius: '12px',
@@ -1738,8 +1793,8 @@ function App() {
                                 onFocus={() => isMobileApp && hideBannerAd()}
                                 onBlur={() => isMobileApp && showBannerAd()}
                                 onChange={(e) => {
-                                  setFormData({ ...formData, imageSrc2: e.target.value, hasImage2: true });
-                                  if (errors.image2) setErrors({ ...errors, image2: null });
+                                  setFormData(prev => ({ ...prev, imageSrc2: e.target.value, hasImage2: true }));
+                                  if (errors.image2) setErrors(prevErr => ({ ...prevErr, image2: null }));
                                 }}
                                 style={{ fontSize: '0.9rem', padding: '0.9rem' }}
                               />
@@ -1761,8 +1816,8 @@ function App() {
                                   const file = e.target.files[0];
                                   if (file) {
                                     const compressed = await compressImage(file);
-                                    setFormData({ ...formData, imageFile2: file, imageSrc2: compressed, hasImage2: true });
-                                    if (errors.image2) setErrors({ ...errors, image2: null });
+                                    setFormData(prev => ({ ...prev, imageFile2: file, imageSrc2: compressed, hasImage2: true }));
+                                    if (errors.image2) setErrors(prevErr => ({ ...prevErr, image2: null }));
                                   }
                                 }}
                               />
@@ -1779,8 +1834,8 @@ function App() {
                   {/* Dynamic Items Section */}
                   {selectedTemplate.hasItems && !selectedTemplate.hasDualImage && (
                     <div className="dynamic-content-container">
-                      {/* Mosaic Heart Mode (25 photos) */}
-                      {selectedTemplate.id === 'heart-photo' ? (
+                      {/* Batch Mosaic Mode (heart-photo, our-year) */}
+                      {(selectedTemplate.id === 'heart-photo' || selectedTemplate.id === 'our-year') ? (
                         <div style={{
                           padding: '1.5rem',
                           background: 'rgba(255, 255, 255, 0.04)',
@@ -1793,8 +1848,12 @@ function App() {
                               <Camera color="white" size={24} />
                             </div>
                             <div>
-                              <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Mosaico de Fotos (Min. 5)</h3>
-                              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Sube tus fotos favoritas (Mínimo 5 para mejores resultados)</p>
+                              <h3 style={{ margin: 0, fontSize: '1.1rem' }}>
+                                {selectedTemplate.id === 'our-year' ? 'Resumen Anual (12 Meses)' : 'Mosaico de Fotos (Min. 5)'}
+                              </h3>
+                              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                {selectedTemplate.id === 'our-year' ? 'Selecciona una foto para cada mes del año' : 'Sube tus fotos favoritas (Mínimo 5 para mejores resultados)'}
+                              </p>
                             </div>
                           </div>
 
@@ -1805,7 +1864,7 @@ function App() {
                               <input
                                 placeholder="https://drive.google.com/drive/folders/..."
                                 value={formData.driveFolderUrl}
-                                onChange={(e) => setFormData({ ...formData, driveFolderUrl: e.target.value })}
+                                onChange={(e) => setFormData(prev => ({ ...prev, driveFolderUrl: e.target.value }))}
                                 onFocus={() => isMobileApp && hideBannerAd()}
                                 onBlur={() => isMobileApp && showBannerAd()}
                                 style={{ fontSize: '0.9rem', padding: '0.9rem', flex: 1 }}
@@ -1821,7 +1880,7 @@ function App() {
                             </div>
                             {errors.drive && <p style={{ fontSize: '0.7rem', color: '#ff4d94', marginTop: '5px' }}>{errors.drive}</p>}
                             <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '5px' }}>
-                              💡 Esto extraerá las primeras 25 fotos de tu carpeta de Drive automáticamente.
+                              💡 Esto extraerá las primeras {selectedTemplate.itemsCount} fotos de tu carpeta de Drive automáticamente.
                             </p>
                           </div>
 
@@ -1841,25 +1900,34 @@ function App() {
                               onChange={async (e) => {
                                 const files = Array.from(e.target.files);
                                 if (files.length > 0) {
+                                  console.log(`[BATCH UPLOAD 📸] Starting upload of ${files.length} files`);
                                   setIsCompressingBatch(true);
                                   const newItems = [];
-                                  // Process max 25
-                                  const filesToProcess = files.slice(0, 25);
+                                  // Process max allowed
+                                  const filesToProcess = files.slice(0, selectedTemplate.itemsCount);
                                   for (const file of filesToProcess) {
                                     const compressed = await compressImage(file);
+                                    console.log(`[BATCH UPLOAD 📸] Compressed ${file.name}: ${compressed.substring(0, 50)}...`);
                                     newItems.push({ id: Date.now() + Math.random(), type: 'image', content: compressed });
                                   }
-                                  setFormData({ ...formData, items: newItems });
+                                  console.log(`[BATCH UPLOAD 📸] Setting ${newItems.length} items to formData`);
+                                  setFormData(prev => {
+                                    console.log('[BATCH UPLOAD 📸] Previous items:', prev.items?.length || 0);
+                                    return { ...prev, items: newItems };
+                                  });
                                   setIsCompressingBatch(false);
+                                  console.log('[BATCH UPLOAD 📸] Upload complete');
                                 }
                               }}
                             />
                             <label htmlFor="batch-upload" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', opacity: isCompressingBatch ? 0.7 : 1 }}>
-                              {isCompressingBatch ? '⌛ Procesando...' : `📸 Seleccionar Fotos [${formData.items.length || 'Min. 5'}]`}
+                              {isCompressingBatch ? '⌛ Procesando...' : `📸 Seleccionar Fotos [${formData.items.length || '0'}/${selectedTemplate.itemsCount}]`}
                             </label>
                             <p style={{ fontSize: '0.7rem', marginTop: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.3' }}>
-                              Selecciona de 5 a 25 fotos de tu galería. <br />
-                              Se repetirán automáticamente para llenar el corazón si subes menos de 25.
+                              {selectedTemplate.id === 'our-year'
+                                ? 'Selecciona 12 fotos (una para cada mes). Se repetirán si subes menos.'
+                                : 'Selecciona de 5 a 25 fotos de tu galería. Se repetirán automáticamente para llenar el corazón.'
+                              }
                             </p>
                           </div>
 
@@ -1919,7 +1987,7 @@ function App() {
                                       <button className="btn-add-inline text-accent" onClick={(e) => {
                                         e.stopPropagation();
                                         const newItem = { id: Date.now(), type: 'text', content: '' };
-                                        setFormData({ ...formData, items: [...formData.items, newItem] });
+                                        setFormData(prev => ({ ...prev, items: [...prev.items, newItem] }));
                                       }}>
                                         + Nuevo Párrafo
                                       </button>
@@ -2199,7 +2267,7 @@ function App() {
                     )}
 
                     <div
-                      onClick={() => setFormData({ ...formData, hasAudio: !formData.hasAudio })}
+                      onClick={() => setFormData(prev => ({ ...prev, hasAudio: !prev.hasAudio }))}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -2259,7 +2327,7 @@ function App() {
                           ].map(opt => (
                             <button
                               key={opt.id}
-                              onClick={() => setFormData({ ...formData, audioOption: opt.id })}
+                              onClick={() => setFormData(prev => ({ ...prev, audioOption: opt.id }))}
                               style={{
                                 padding: '0.8rem',
                                 borderRadius: '12px',
@@ -2293,8 +2361,8 @@ function App() {
                                 if (file) {
                                   const reader = new FileReader();
                                   reader.onload = (event) => {
-                                    setFormData({ ...formData, audioFile: file, audioSrc: event.target.result });
-                                    if (errors.audio) setErrors({ ...errors, audio: null });
+                                    setFormData(prev => ({ ...prev, audioFile: file, audioSrc: event.target.result }));
+                                    if (errors.audio) setErrors(prevErr => ({ ...prevErr, audio: null }));
                                   };
                                   reader.readAsDataURL(file);
                                 }
@@ -2313,7 +2381,7 @@ function App() {
                             value={formData.youtubeUrl}
                             onFocus={() => isMobileApp && hideBannerAd()}
                             onBlur={() => isMobileApp && showBannerAd()}
-                            onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
+                            onChange={(e) => setFormData(prev => ({ ...prev, youtubeUrl: e.target.value }))}
                             style={{ fontSize: '0.9rem', padding: '0.9rem' }}
                           />
                         )}
@@ -2360,7 +2428,7 @@ function App() {
                             className="input"
                             placeholder="ST"
                             value={formData.soccer_pos}
-                            onChange={(e) => setFormData({ ...formData, soccer_pos: e.target.value })}
+                            onChange={(e) => setFormData(prev => ({ ...prev, soccer_pos: e.target.value }))}
                           />
                         </div>
                       </div>
@@ -3072,7 +3140,12 @@ function App() {
                   </button>
 
                   <button
-                    onClick={() => setViewData({ ...formData, html: selectedTemplate.content, t: selectedTemplate.id })}
+                    onClick={() => {
+                      const dataToView = { ...formData, html: selectedTemplate.content, t: selectedTemplate.id };
+                      console.log('[VIEW DATA 👁️] Setting viewData with items:', dataToView.items?.length || 0);
+                      console.log('[VIEW DATA 👁️] First item preview:', dataToView.items?.[0]?.content?.substring(0, 50));
+                      setViewData(dataToView);
+                    }}
                     className="btn btn-primary"
                     style={{
                       justifyContent: 'center',

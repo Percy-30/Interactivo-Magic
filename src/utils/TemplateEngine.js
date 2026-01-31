@@ -53,19 +53,6 @@ const TemplateEngine = {
             return url;
         };
 
-        const imageSrc = fixImageUrl(data.img || data.imageSrc || '');
-
-        console.log('[TemplateEngine DEBUG] Image data:', {
-            dataImg: data.img ? data.img.substring(0, 80) + '...' : 'NONE',
-            dataImageSrc: data.imageSrc ? data.imageSrc.substring(0, 80) + '...' : 'NONE',
-            finalImageSrc: imageSrc ? imageSrc : 'NONE'
-        });
-
-        // Specific audio logic
-        const audioSrc = data.audioOption === 'default'
-            ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-            : (data.audioSrc || '');
-
         const extractId = (url, type) => {
             if (!url) return '';
             if (type === 'youtube') {
@@ -77,7 +64,32 @@ const TemplateEngine = {
             return url;
         };
 
-        const ytId = data.audioOption === 'youtube' ? extractId(data.youtubeUrl, 'youtube') : '';
+        const imageSrc = fixImageUrl(data.img || data.imageSrc || '');
+
+        console.log('[TemplateEngine DEBUG] Image data:', {
+            dataImg: data.img ? data.img.substring(0, 80) + '...' : 'NONE',
+            dataImageSrc: data.imageSrc ? data.imageSrc.substring(0, 80) + '...' : 'NONE',
+            finalImageSrc: imageSrc ? imageSrc : 'NONE'
+        });
+
+        // Specific audio logic
+        const audioSrc = data.audioOption === 'default'
+            ? 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+            : (data.audioSrc || data.asrc || '');
+
+        const ytId = (data.audioOption === 'youtube' || data.yt)
+            ? (data.yt || extractId(data.youtubeUrl, 'youtube'))
+            : '';
+
+        // Audio Debug Logging
+        console.log('[TemplateEngine 🎵 AUDIO DEBUG] ========');
+        console.log('  hasAudio:', data.hasAudio || data.audio);
+        console.log('  audioOption:', data.audioOption);
+        console.log('  audioSrc:', audioSrc ? `PRESENT (${audioSrc.substring(0, 50)}...)` : 'MISSING');
+        console.log('  ytId:', ytId || 'NONE');
+        console.log('  youtubeUrl:', data.youtubeUrl || 'NONE');
+        console.log('  rawYt:', data.yt || 'NONE');
+        console.log('[TemplateEngine 🎵 AUDIO DEBUG] ========');
 
         // Standard variable replacement
         finalHtml = finalHtml
@@ -93,15 +105,15 @@ const TemplateEngine = {
         console.log('[TemplateEngine] === IMAGE DEBUG END ===');
 
         finalHtml = finalHtml
-            .replace(/{{audio_src}}/g, audioSrc)
+            .replace(/{{\s*audio_src\s*}}/g, audioSrc)
             .replace(/{{\s*youtube_id\s*}}/g, ytId || '')
             .replace(/{{\s*audio_display\s*}}/g, (data.hasAudio || data.audio) ? 'block' : 'none')
-            .replace(/{{\s*audio_src\s*}}/g, audioSrc)
             .replace(/{{\s*imagen_src\s*}}/g, imageSrc)
             .replace(/{{\s*image_src\s*}}/g, imageSrc)
             .replace(/{{\s*image_display\s*}}/g, (imageSrc || data.img) ? 'block' : 'none')
             .replace(/{{\s*has_audio\s*}}/g, (data.hasAudio || data.audio) ? 'true' : 'false')
             .replace(/{{extra_text}}/g, data.extraText || data.et || '')
+            .replace(/{{extra}}/g, data.extraText || data.et || '')
             .replace(/{{extra_text_2}}/g, data.extraText2 || data.et2 || '')
             .replace(/{{extra_display}}/g, (data.extraText || data.et) ? 'block' : 'none')
             .replace(/{{start_date}}/g, data.startDate || data.sd || '')
@@ -146,9 +158,18 @@ const TemplateEngine = {
             .replace(/{{drive_folder}}/g, data.driveFolderUrl || '');
 
         // Dynamic Items logic (for books and mosaics)
-        if (data.items && Array.isArray(data.items)) {
-            data.items.forEach((item, idx) => {
+        const itemsList = data.items || data.it;
+        console.log('[TemplateEngine 📸 ITEMS DEBUG]', {
+            hasItems: !!itemsList,
+            itemsCount: itemsList?.length || 0,
+            firstItemType: itemsList?.[0]?.type,
+            firstItemPreview: itemsList?.[0]?.content?.substring(0, 50)
+        });
+
+        if (itemsList && Array.isArray(itemsList)) {
+            itemsList.forEach((item, idx) => {
                 const url = fixImageUrl(item.content || '');
+                console.log(`[TemplateEngine 📸] Replacing {{item_${idx}_url}} with: ${url.substring(0, 60)}...`);
                 const itemRegex = new RegExp(`{{item_${idx}_url}}`, 'g');
                 finalHtml = finalHtml.replace(itemRegex, url);
 
@@ -321,8 +342,10 @@ const TemplateEngine = {
         }
 
         // Replace other placeholders
+        // Generic replacement for any other variables passed in data
         Object.keys(data).forEach(key => {
-            if (['audioSrc', 'audioFile', 'hasAudio', 'audioOption', 'items'].includes(key)) return;
+            // Skip large/internal keys to avoid performance issues or data corruption
+            if (['audioSrc', 'audioFile', 'hasAudio', 'audioOption', 'items', 'it', 'asrc', 'img', 'img2', 'et', 'et2', 'html'].includes(key)) return;
             const regex = new RegExp(`{{${key}}}`, 'g');
             finalHtml = finalHtml.replace(regex, data[key]);
         });
