@@ -379,31 +379,120 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         
-        /* Responsive */
-        @media (max-width: 500px) {
-            .title {
-                font-size: 2rem;
-            }
-            .message {
-                font-size: 1rem;
-                padding: 1rem;
-            }
-            .vitamins-grid {
-                gap: 1.5rem;
-            }
-            .modal-content {
-                padding: 1.5rem;
-            }
-            .modal-title {
-                font-size: 1.5rem;
-            }
-            .modal-message {
-                font-size: 1rem;
-            }
+        /* Audio & Start Overlay */
+        .start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(15px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s ease;
+        }
+        .start-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .start-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 320px;
+            width: 90%;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .start-heart {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: heartBeat 1.2s infinite;
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #ff6b9d, #ff8eb3);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(255, 107, 157, 0.3);
+        }
+        .audio-hud {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.5s ease;
+        }
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            background: #ff6b9d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .hud-bar-bg {
+            flex: 1;
+            height: 4px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .hud-bar {
+            height: 100%;
+            background: #ff6b9d;
+            width: 0%;
+            transition: width 0.1s linear;
         }
     </style>
 </head>
 <body>
+    <!-- Start Overlay Container -->
+    <div style="display: {{audio_display}}">
+        <div id="start-overlay" class="start-overlay">
+            <div class="start-card">
+                <div class="start-heart">❤️</div>
+                <p style="color: #666; font-size: 1.1rem; margin-bottom: 0.5rem">Hola, <strong>{{name}}</strong></p>
+                <p style="color: #888; font-size: 0.9rem">Has recibido un mensaje especial de <strong>{{sender}}</strong></p>
+                <button class="start-btn" onclick="startExperience()">Abrir con Amor ✨</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Fondo animado -->
     <div class="floating-bg" id="floating-bg"></div>
     
@@ -524,12 +613,22 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
         <div class="sender">
             Enviado con amor por: <span class="sender-name">{{sender}}</span>
         </div>
+
+        <!-- HUD -->
+        <div class="audio-hud" id="audio-ui" style="display: none">
+            <div class="play-btn" id="play-toggle">▶</div>
+            <div class="hud-bar-bg"><div class="hud-bar" id="hud-bar"></div></div>
+        </div>
     </div>
+
+    <!-- Música -->
+    <audio id="player" src="{{audio_src}}" loop></audio>
+    <div id="yt-wrap" style="display:none"><div id="yt-player"></div></div>
     
     <!-- Modales -->
     <div class="modal" id="modal-A" onclick="closeModal(event, 'A')">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <img src="{{imagen_src}}" alt="Foto" class="modal-photo" id="photo-A">
+            <img src="{{vitamina_a_img}}" alt="Foto" class="modal-photo" id="photo-A" style="display: {{vitamina_a_img_display}}">
             <h2 class="modal-title">A = {{vitamina_a_text}} {{vitamina_a_emoji}}</h2>
             <p class="modal-message">{{vitamina_a_msg}}</p>
             <button class="close-btn" onclick="closeModal(event, 'A')">Cerrar 💕</button>
@@ -538,7 +637,7 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
     
     <div class="modal" id="modal-B" onclick="closeModal(event, 'B')">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <img src="{{imagen_src}}" alt="Foto" class="modal-photo" id="photo-B">
+            <img src="{{vitamina_b_img}}" alt="Foto" class="modal-photo" id="photo-B" style="display: {{vitamina_b_img_display}}">
             <h2 class="modal-title">B = {{vitamina_b_text}} {{vitamina_b_emoji}}</h2>
             <p class="modal-message">{{vitamina_b_msg}}</p>
             <button class="close-btn" onclick="closeModal(event, 'B')">Cerrar 💕</button>
@@ -547,7 +646,7 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
     
     <div class="modal" id="modal-C" onclick="closeModal(event, 'C')">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <img src="{{imagen_src}}" alt="Foto" class="modal-photo" id="photo-C">
+            <img src="{{vitamina_c_img}}" alt="Foto" class="modal-photo" id="photo-C" style="display: {{vitamina_c_img_display}}">
             <h2 class="modal-title">C = {{vitamina_c_text}} {{vitamina_c_emoji}}</h2>
             <p class="modal-message">{{vitamina_c_msg}}</p>
             <button class="close-btn" onclick="closeModal(event, 'C')">Cerrar 💕</button>
@@ -556,7 +655,7 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
     
     <div class="modal" id="modal-D" onclick="closeModal(event, 'D')">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <img src="{{imagen_src}}" alt="Foto" class="modal-photo" id="photo-D">
+            <img src="{{vitamina_d_img}}" alt="Foto" class="modal-photo" id="photo-D" style="display: {{vitamina_d_img_display}}">
             <h2 class="modal-title">D = {{vitamina_d_text}} {{vitamina_d_emoji}}</h2>
             <p class="modal-message">{{vitamina_d_msg}}</p>
             <button class="close-btn" onclick="closeModal(event, 'D')">Cerrar 💕</button>
@@ -564,6 +663,70 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
     </div>
     
     <script>
+        const hasAudio = '{{has_audio}}' === 'true';
+        const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
+        
+        // Iniciar experiencia
+        function startExperience() {
+            const overlay = document.getElementById('start-overlay');
+            overlay.classList.add('fade-out');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.parentElement.style.display = 'none';
+            }, 800);
+            
+            if (hasAudio) {
+                document.getElementById('audio-ui').style.display = 'flex';
+                initializeAudio();
+            }
+        }
+
+        // Sistema de Audio
+        const player = document.getElementById('player');
+        let ytPlayer = null;
+
+        function initializeAudio() {
+            if (youtubeId && youtubeId.length > 5) {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.body.appendChild(tag);
+                window.onYouTubeIframeAPIReady = () => {
+                    ytPlayer = new YT.Player('yt-player', {
+                        videoId: youtubeId, height: '0', width: '0',
+                        playerVars: { autoplay: 1, loop: 1, playlist: youtubeId },
+                        events: { 'onReady': () => toggleMusic(true) }
+                    });
+                };
+            } else if (player.src && player.src.length > 10) {
+                player.play().catch(e => console.log("Error playing audio:", e));
+                toggleMusic(true);
+            }
+        }
+
+        function toggleMusic(play) {
+            const btn = document.getElementById('play-toggle');
+            if (play) {
+                btn.textContent = '||';
+                if (ytPlayer) ytPlayer.playVideo(); else player.play();
+            } else {
+                btn.textContent = '▶';
+                if (ytPlayer) ytPlayer.pauseVideo(); else player.pause();
+            }
+        }
+
+        document.getElementById('play-toggle').onclick = (e) => {
+            e.stopPropagation();
+            const btn = document.getElementById('play-toggle');
+            toggleMusic(btn.textContent === '▶');
+        };
+
+        if (!youtubeId || youtubeId.length < 5) {
+            player.ontimeupdate = () => {
+                const pct = (player.currentTime / player.duration) * 100;
+                document.getElementById('hud-bar').style.width = (pct || 0) + "%";
+            };
+        }
+
         // Crear elementos flotantes
         function createFloatingElements() {
             const container = document.getElementById('floating-bg');
@@ -616,6 +779,12 @@ export const LOVE_VITAMINS_TEMPLATE = `<!DOCTYPE html>
         window.addEventListener('load', () => {
             createFloatingElements();
             fixGoogleDriveImages();
+            
+            // Si no hay audio, quitar el overlay inmediatamente
+            if (!hasAudio) {
+                const overlay = document.getElementById('start-overlay');
+                if (overlay) overlay.style.display = 'none';
+            }
         });
         
         // Cerrar modal con tecla ESC

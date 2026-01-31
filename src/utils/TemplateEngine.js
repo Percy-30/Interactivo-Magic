@@ -109,15 +109,26 @@ const TemplateEngine = {
             .replace(/{{vitamina_a_text}}/g, data.vitamina_a_text || data.va_text || '')
             .replace(/{{vitamina_a_msg}}/g, data.vitamina_a_msg || data.va_msg || '')
             .replace(/{{vitamina_a_emoji}}/g, data.vitamina_a_emoji || data.va_emoji || '')
+            .replace(/{{vitamina_a_img}}/g, fixImageUrl(data.vitamina_a_img || data.va_img || ''))
+            .replace(/{{vitamina_a_img_display}}/g, (data.vitamina_a_img || data.va_img) ? 'block' : 'none')
+
             .replace(/{{vitamina_b_text}}/g, data.vitamina_b_text || data.vb_text || '')
             .replace(/{{vitamina_b_msg}}/g, data.vitamina_b_msg || data.vb_msg || '')
             .replace(/{{vitamina_b_emoji}}/g, data.vitamina_b_emoji || data.vb_emoji || '')
+            .replace(/{{vitamina_b_img}}/g, fixImageUrl(data.vitamina_b_img || data.vb_img || ''))
+            .replace(/{{vitamina_b_img_display}}/g, (data.vitamina_b_img || data.vb_img) ? 'block' : 'none')
+
             .replace(/{{vitamina_c_text}}/g, data.vitamina_c_text || data.vc_text || '')
             .replace(/{{vitamina_c_msg}}/g, data.vitamina_c_msg || data.vc_msg || '')
             .replace(/{{vitamina_c_emoji}}/g, data.vitamina_c_emoji || data.vc_emoji || '')
+            .replace(/{{vitamina_c_img}}/g, fixImageUrl(data.vitamina_c_img || data.vc_img || ''))
+            .replace(/{{vitamina_c_img_display}}/g, (data.vitamina_c_img || data.vc_img) ? 'block' : 'none')
+
             .replace(/{{vitamina_d_text}}/g, data.vitamina_d_text || data.vd_text || '')
             .replace(/{{vitamina_d_msg}}/g, data.vitamina_d_msg || data.vd_msg || '')
-            .replace(/{{vitamina_d_emoji}}/g, data.vitamina_d_emoji || data.vd_emoji || '');
+            .replace(/{{vitamina_d_emoji}}/g, data.vitamina_d_emoji || data.vd_emoji || '')
+            .replace(/{{vitamina_d_img}}/g, fixImageUrl(data.vitamina_d_img || data.vd_img || ''))
+            .replace(/{{vitamina_d_img_display}}/g, (data.vitamina_d_img || data.vd_img) ? 'block' : 'none');
 
         // Dynamic Items logic (for books)
         const tid = data.t || data.templateId;

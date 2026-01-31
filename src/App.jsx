@@ -4,7 +4,7 @@ import {
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
   Filter, Gamepad, BookOpen, UserPlus, Image, Music2, Camera, Clock,
   Stamp, Shirt, Ghost, Pill, Layers, RefreshCcw, Smile, PartyPopper,
-  TreePine, Flame, Eye, Lock, Minus
+  TreePine, Flame, Eye, Lock, Minus, ChevronUp, ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
@@ -243,7 +243,7 @@ const TEMPLATES = [
     icon: <Pill />,
     color: '#ff0000',
     content: LOVE_VITAMINS_TEMPLATE,
-    hasImage: true,
+    hasImage: false,
     hasVitamins: true,
     hasExtra: true,
     extraLabel: 'Mensaje final'
@@ -613,26 +613,53 @@ function App() {
     vitamina_a_text: '',
     vitamina_a_msg: '',
     vitamina_a_emoji: '',
+    vitamina_a_img: '',
+    vitamina_a_opt: 'url',
     vitamina_b_text: '',
     vitamina_b_msg: '',
     vitamina_b_emoji: '',
+    vitamina_b_img: '',
+    vitamina_b_opt: 'url',
     vitamina_c_text: '',
     vitamina_c_msg: '',
     vitamina_c_emoji: '',
+    vitamina_c_img: '',
+    vitamina_c_opt: 'url',
     vitamina_d_text: '',
     vitamina_d_msg: '',
-    vitamina_d_emoji: ''
+    vitamina_d_emoji: '',
+    vitamina_d_img: '',
+    vitamina_d_opt: 'url'
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
   const [expandedSections, setExpandedSections] = useState({ text: true, image: true });
   const [extraSlots, setExtraSlots] = useState(0);
+  const [vitaminsExpanded, setVitaminsExpanded] = useState(false);
   const BASE_DYNAMIC_LIMIT = 5;
 
   // Reset and initialize items when template changes
   useEffect(() => {
     if (selectedTemplate) {
-      setFormData(prev => ({ ...prev, items: [] }));
+      setFormData(prev => ({
+        ...prev,
+        items: [],
+        // Pre-llenar campos de vitaminas si es el caso
+        ...(selectedTemplate.id === 'vitamins' ? {
+          vitamina_a_text: 'Abrazos',
+          vitamina_a_msg: 'Los más cálidos 🤗',
+          vitamina_a_emoji: '🤗',
+          vitamina_b_text: 'Besos',
+          vitamina_b_msg: 'Dulces y tiernos 😘',
+          vitamina_b_emoji: '😘',
+          vitamina_c_text: 'Caricias',
+          vitamina_c_msg: 'Suaves toda la noche 💕',
+          vitamina_c_emoji: '💕',
+          vitamina_d_text: 'Delicioso',
+          vitamina_d_msg: 'Las veces que tu quieras 😏💘',
+          vitamina_d_emoji: '🔥😈'
+        } : {})
+      }));
       setExtraSlots(0); // Reset rewards too
     }
   }, [selectedTemplate]);
@@ -755,15 +782,19 @@ function App() {
       va_text: formData.vitamina_a_text || null,
       va_msg: formData.vitamina_a_msg || null,
       va_emoji: formData.vitamina_a_emoji || null,
+      va_img: formData.vitamina_a_img || null,
       vb_text: formData.vitamina_b_text || null,
       vb_msg: formData.vitamina_b_msg || null,
       vb_emoji: formData.vitamina_b_emoji || null,
+      vb_img: formData.vitamina_b_img || null,
       vc_text: formData.vitamina_c_text || null,
       vc_msg: formData.vitamina_c_msg || null,
       vc_emoji: formData.vitamina_c_emoji || null,
+      vc_img: formData.vitamina_c_img || null,
       vd_text: formData.vitamina_d_text || null,
       vd_msg: formData.vitamina_d_msg || null,
-      vd_emoji: formData.vitamina_d_emoji || null
+      vd_emoji: formData.vitamina_d_emoji || null,
+      vd_img: formData.vitamina_d_img || null
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -2091,157 +2122,519 @@ function App() {
                   </div>
 
                   {/* Vitaminas Amor Section */}
-                  {selectedTemplate?.hasVitamins && (
+                  {selectedTemplate?.id === 'vitamins' && (
                     <div style={{
                       padding: '1.5rem',
                       background: 'rgba(255, 107, 157, 0.1)',
                       borderRadius: '20px',
                       border: '2px solid rgba(255, 107, 157, 0.3)',
-                      marginTop: '1.5rem'
+                      marginTop: '1.5rem',
+                      position: 'relative'
                     }}>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <h3 style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          fontSize: '1.2rem',
-                          color: '#ff6b9d',
-                          marginBottom: '0.5rem'
-                        }}>
-                          💊 Personaliza tus Vitaminas
-                        </h3>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
-                          Define el significado y mensaje para cada vitamina (A, B, C, D)
-                        </p>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '1rem',
+                        marginBottom: vitaminsExpanded ? '1.5rem' : '0'
+                      }}>
+                        <div>
+                          <h3 style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            fontSize: '1.2rem',
+                            color: '#ff6b9d',
+                            margin: 0
+                          }}>
+                            💊 Vitaminas del Amor
+                          </h3>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                vitamina_a_text: 'Abrazos',
+                                vitamina_a_msg: 'Los más cálidos 🤗',
+                                vitamina_a_emoji: '🤗',
+                                vitamina_b_text: 'Besos',
+                                vitamina_b_msg: 'Dulces y tiernos 😘',
+                                vitamina_b_emoji: '😘',
+                                vitamina_c_text: 'Caricias',
+                                vitamina_c_msg: 'Suaves toda la noche 💕',
+                                vitamina_c_emoji: '💕',
+                                vitamina_d_text: 'Delicioso',
+                                vitamina_d_msg: 'Las veces que tu quieras 😏💘',
+                                vitamina_d_emoji: '🔥😈'
+                              });
+                              setVitaminsExpanded(true);
+                            }}
+                            className="glass"
+                            style={{
+                              padding: '0.5rem 1rem',
+                              fontSize: '0.8rem',
+                              borderRadius: '10px',
+                              background: 'rgba(255, 255, 255, 0.15)',
+                              color: 'white',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            🪄 Auto-llenar
+                          </button>
+
+                          <button
+                            onClick={() => setVitaminsExpanded(!vitaminsExpanded)}
+                            className="glass"
+                            style={{
+                              padding: '0.5rem 1rem',
+                              fontSize: '0.8rem',
+                              borderRadius: '10px',
+                              background: vitaminsExpanded ? 'var(--primary)' : 'rgba(255, 255, 255, 0.15)',
+                              color: 'white',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.4rem'
+                            }}
+                          >
+                            {vitaminsExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            {vitaminsExpanded ? 'Ocultar' : 'Personalizar'}
+                          </button>
+                        </div>
                       </div>
 
-                      {/* Vitamina A */}
-                      <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(255, 215, 0, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 215, 0, 0.3)' }}>
-                        <h4 style={{ color: '#FFD700', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🟡 Vitamina A</h4>
-                        <input
-                          className="input"
-                          placeholder="Significado (Ej: Abrazos)"
-                          value={formData.vitamina_a_text}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_a_text: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Mensaje (Ej: Los más cálidos 🤗)"
-                          value={formData.vitamina_a_msg}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_a_msg: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Emoji (Ej: 🤗)"
-                          value={formData.vitamina_a_emoji}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_a_emoji: e.target.value })}
-                          maxLength={4}
-                        />
-                      </div>
+                      <AnimatePresence>
+                        {vitaminsExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem', marginTop: '0.5rem' }}>
+                              Define el significado y mensaje para cada vitamina (A, B, C, D)
+                            </p>
 
-                      {/* Vitamina B */}
-                      <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(255, 99, 71, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 99, 71, 0.3)' }}>
-                        <h4 style={{ color: '#FF6347', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🔴 Vitamina B</h4>
-                        <input
-                          className="input"
-                          placeholder="Significado (Ej: Besos)"
-                          value={formData.vitamina_b_text}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_b_text: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Mensaje (Ej: Dulces y tiernos 😘)"
-                          value={formData.vitamina_b_msg}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_b_msg: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Emoji (Ej: 😘)"
-                          value={formData.vitamina_b_emoji}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_b_emoji: e.target.value })}
-                          maxLength={4}
-                        />
-                      </div>
+                            {/* Vitamina A */}
+                            <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(255, 215, 0, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 215, 0, 0.3)' }}>
+                              <h4 style={{ color: '#FFD700', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🟡 Vitamina A</h4>
+                              <input
+                                className="input"
+                                placeholder="Significado (Ej: Abrazos)"
+                                value={formData.vitamina_a_text}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_a_text: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Mensaje (Ej: Los más cálidos 🤗)"
+                                value={formData.vitamina_a_msg}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_a_msg: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Emoji (Ej: 🤗)"
+                                value={formData.vitamina_a_emoji}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_a_emoji: e.target.value })}
+                                maxLength={4}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
 
-                      {/* Vitamina C */}
-                      <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(255, 165, 0, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 165, 0, 0.3)' }}>
-                        <h4 style={{ color: '#FFA500', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🟠 Vitamina C</h4>
-                        <input
-                          className="input"
-                          placeholder="Significado (Ej: Caricias)"
-                          value={formData.vitamina_c_text}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_c_text: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Mensaje (Ej: Suaves toda la noche 💕)"
-                          value={formData.vitamina_c_msg}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_c_msg: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Emoji (Ej: 💕)"
-                          value={formData.vitamina_c_emoji}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_c_emoji: e.target.value })}
-                          maxLength={4}
-                        />
-                      </div>
+                              {/* Photo Options for Vitamina A */}
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                                {[
+                                  { id: 'url', label: 'Link Web', help: 'Imagen online' },
+                                  { id: 'upload', label: 'Sube foto', help: 'De galería' }
+                                ].map(opt => (
+                                  <button
+                                    key={opt.id}
+                                    onClick={() => setFormData({ ...formData, vitamina_a_opt: opt.id })}
+                                    style={{
+                                      padding: '0.5rem',
+                                      borderRadius: '10px',
+                                      border: formData.vitamina_a_opt === opt.id ? '2px solid #FFD700' : '1px solid rgba(255,255,255,0.1)',
+                                      background: formData.vitamina_a_opt === opt.id ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
+                                      cursor: 'pointer',
+                                      transition: 'all 0.3s'
+                                    }}
+                                  >
+                                    <p style={{ fontWeight: '700', fontSize: '0.75rem', margin: '0 0 1px 0', color: formData.vitamina_a_opt === opt.id ? 'white' : 'rgba(255,255,255,0.6)' }}>{opt.label}</p>
+                                    <p style={{ fontSize: '0.55rem', margin: 0, color: 'rgba(255,255,255,0.4)' }}>{opt.help}</p>
+                                  </button>
+                                ))}
+                              </div>
 
-                      {/* Vitamina D */}
-                      <div style={{ padding: '1rem', background: 'rgba(0, 191, 255, 0.1)', borderRadius: '12px', border: '1px solid rgba(0, 191, 255, 0.3)' }}>
-                        <h4 style={{ color: '#00BFFF', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🔵 Vitamina D</h4>
-                        <input
-                          className="input"
-                          placeholder="Significado (Ej: Delicioso)"
-                          value={formData.vitamina_d_text}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_d_text: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Mensaje (Ej: Las veces que quieras 😏💘)"
-                          value={formData.vitamina_d_msg}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_d_msg: e.target.value })}
-                          style={{ marginBottom: '0.8rem' }}
-                        />
-                        <input
-                          className="input"
-                          placeholder="Emoji (Ej: 😏💘 o 🔥😈)"
-                          value={formData.vitamina_d_emoji}
-                          onFocus={() => isMobileApp && hideBannerAd()}
-                          onBlur={() => isMobileApp && showBannerAd()}
-                          onChange={(e) => setFormData({ ...formData, vitamina_d_emoji: e.target.value })}
-                          maxLength={4}
-                        />
-                      </div>
+                              {formData.vitamina_a_opt === 'url' ? (
+                                <input
+                                  className="input"
+                                  placeholder="https://ejemplo.com/foto.jpg"
+                                  value={formData.vitamina_a_img}
+                                  onFocus={() => isMobileApp && hideBannerAd()}
+                                  onBlur={() => isMobileApp && showBannerAd()}
+                                  onChange={(e) => setFormData({ ...formData, vitamina_a_img: e.target.value })}
+                                  style={{ marginBottom: '0.8rem', fontSize: '0.85rem' }}
+                                />
+                              ) : (
+                                <div style={{ marginBottom: '0.8rem' }}>
+                                  {formData.vitamina_a_img && formData.vitamina_a_img.startsWith('data:') ? (
+                                    <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+                                      <img src={formData.vitamina_a_img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                                      <button
+                                        onClick={() => setFormData({ ...formData, vitamina_a_img: '' })}
+                                        style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifySelf: 'center' }}
+                                      >✕</button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        const input = document.createElement('input');
+                                        input.type = 'file';
+                                        input.accept = 'image/*';
+                                        input.onchange = async (e) => {
+                                          const file = e.target.files[0];
+                                          if (file) {
+                                            setIsGenerating(true);
+                                            const compressed = await compressImage(file);
+                                            setFormData(prev => ({ ...prev, vitamina_a_img: compressed }));
+                                            setIsGenerating(false);
+                                          }
+                                        };
+                                        input.click();
+                                      }}
+                                      className="btn-upload-small"
+                                      style={{ padding: '0.6rem 0.8rem', fontSize: '0.75rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: 'rgba(255, 215, 0, 0.2)', border: '1px solid rgba(255, 215, 0, 0.4)' }}
+                                    >
+                                      <Camera size={14} /> Seleccionar Foto A
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Vitamina B */}
+                            <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(255, 99, 71, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 99, 71, 0.3)' }}>
+                              <h4 style={{ color: '#FF6347', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🔴 Vitamina B</h4>
+                              <input
+                                className="input"
+                                placeholder="Significado (Ej: Besos)"
+                                value={formData.vitamina_b_text}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_b_text: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Mensaje (Ej: Dulces y tiernos 😘)"
+                                value={formData.vitamina_b_msg}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_b_msg: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Emoji (Ej: 😘)"
+                                value={formData.vitamina_b_emoji}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_b_emoji: e.target.value })}
+                                maxLength={4}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+
+                              {/* Photo Options for Vitamina B */}
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                                {[
+                                  { id: 'url', label: 'Link Web', help: 'Imagen online' },
+                                  { id: 'upload', label: 'Sube foto', help: 'De galería' }
+                                ].map(opt => (
+                                  <button
+                                    key={opt.id}
+                                    onClick={() => setFormData({ ...formData, vitamina_b_opt: opt.id })}
+                                    style={{
+                                      padding: '0.5rem',
+                                      borderRadius: '10px',
+                                      border: formData.vitamina_b_opt === opt.id ? '2px solid #FF6347' : '1px solid rgba(255,255,255,0.1)',
+                                      background: formData.vitamina_b_opt === opt.id ? 'rgba(255, 99, 71, 0.1)' : 'transparent',
+                                      cursor: 'pointer',
+                                      transition: 'all 0.3s'
+                                    }}
+                                  >
+                                    <p style={{ fontWeight: '700', fontSize: '0.75rem', margin: '0 0 1px 0', color: formData.vitamina_b_opt === opt.id ? 'white' : 'rgba(255,255,255,0.6)' }}>{opt.label}</p>
+                                    <p style={{ fontSize: '0.55rem', margin: 0, color: 'rgba(255,255,255,0.4)' }}>{opt.help}</p>
+                                  </button>
+                                ))}
+                              </div>
+
+                              {formData.vitamina_b_opt === 'url' ? (
+                                <input
+                                  className="input"
+                                  placeholder="https://ejemplo.com/foto.jpg"
+                                  value={formData.vitamina_b_img}
+                                  onFocus={() => isMobileApp && hideBannerAd()}
+                                  onBlur={() => isMobileApp && showBannerAd()}
+                                  onChange={(e) => setFormData({ ...formData, vitamina_b_img: e.target.value })}
+                                  style={{ marginBottom: '0.8rem', fontSize: '0.85rem' }}
+                                />
+                              ) : (
+                                <div style={{ marginBottom: '0.8rem' }}>
+                                  {formData.vitamina_b_img && formData.vitamina_b_img.startsWith('data:') ? (
+                                    <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+                                      <img src={formData.vitamina_b_img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                                      <button
+                                        onClick={() => setFormData({ ...formData, vitamina_b_img: '' })}
+                                        style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifySelf: 'center' }}
+                                      >✕</button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        const input = document.createElement('input');
+                                        input.type = 'file';
+                                        input.accept = 'image/*';
+                                        input.onchange = async (e) => {
+                                          const file = e.target.files[0];
+                                          if (file) {
+                                            setIsGenerating(true);
+                                            const compressed = await compressImage(file);
+                                            setFormData(prev => ({ ...prev, vitamina_b_img: compressed }));
+                                            setIsGenerating(false);
+                                          }
+                                        };
+                                        input.click();
+                                      }}
+                                      className="btn-upload-small"
+                                      style={{ padding: '0.6rem 0.8rem', fontSize: '0.75rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: 'rgba(255, 99, 71, 0.2)', border: '1px solid rgba(255, 99, 71, 0.4)' }}
+                                    >
+                                      <Camera size={14} /> Seleccionar Foto B
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Vitamina C */}
+                            <div style={{ marginBottom: '1.2rem', padding: '1rem', background: 'rgba(255, 165, 0, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 165, 0, 0.3)' }}>
+                              <h4 style={{ color: '#FFA500', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🟠 Vitamina C</h4>
+                              <input
+                                className="input"
+                                placeholder="Significado (Ej: Caricias)"
+                                value={formData.vitamina_c_text}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_c_text: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Mensaje (Ej: Suaves toda la noche 💕)"
+                                value={formData.vitamina_c_msg}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_c_msg: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Emoji (Ej: 💕)"
+                                value={formData.vitamina_c_emoji}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_c_emoji: e.target.value })}
+                                maxLength={4}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+
+                              {/* Photo Options for Vitamina C */}
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                                {[
+                                  { id: 'url', label: 'Link Web', help: 'Imagen online' },
+                                  { id: 'upload', label: 'Sube foto', help: 'De galería' }
+                                ].map(opt => (
+                                  <button
+                                    key={opt.id}
+                                    onClick={() => setFormData({ ...formData, vitamina_c_opt: opt.id })}
+                                    style={{
+                                      padding: '0.5rem',
+                                      borderRadius: '10px',
+                                      border: formData.vitamina_c_opt === opt.id ? '2px solid #FFA500' : '1px solid rgba(255,255,255,0.1)',
+                                      background: formData.vitamina_c_opt === opt.id ? 'rgba(255, 165, 0, 0.1)' : 'transparent',
+                                      cursor: 'pointer',
+                                      transition: 'all 0.3s'
+                                    }}
+                                  >
+                                    <p style={{ fontWeight: '700', fontSize: '0.75rem', margin: '0 0 1px 0', color: formData.vitamina_c_opt === opt.id ? 'white' : 'rgba(255,255,255,0.6)' }}>{opt.label}</p>
+                                    <p style={{ fontSize: '0.55rem', margin: 0, color: 'rgba(255,255,255,0.4)' }}>{opt.help}</p>
+                                  </button>
+                                ))}
+                              </div>
+
+                              {formData.vitamina_c_opt === 'url' ? (
+                                <input
+                                  className="input"
+                                  placeholder="https://ejemplo.com/foto.jpg"
+                                  value={formData.vitamina_c_img}
+                                  onFocus={() => isMobileApp && hideBannerAd()}
+                                  onBlur={() => isMobileApp && showBannerAd()}
+                                  onChange={(e) => setFormData({ ...formData, vitamina_c_img: e.target.value })}
+                                  style={{ marginBottom: '0.8rem', fontSize: '0.85rem' }}
+                                />
+                              ) : (
+                                <div style={{ marginBottom: '0.8rem' }}>
+                                  {formData.vitamina_c_img && formData.vitamina_c_img.startsWith('data:') ? (
+                                    <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+                                      <img src={formData.vitamina_c_img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                                      <button
+                                        onClick={() => setFormData({ ...formData, vitamina_c_img: '' })}
+                                        style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifySelf: 'center' }}
+                                      >✕</button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        const input = document.createElement('input');
+                                        input.type = 'file';
+                                        input.accept = 'image/*';
+                                        input.onchange = async (e) => {
+                                          const file = e.target.files[0];
+                                          if (file) {
+                                            setIsGenerating(true);
+                                            const compressed = await compressImage(file);
+                                            setFormData(prev => ({ ...prev, vitamina_c_img: compressed }));
+                                            setIsGenerating(false);
+                                          }
+                                        };
+                                        input.click();
+                                      }}
+                                      className="btn-upload-small"
+                                      style={{ padding: '0.6rem 0.8rem', fontSize: '0.75rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: 'rgba(255, 165, 0, 0.2)', border: '1px solid rgba(255, 165, 0, 0.4)' }}
+                                    >
+                                      <Camera size={14} /> Seleccionar Foto C
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Vitamina D */}
+                            <div style={{ padding: '1rem', background: 'rgba(0, 191, 255, 0.1)', borderRadius: '12px', border: '1px solid rgba(0, 191, 255, 0.3)' }}>
+                              <h4 style={{ color: '#00BFFF', fontSize: '1rem', marginBottom: '0.8rem', fontWeight: '700' }}>🔵 Vitamina D</h4>
+                              <input
+                                className="input"
+                                placeholder="Significado (Ej: Delicioso)"
+                                value={formData.vitamina_d_text}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_d_text: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Mensaje (Ej: Las veces que quieras 😏💘)"
+                                value={formData.vitamina_d_msg}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_d_msg: e.target.value })}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+                              <input
+                                className="input"
+                                placeholder="Emoji (Ej: 😏💘 o 🔥😈)"
+                                value={formData.vitamina_d_emoji}
+                                onFocus={() => isMobileApp && hideBannerAd()}
+                                onBlur={() => isMobileApp && showBannerAd()}
+                                onChange={(e) => setFormData({ ...formData, vitamina_d_emoji: e.target.value })}
+                                maxLength={4}
+                                style={{ marginBottom: '0.8rem' }}
+                              />
+
+                              {/* Photo Options for Vitamina D */}
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                                {[
+                                  { id: 'url', label: 'Link Web', help: 'Imagen online' },
+                                  { id: 'upload', label: 'Sube foto', help: 'De galería' }
+                                ].map(opt => (
+                                  <button
+                                    key={opt.id}
+                                    onClick={() => setFormData({ ...formData, vitamina_d_opt: opt.id })}
+                                    style={{
+                                      padding: '0.5rem',
+                                      borderRadius: '10px',
+                                      border: formData.vitamina_d_opt === opt.id ? '2px solid #00BFFF' : '1px solid rgba(255,255,255,0.1)',
+                                      background: formData.vitamina_d_opt === opt.id ? 'rgba(0, 191, 255, 0.1)' : 'transparent',
+                                      cursor: 'pointer',
+                                      transition: 'all 0.3s'
+                                    }}
+                                  >
+                                    <p style={{ fontWeight: '700', fontSize: '0.75rem', margin: '0 0 1px 0', color: formData.vitamina_d_opt === opt.id ? 'white' : 'rgba(255,255,255,0.6)' }}>{opt.label}</p>
+                                    <p style={{ fontSize: '0.55rem', margin: 0, color: 'rgba(255,255,255,0.4)' }}>{opt.help}</p>
+                                  </button>
+                                ))}
+                              </div>
+
+                              {formData.vitamina_d_opt === 'url' ? (
+                                <input
+                                  className="input"
+                                  placeholder="https://ejemplo.com/foto.jpg"
+                                  value={formData.vitamina_d_img}
+                                  onFocus={() => isMobileApp && hideBannerAd()}
+                                  onBlur={() => isMobileApp && showBannerAd()}
+                                  onChange={(e) => setFormData({ ...formData, vitamina_d_img: e.target.value })}
+                                  style={{ marginBottom: '0.8rem', fontSize: '0.85rem' }}
+                                />
+                              ) : (
+                                <div style={{ marginBottom: '0.8rem' }}>
+                                  {formData.vitamina_d_img && formData.vitamina_d_img.startsWith('data:') ? (
+                                    <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+                                      <img src={formData.vitamina_d_img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                                      <button
+                                        onClick={() => setFormData({ ...formData, vitamina_d_img: '' })}
+                                        style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifySelf: 'center' }}
+                                      >✕</button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        const input = document.createElement('input');
+                                        input.type = 'file';
+                                        input.accept = 'image/*';
+                                        input.onchange = async (e) => {
+                                          const file = e.target.files[0];
+                                          if (file) {
+                                            setIsGenerating(true);
+                                            const compressed = await compressImage(file);
+                                            setFormData(prev => ({ ...prev, vitamina_d_img: compressed }));
+                                            setIsGenerating(false);
+                                          }
+                                        };
+                                        input.click();
+                                      }}
+                                      className="btn-upload-small"
+                                      style={{ padding: '0.6rem 0.8rem', fontSize: '0.75rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', background: 'rgba(0, 191, 255, 0.2)', border: '1px solid rgba(0, 191, 255, 0.4)' }}
+                                    >
+                                      <Camera size={14} /> Seleccionar Foto D
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   )}
 
