@@ -27,6 +27,7 @@ import { ENCHANTED_LETTER_TEMPLATE } from './halloween/enchanted-letter';
 
 
 import { PROPOSAL_PREMIUM_TEMPLATE } from './love/proposal-premium';
+import { TE_AMO_PREMIUM_TEMPLATE } from './love/te-amo-premium';
 
 // --- EXPORTS ---
 export {
@@ -50,7 +51,8 @@ export {
     FORGIVE_ME_PENGUINS_TEMPLATE,
     SOCCER_CARD_TEMPLATE,
     DEDICATE_SONG_TEMPLATE,
-    PROPOSAL_PREMIUM_TEMPLATE
+    PROPOSAL_PREMIUM_TEMPLATE,
+    TE_AMO_PREMIUM_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
@@ -64,7 +66,7 @@ export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
 // DEDICATE_SONG_TEMPLATE is now imported from dedicate-song.js
 export const DEDICATE_SONG_LEGACY_ALIAS = LOVE_TEMPLATE.replace('🎁', '🎧');
 export const BE_MY_BOYFRIEND_TEMPLATE = PROPOSAL_TEMPLATE;
-export const TE_AMO_TEMPLATE = GALAXY_TEMPLATE;
+export const TE_AMO_TEMPLATE = TE_AMO_PREMIUM_TEMPLATE;
 export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
 export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
 export const OUR_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '📅');
