@@ -764,6 +764,16 @@ function App() {
       newErrors.extraText = 'Por favor, ingresa un título para tu mensaje.';
     }
 
+    // Validación para Iniciales Pareja - ambas iniciales son obligatorias
+    if (selectedTemplate.id === 'initials') {
+      if (!formData.extraText || !formData.extraText.trim()) {
+        newErrors.extraText = 'Por favor, ingresa la inicial de Ella.';
+      }
+      if (!formData.extraText2 || !formData.extraText2.trim()) {
+        newErrors.extraText2 = 'Por favor, ingresa la inicial de Él.';
+      }
+    }
+
     if (selectedTemplate.id === 'musical-sphere' && !formData.youtubeUrl.trim()) {
       newErrors.youtube = 'Esta plantilla requiere un link de YouTube obligatorio.';
     }
