@@ -1,4 +1,4 @@
-﻿export const BIRTHDAY_TEMPLATE = `<!DOCTYPE html>
+﻿export const BIRTHDAY_TEMPLATE_CLASSIC = `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -11,131 +11,111 @@
         h1 { background: linear-gradient(135deg, #ff4d94, #ffeead); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem; }
         p { font-size: 1.2rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
         .sender { margin-top: 2rem; font-weight: bold; color: #ff4d94; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; }
-
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #05020a; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
-        #intro-overlay.hidden { opacity: 0; pointer-events: none; }
-
-        /* Unified Audio Styles */
-        .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 350px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; gap: 15px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: white; }
-        .play-btn { width: 40px; height: 40px; background: #ff4d94; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; color: white !important; font-weight: bold; }
-        .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: #ff4d94; border-radius: 2px; }
-        .time-text { font-size: 11px; color: rgba(255, 255, 255, 0.5); min-width: 35px; font-family: monospace; }
-        .song-title { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; color: #ff4d94; white-space: nowrap; text-transform: uppercase; letter-spacing: 1px; }
-
-        .photo-result {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin: 0 auto 1.5rem auto;
-            display: {{image_display}};
-            overflow: hidden;
-            border: 4px solid #ff4d94;
-            box-shadow: 0 0 20px rgba(255, 77, 148, 0.4);
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            min-height: 50px;
-        }
+        
+        .photo-result { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1.5rem auto; display: {{image_display}}; overflow: hidden; border: 4px solid #ff4d94; box-shadow: 0 0 20px rgba(255, 77, 148, 0.4); background: #222; }
         .photo-result img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Premium Audio HUD */
+        .audio-controls {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 85%; max-width: 350px; background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; gap: 15px;
+            z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: white; opacity: 0;
+            transition: 0.5s; pointer-events: none;
+        }
+        .audio-controls.visible { opacity: 1; pointer-events: all; }
+        .play-btn { width: 40px; height: 40px; background: #ff4d94; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; color: white !important; font-size: 1rem; }
+        .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: #ff4d94; }
+        .song-title { position: absolute; top: -20px; left: 20px; font-size: 10px; font-weight: 800; color: #ff4d94; letter-spacing: 1px; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <div id="intro-overlay">
-        <div onclick="openBox()" style="text-align: center; cursor: pointer;">
-            <div style="font-size: 80px; filter: drop-shadow(0 0 20px #ff4d94);">🎂</div>
-            <div style="color: white; font-size: 26px; font-weight: 900; margin-top: 25px; letter-spacing: 2px;">¡MIRA TU REGALO!</div>
-            <div style="color: #ff4d94; margin-top: 10px; font-weight: bold; letter-spacing: 3px;">TOCA PARA ABRIR ❤️</div>
-        </div>
-    </div>
-
     <div class="card">
-        <div class="photo-result">
-            <img src="{{image_src}}" alt="Foto de Cumpleaños" onerror="this.parentElement.style.display='none'">
-        </div>
-        <div style="color: #ff4d94; font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.3; white-space: pre-wrap;">{{extra_text}}</div>
+        <div class="photo-result"><img src="{{image_src}}" alt="Foto" onerror="this.parentElement.style.display='none'"></div>
+        <h1 style="color: #ff4d94; font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">¡Feliz Cumpleaños!</h1>
+        <div style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; color: #ffeead;">{{name}}</div>
+        <div style="color: #fff; font-size: 1.2rem; margin-bottom: 1rem;">{{extra_text}}</div>
         <p>{{message}}</p>
         <div class="sender">DE PARTE DE: {{sender}}</div>
     </div>
 
-    <div class="audio-controls" id="audio-ui" style="display: none;">
-        <div class="song-title">Audio Mágico</div>
+    <!-- Audio HUD -->
+    <div class="audio-controls" id="audio-ui" style="display: {{audio_display}};">
+        <span class="song-title">MAGIC AUDIO</span>
         <div class="play-btn" id="play-btn">
-            <div id="play-icon">▶️</div>
-            <div id="pause-icon" style="display:none">||</div>
+            <span id="play-icon">▶</span><span id="pause-icon" style="display:none">||</span>
         </div>
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        <div class="time-display time-text" id="time-display">0:00</div>
+        <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
     </div>
 
     <audio id="bg-audio" src="{{audio_src}}" loop></audio>
-    <div id="yt-player-container" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0.01; pointer-events:none;">
-        <div id="youtube-player"></div>
-    </div>
+    <div id="yt-player" style="position:fixed; opacity:0; pointer-events:none;"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        const audio = document.getElementById('bg-audio');
-        const youtubeId = "{{youtube_id}}";
-        let ytPlayer = null;
-        let activePlatform = youtubeId ? 'youtube' : 'native';
-        let isPlaying = false;
+        const hasAudio = '{{has_audio}}' === 'true';
+        const youtubeId = "{{youtube_id}}".replace(/[{}]/g, '');
+        let audio = document.getElementById('bg-audio');
+        let activePlatform = (youtubeId && youtubeId.length > 2) ? 'youtube' : 'native';
+        let ytReady = false;
+        let playOnReady = false;
 
-        if (activePlatform === 'youtube') {
+        window.startApp = function() {
+            document.getElementById('audio-ui').classList.add('visible');
+            if (hasAudio) {
+                try {
+                    if (activePlatform === 'youtube') {
+                        if (ytReady) window.ytPlayer.playVideo();
+                        else playOnReady = true;
+                    } else {
+                        audio.play().catch(() => {});
+                    }
+                } catch (e) {}
+            }
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#ff4d94', '#ffeead'] });
+        };
+
+        if (activePlatform === 'youtube' && !window.YT_API_LOADED) {
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
-            document.body.appendChild(tag);
+            document.head.appendChild(tag);
+            window.YT_API_LOADED = true;
         }
 
-        function onYouTubeIframeAPIReady() {
-            if (youtubeId) {
-                ytPlayer = new YT.Player('youtube-player', {
+        window.onYouTubeIframeAPIReady = function() {
+            if (activePlatform === 'youtube') {
+                window.ytPlayer = new YT.Player('yt-player', {
                     height: '0', width: '0', videoId: youtubeId,
                     playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': youtubeId },
-                    events: { 'onReady': () => console.log("YT Ready") }
+                    events: {
+                        'onReady': () => { ytReady = true; if(playOnReady) window.ytPlayer.playVideo(); },
+                        'onStateChange': (e) => updateUI(e.data === 1)
+                    }
                 });
             }
-        }
-
-        function openBox() {
-            document.getElementById('intro-overlay').classList.add('hidden');
-            const audioDisplay = '{{audio_display}}';
-            setTimeout(() => {
-                if (audioDisplay !== 'none') {
-                    document.getElementById('audio-ui').style.display = 'flex';
-                }
-                if (activePlatform === 'youtube' && ytPlayer) ytPlayer.playVideo();
-                else audio.play().catch(() => { });
-                updateUI(true);
-            }, 500);
-        }
+        };
 
         function updateUI(playing) {
-            isPlaying = playing;
-            document.getElementById('play-icon').style.display = playing ? 'none' : 'block';
-            document.getElementById('pause-icon').style.display = playing ? 'block' : 'none';
+            document.getElementById('play-icon').style.display = playing ? 'none' : 'inline';
+            document.getElementById('pause-icon').style.display = playing ? 'inline' : 'none';
         }
 
-        document.getElementById('play-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isPlaying) {
-                if (activePlatform === 'youtube') ytPlayer.pauseVideo();
-                else audio.pause();
+        document.getElementById('play-btn').onclick = () => {
+            if (activePlatform === 'youtube' && window.ytPlayer) {
+                if (window.ytPlayer.getPlayerState() === 1) window.ytPlayer.pauseVideo();
+                else window.ytPlayer.playVideo();
             } else {
-                if (activePlatform === 'youtube') ytPlayer.playVideo();
-                else audio.play();
+                if (audio.paused) audio.play(); else audio.pause();
             }
-            updateUI(!isPlaying);
-        });
+        };
 
-        if (activePlatform === 'native') {
-            audio.ontimeupdate = () => {
-                const progress = (audio.currentTime / audio.duration) * 100;
-                document.getElementById('progress-bar').style.width = progress + '%';
-                const mins = Math.floor(audio.currentTime / 60);
-                const secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('time-display').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
-            };
-        }
+        audio.onplay = () => updateUI(true);
+        audio.onpause = () => updateUI(false);
+        audio.ontimeupdate = () => {
+            document.getElementById('progress-bar').style.width = (audio.currentTime / audio.duration) * 100 + '%';
+        };
     </script>
 </body>
 </html>`;

@@ -213,6 +213,7 @@ const TemplateEngine = {
             font-size: clamp(5rem, 15vw, 8rem); 
             filter: drop-shadow(0 0 20px rgba(255, 77, 148, 0.5));
             animation: giftBounce 2s infinite ease-in-out;
+            display: flex; justify-content: center; align-items: center;
         }
         @keyframes giftBounce {
             0%, 100% { transform: translateY(0) rotate(0); }
@@ -232,12 +233,27 @@ const TemplateEngine = {
         @keyframes giftPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
     </style>`;
 
+            const introMap = {
+                'birthday': { emoji: '🎂', title: '¡Feliz Cumpleaños!' },
+                'birthday-classic': { emoji: '🎂', title: '¡Feliz Cumpleaños!' },
+                'christmas-tree': { emoji: '🎄', title: '¡Feliz Navidad!' },
+                'new-year': { emoji: '🥂', title: '¡Feliz Año Nuevo!' },
+                'pocoyo': { emoji: '🕺', title: '¡A Bailar!' },
+                'soccer-card': { emoji: '⚽', title: '¡Tu Ficha Pro!' }
+            };
+
+            const config = introMap[data.t] || { emoji: '🎁', title: '¡Tienes un regalo especial!' };
+            const introEmoji = config.emoji;
+            const introTitle = config.title;
+
             const giftHtml = `
     <div id="magic-gift-overlay" onclick="openMagicGift()">
-        <div class="gift-emoji">🎁</div>
-        <h2 class="gift-title">¡Tienes un regalo especial!</h2>
+        <div class="gift-emoji">${introEmoji}</div>
+        <h2 class="gift-title">${introTitle}</h2>
         <div class="gift-hint">TOCA PARA ABRIR ✨</div>
     </div>`;
+
+            finalHtml = finalHtml.replace(/{{template_title}}/g, config.title.toUpperCase());
 
             const giftScript = `
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
