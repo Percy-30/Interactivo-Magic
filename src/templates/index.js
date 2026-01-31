@@ -21,6 +21,7 @@ import { SCRATCH_MESSAGE_TEMPLATE } from './juegos/scratch-message';
 import { MARVEL_BOOK_TEMPLATE } from './fun/marvel-book';
 import { FORGIVE_ME_CATS_TEMPLATE } from './fun/forgive-me-cats';
 import { FORGIVE_ME_PENGUINS_TEMPLATE } from './fun/forgive-me-penguins';
+import { SOCCER_CARD_TEMPLATE } from './fun/soccer-card';
 import { ENCHANTED_LETTER_TEMPLATE } from './halloween/enchanted-letter';
 
 // --- EXPORTS ---
@@ -42,7 +43,8 @@ export {
     MARVEL_BOOK_TEMPLATE,
     FORGIVE_ME_CATS_TEMPLATE,
     ENCHANTED_LETTER_TEMPLATE,
-    FORGIVE_ME_PENGUINS_TEMPLATE
+    FORGIVE_ME_PENGUINS_TEMPLATE,
+    SOCCER_CARD_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
@@ -52,7 +54,7 @@ export const FLOWERS_RAMO_TEMPLATE = FLOWERS_BOUQUET_TEMPLATE;
 export const COUPLE_INITIALS_TEMPLATE = LOVE_INITIALS_TEMPLATE;
 export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
 // LOVE_VITAMINS_TEMPLATE is now imported directly from love-vitamins.js
-export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50');
+// SOCCER_CARD_TEMPLATE is now imported from soccer-card.js
 export const DEDICATE_SONG_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎧');
 export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺').replace('#0a0514', '#03a9f4');
 export const BE_MY_BOYFRIEND_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', 'SÍ, ¡ACEPTO! 💍');

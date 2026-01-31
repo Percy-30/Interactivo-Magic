@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
+import confetti from 'canvas-confetti';
 import {
   GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE,
   BOOK_LOVE_TEMPLATE, MARVEL_BOOK_TEMPLATE, GALAXY_GENERATOR_TEMPLATE,
@@ -266,11 +267,11 @@ const TEMPLATES = [
     name: 'Tarjeta Futbolista ⚽',
     description: 'Tarjeta estilo FIFA para amigos.',
     icon: <Zap />,
-    color: '#4caf50',
+    color: '#FFD700',
     content: SOCCER_CARD_TEMPLATE,
     hasImage: true,
-    hasExtra: true,
-    extraLabel: 'Posición/Rating'
+    hasSoccerStats: true,
+    hasExtra: false
   },
   {
     id: 'birthday',
@@ -594,6 +595,9 @@ function App() {
   const [isMobileApp, setIsMobileApp] = useState(false);
   const [errors, setErrors] = useState({});
   const [isGenerating, setIsGenerating] = useState(false);
+  const [giftOpened, setGiftOpened] = useState(false);
+  const [searchTermFlag, setSearchTermFlag] = useState('Argentina');
+  const [flagPickerOpen, setFlagPickerOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     sender: '',
@@ -625,11 +629,20 @@ function App() {
     vitamina_c_emoji: '',
     vitamina_c_img: '',
     vitamina_c_opt: 'url',
-    vitamina_d_text: '',
-    vitamina_d_msg: '',
-    vitamina_d_emoji: '',
     vitamina_d_img: '',
-    vitamina_d_opt: 'url'
+    vitamina_d_opt: 'url',
+    // Campos para Tarjeta Futbolista
+    soccer_rating: '82',
+    soccer_pos: 'ST',
+    soccer_name: 'Messi',
+    soccer_info: 'Inter de Miami',
+    soccer_flag: 'ar',
+    soccer_pac: '64',
+    soccer_sho: '85',
+    soccer_pas: '78',
+    soccer_dri: '77',
+    soccer_def: '41',
+    soccer_phy: '75'
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
@@ -791,10 +804,19 @@ function App() {
       vc_msg: formData.vitamina_c_msg || null,
       vc_emoji: formData.vitamina_c_emoji || null,
       vc_img: formData.vitamina_c_img || null,
-      vd_text: formData.vitamina_d_text || null,
-      vd_msg: formData.vitamina_d_msg || null,
-      vd_emoji: formData.vitamina_d_emoji || null,
-      vd_img: formData.vitamina_d_img || null
+      vd_img: formData.vitamina_d_img || null,
+      // Parámetros de Tarjeta Futbolista
+      sr: selectedTemplate.id === 'soccer-card' ? formData.soccer_rating : null,
+      sp: selectedTemplate.id === 'soccer-card' ? formData.soccer_pos : null,
+      sn: selectedTemplate.id === 'soccer-card' ? formData.soccer_name : null,
+      si: selectedTemplate.id === 'soccer-card' ? formData.soccer_info : null,
+      sa: selectedTemplate.id === 'soccer-card' ? formData.soccer_pac : null,
+      ss: selectedTemplate.id === 'soccer-card' ? formData.soccer_sho : null,
+      sl: selectedTemplate.id === 'soccer-card' ? formData.soccer_pas : null,
+      sdr: selectedTemplate.id === 'soccer-card' ? formData.soccer_dri : null,
+      se: selectedTemplate.id === 'soccer-card' ? formData.soccer_def : null,
+      sy: selectedTemplate.id === 'soccer-card' ? formData.soccer_phy : null,
+      sf: selectedTemplate.id === 'soccer-card' ? formData.soccer_flag : null
     };
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -810,6 +832,7 @@ function App() {
   };
 
   const handleGenerate = async () => {
+    setGiftOpened(false);
     const newErrors = {};
     if (!selectedTemplate.hideRecipientName && (!formData.name || !formData.name.trim())) {
       newErrors.name = '¿Cómo se llama la persona especial?';
@@ -2121,6 +2144,153 @@ function App() {
                     )}
                   </div>
 
+                  {/* Tarjeta Futbolista ⚽ Section */}
+                  {selectedTemplate?.id === 'soccer-card' && (
+                    <div style={{
+                      padding: '1.5rem',
+                      background: 'rgba(255, 215, 0, 0.05)',
+                      borderRadius: '20px',
+                      border: '2px solid rgba(255, 215, 0, 0.2)',
+                      marginTop: '1.5rem',
+                      marginBottom: '1rem'
+                    }}>
+                      <h3 style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '1.2rem',
+                        color: '#FFD700',
+                        marginBottom: '1rem'
+                      }}>
+                        ⚽ Datos del Jugador
+                      </h3>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                        <div>
+                          <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>Rating (0-99)</label>
+                          <input
+                            className="input"
+                            type="number"
+                            placeholder="82"
+                            value={formData.soccer_rating}
+                            onChange={(e) => setFormData({ ...formData, soccer_rating: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>Posición</label>
+                          <input
+                            className="input"
+                            placeholder="ST"
+                            value={formData.soccer_pos}
+                            onChange={(e) => setFormData({ ...formData, soccer_pos: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>Nombre del Jugador</label>
+                        <input
+                          className="input"
+                          placeholder="Messi"
+                          value={formData.soccer_name}
+                          onChange={(e) => setFormData({ ...formData, soccer_name: e.target.value })}
+                        />
+                      </div>
+
+                      <div style={{ marginBottom: '1.2rem' }}>
+                        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', display: 'block', marginBottom: '0.6rem' }}>Bandera del País</label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            type="text"
+                            className="input"
+                            placeholder="🔍 Buscar país..."
+                            value={searchTermFlag || ''}
+                            onChange={(e) => setSearchTermFlag(e.target.value)}
+                            onFocus={() => {
+                              setFlagPickerOpen(true);
+                              isMobileApp && hideBannerAd();
+                            }}
+                            onBlur={() => {
+                              setTimeout(() => setFlagPickerOpen(false), 200)
+                              isMobileApp && showBannerAd();
+                            }}
+                          />
+                          <div style={{ position: 'absolute', top: '10px', right: '15px', height: '32px', display: 'flex', alignItems: 'center' }}>
+                            <span className={`fi fi-${formData.soccer_flag}`} style={{ width: '28px', height: '20px', borderRadius: '3px', boxShadow: '0 2px 4px rgba(0,0,0,0.3)' }}></span>
+                          </div>
+
+                          {flagPickerOpen && (
+                            <div style={{
+                              position: 'absolute', top: '100%', left: 0, width: '100%', maxHeight: '200px',
+                              overflowY: 'auto', background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)',
+                              borderRadius: '12px', zIndex: 1000, marginTop: '5px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
+                            }}>
+                              {[
+                                { n: 'Argentina', c: 'ar' }, { n: 'México', c: 'mx' }, { n: 'España', c: 'es' },
+                                { n: 'Colombia', c: 'co' }, { n: 'Chile', c: 'cl' }, { n: 'Perú', c: 'pe' },
+                                { n: 'Ecuador', c: 'ec' }, { n: 'Uruguay', c: 'uy' }, { n: 'Brasil', c: 'br' },
+                                { n: 'Estados Unidos', c: 'us' }, { n: 'Francia', c: 'fr' }, { n: 'Portugal', c: 'pt' },
+                                { n: 'Alemania', c: 'de' }, { n: 'Italia', c: 'it' }, { n: 'Inglaterra', c: 'gb-eng' },
+                                { n: 'Venezuela', c: 've' }, { n: 'Bolivia', c: 'bo' }, { n: 'Paraguay', c: 'py' },
+                                { n: 'Costa Rica', c: 'cr' }, { n: 'Panamá', c: 'pa' }, { n: 'Guatemala', c: 'gt' },
+                                { n: 'Honduras', c: 'hn' }, { n: 'El Salvador', c: 'sv' }, { n: 'Nicaragua', c: 'ni' },
+                                { n: 'Rep. Dominicana', c: 'do' }, { n: 'Puerto Rico', c: 'pr' }, { n: 'Canadá', c: 'ca' },
+                                { n: 'Marruecos', c: 'ma' }, { n: 'Japón', c: 'jp' }, { n: 'Corea del Sur', c: 'kr' }
+                              ].filter(c => c.n.toLowerCase().includes((searchTermFlag || '').toLowerCase()))
+                                .map(country => (
+                                  <div
+                                    key={country.n}
+                                    onMouseDown={() => {
+                                      setFormData({ ...formData, soccer_flag: country.c });
+                                      setSearchTermFlag(country.n);
+                                      setFlagPickerOpen(false);
+                                    }}
+                                    style={{ padding: '10px 15px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.05)', background: formData.soccer_flag === country.c ? 'rgba(255,215,0,0.1)' : 'transparent' }}
+                                  >
+                                    <span className={`fi fi-${country.c}`} style={{ width: '24px', height: '18px', borderRadius: '2px' }}></span>
+                                    <span style={{ color: 'white' }}>{country.n}</span>
+                                  </div>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>Club / Info adicional</label>
+                        <input
+                          className="input"
+                          placeholder="Inter de Miami"
+                          value={formData.soccer_info}
+                          onFocus={() => isMobileApp && hideBannerAd()}
+                          onBlur={() => isMobileApp && showBannerAd()}
+                          onChange={(e) => setFormData({ ...formData, soccer_info: e.target.value })}
+                        />
+                      </div>
+
+                      <h4 style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1rem', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>Estadísticas</h4>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+                        {['pac', 'sho', 'pas', 'dri', 'def', 'phy'].map(id => (
+                          <div key={id}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                              <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem' }}>{id.toUpperCase()}</label>
+                              <span style={{ color: '#FFD700', fontWeight: 'bold', fontSize: '0.8rem' }}>{formData[`soccer_${id}`]}</span>
+                            </div>
+                            <input
+                              type="range"
+                              min="0"
+                              max="99"
+                              value={formData[`soccer_${id}`]}
+                              onChange={(e) => setFormData({ ...formData, [`soccer_${id}`]: e.target.value })}
+                              style={{ width: '100%', accentColor: '#FFD700' }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Vitaminas Amor Section */}
                   {selectedTemplate?.id === 'vitamins' && (
                     <div style={{
@@ -2735,8 +2905,8 @@ function App() {
                       onClick={handleCopyLink}
                       style={{
                         justifyContent: 'center',
-                        background: copied ? 'rgba(76, 175, 80, 0.2)' : 'rgba(255, 0, 255, 0.15)',
-                        border: copied ? '2px solid rgba(76, 175, 80, 0.5)' : '2px solid rgba(255, 0, 255, 0.4)',
+                        background: copied ? 'rgba(76, 175, 80, 0.2)' : 'rgba(255,0,255,0.15)',
+                        border: copied ? '2px solid rgba(76, 175, 80, 0.5)' : '2px solid rgba(255,0,255,0.4)',
                         fontSize: '1rem',
                         padding: '1rem 1.5rem',
                         transition: 'all 0.3s ease'
@@ -2750,7 +2920,7 @@ function App() {
                       ) : (
                         <>
                           <LinkIcon size={20} color="#ff00ff" />
-                          <span>Copiar Link</span>
+                          <span>Link</span>
                         </>
                       )}
                     </button>
@@ -2759,69 +2929,22 @@ function App() {
                       <button
                         className="btn glass"
                         onClick={async () => {
-                          // Generate a friendly filename
-                          const safeName = (formData.name || 'alguien').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                          const safeSender = (formData.sender || 'tu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                          const templateSlug = selectedTemplate.id;
-                          const fileName = `${templateSlug}_de_${safeSender}_para_${safeName}.html`;
-
-                          // Create a simple redirect HTML content
-                          const redirectHtml = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=${generatedUrl}">
-    <script>window.location.href = "${generatedUrl}";</script>
-    <title>Interactivo Magic ✨</title>
-    <style>
-        body { 
-            background: #0a0a0c; 
-            color: white; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            text-align: center;
-        }
-        .loader {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #ff00ff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-    <div class="loader"></div>
-    <h3>Abriendo tu mensaje mágico...</h3>
-    <p style="opacity: 0.6; font-size: 0.9rem;">Si no redirige automáticamente, <a href="${generatedUrl}" style="color: #00f2ff;">haz clic aquí</a>.</p>
-</body>
-</html>`;
-
-                          await shareHTMLFile({
-                            fileName,
-                            htmlContent: redirectHtml
-                          });
+                          const safeN = (formData.name || 'alguien').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                          const safeS = (formData.sender || 'tu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                          const fileName = `${selectedTemplate.id}_${safeS}_para_${safeN}.html`;
+                          const redHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=${generatedUrl}"><title>Magic ✨</title></head><body><script>window.location.href="${generatedUrl}";</script></body></html>`;
+                          await shareHTMLFile(fileName, redHtml, "Mira lo que preparé para ti ✨");
                         }}
                         style={{
                           justifyContent: 'center',
-                          background: 'rgba(0, 242, 255, 0.15)',
-                          border: '2px solid rgba(0, 242, 255, 0.4)',
+                          background: 'rgba(255, 107, 157, 0.15)',
+                          border: '2px solid rgba(255, 107, 157, 0.4)',
                           fontSize: '1rem',
                           padding: '1rem 1.5rem',
                           transition: 'all 0.3s ease'
                         }}
                       >
-                        <Share2 size={20} color="#00f2ff" />
+                        <Share2 size={20} color="#ff6b9d" />
                         <span>Compartir</span>
                       </button>
                     ) : (
@@ -2838,7 +2961,7 @@ function App() {
                         }}
                       >
                         <Download size={20} color="#00f2ff" />
-                        <span>Descargar</span>
+                        <span>Bajar</span>
                       </button>
                     )}
                   </div>
@@ -2988,7 +3111,7 @@ function App() {
                     <span style={{ fontSize: '1.3rem', fontWeight: '800' }}>InteractivoMagic</span>
                   </div>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                    Transforma mensajes simples en experiencias mágicas e interactivas. Hecho con  para compartir.
+                    Transforma mensajes simples en experiencias mágicas e interactivas. Hecho con ❤️ para compartir.
                   </p>
                 </div>
 
@@ -3021,7 +3144,7 @@ function App() {
               </div>
 
               <div style={{ textAlign: 'center', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                © 2026 InteractivoMagic - Hecho con  para compartir momentos especiales
+                © 2026 InteractivoMagic - Hecho con ❤️ para compartir momentos especiales
               </div>
             </div>
           </footer>

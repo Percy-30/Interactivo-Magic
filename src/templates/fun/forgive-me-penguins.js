@@ -340,7 +340,7 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
                 tag.src = "https://www.youtube.com/iframe_api";
                 document.body.appendChild(tag);
                 window.onYouTubeIframeAPIReady = () => {
-                    ytPlayer = new YT.Player('yt-player', {
+                    window.ytPlayer = new YT.Player('yt-player', {
                         videoId: yId, height: '0', width: '0',
                         playerVars: { autoplay: 1, loop: 1, playlist: yId },
                         events: { 'onReady': () => toggleMusic(true) }
@@ -356,10 +356,10 @@ export const FORGIVE_ME_PENGUINS_TEMPLATE = `<!DOCTYPE html>
             const btn = document.getElementById('audio-trigger');
             if(play) {
                 btn.textContent = '||';
-                if(ytPlayer) ytPlayer.playVideo(); else player.play();
+                if(window.ytPlayer) window.ytPlayer.playVideo(); else player.play();
             } else {
                 btn.textContent = '▶';
-                if(ytPlayer) ytPlayer.pauseVideo(); else player.pause();
+                if(window.ytPlayer) window.ytPlayer.pauseVideo(); else player.pause();
             }
         }
 

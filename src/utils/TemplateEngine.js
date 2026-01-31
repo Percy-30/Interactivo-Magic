@@ -128,7 +128,21 @@ const TemplateEngine = {
             .replace(/{{vitamina_d_msg}}/g, data.vitamina_d_msg || data.vd_msg || '')
             .replace(/{{vitamina_d_emoji}}/g, data.vitamina_d_emoji || data.vd_emoji || '')
             .replace(/{{vitamina_d_img}}/g, fixImageUrl(data.vitamina_d_img || data.vd_img || ''))
-            .replace(/{{vitamina_d_img_display}}/g, (data.vitamina_d_img || data.vd_img) ? 'block' : 'none');
+            .replace(/{{vitamina_d_img_display}}/g, (data.vitamina_d_img || data.vd_img) ? 'block' : 'none')
+
+            // Tarjeta Futbolista ⚽
+            .replace(/{{sc_rating}}/g, data.soccer_rating || data.sr || '82')
+            .replace(/{{sc_pos}}/g, data.soccer_pos || data.sp || 'ST')
+            .replace(/{{sc_name}}/g, data.soccer_name || data.sn || 'Messi')
+            .replace(/{{sc_info}}/g, data.soccer_info || data.si || '')
+            .replace(/{{sc_flag}}/g, data.soccer_flag || data.sf || '')
+            .replace(/{{sc_pac}}/g, data.soccer_pac || data.sa || '0')
+            .replace(/{{sc_sho}}/g, data.soccer_sho || data.ss || '0')
+            .replace(/{{sc_pas}}/g, data.soccer_pas || data.sl || '0')
+            .replace(/{{sc_dri}}/g, data.soccer_dri || data.sdr || '0')
+            .replace(/{{sc_def}}/g, data.soccer_def || data.se || '0')
+            .replace(/{{sc_phy}}/g, data.soccer_phy || data.sy || '0')
+            .replace(/{{sc_img}}/g, fixImageUrl(data.img || data.imageSrc || ''));
 
         // Dynamic Items logic (for books)
         const tid = data.t || data.templateId;
@@ -178,6 +192,103 @@ const TemplateEngine = {
             finalHtml = finalHtml
                 .replace(/{{item_1_content}}/g, '')
                 .replace(/{{dynamic_pages}}/g, '');
+        }
+
+        // Check if we should wrap with Gift Box
+        const needsGiftWrap = !finalHtml.includes('id="intro-overlay"') && !finalHtml.includes('id="wall"');
+
+        if (needsGiftWrap) {
+            const giftStyle = `
+    <style>
+        #magic-gift-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            z-index: 99999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white; font-family: 'Outfit', sans-serif;
+        }
+        #magic-gift-overlay.hidden { opacity: 0; pointer-events: none; }
+        .gift-emoji { 
+            font-size: clamp(5rem, 15vw, 8rem); 
+            filter: drop-shadow(0 0 20px rgba(255, 77, 148, 0.5));
+            animation: giftBounce 2s infinite ease-in-out;
+        }
+        @keyframes giftBounce {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        .gift-title {
+            margin-top: 2rem; font-size: 1.8rem; font-weight: 800;
+            background: linear-gradient(135deg, #fff, #ff4d94);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center; padding: 0 20px;
+        }
+        .gift-hint {
+            margin-top: 1rem; color: rgba(255,255,255,0.6);
+            letter-spacing: 4px; font-size: 0.9rem; font-weight: 700;
+            animation: giftPulse 1.5s infinite;
+        }
+        @keyframes giftPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+    </style>`;
+
+            const giftHtml = `
+    <div id="magic-gift-overlay" onclick="openMagicGift()">
+        <div class="gift-emoji">🎁</div>
+        <h2 class="gift-title">¡Tienes un regalo especial!</h2>
+        <div class="gift-hint">TOCA PARA ABRIR ✨</div>
+    </div>`;
+
+            const giftScript = `
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        function openMagicGift() {
+            const overlay = document.getElementById('magic-gift-overlay');
+            if (!overlay) return;
+            
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d94', '#ff00ff', '#ffd700']
+            });
+
+            overlay.classList.add('hidden');
+            setTimeout(() => overlay.remove(), 1000);
+
+            // 1. Handle specialized template triggers
+            if (typeof startApp === 'function') startApp();
+            if (typeof openBox === 'function') openBox();
+            
+            // 2. Comprehensive Audio Trigger (Native + YouTube)
+            const tryPlay = () => {
+                // Try YouTube Global Player (common in project)
+                if (window.ytPlayer && typeof window.ytPlayer.playVideo === 'function') {
+                    window.ytPlayer.playVideo();
+                }
+                
+                // Try Native Audio Elements
+                const audios = [
+                    document.getElementById('bg-audio'),
+                    document.getElementById('player'),
+                    document.querySelector('audio')
+                ].filter(Boolean);
+                
+                audios.forEach(a => {
+                    if (a.paused) a.play().catch(e => console.log("Audio play blocked", e));
+                });
+            };
+
+            tryPlay();
+            // Retry once after transition for late-loading players
+            setTimeout(tryPlay, 500);
+        }
+    </script>`;
+
+            finalHtml = finalHtml
+                .replace('</head>', giftStyle + '</head>')
+                .replace('<body>', '<body>' + giftHtml)
+                .replace('</body>', giftScript + '</body>');
         }
 
         // Replace other placeholders
