@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User,
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
@@ -365,13 +365,14 @@ const TEMPLATES = [
     id: 'christmas',
     category: 'eventos',
     name: 'Arbol Navidad 🎁',
-    description: 'Árbol con las fotos de tu amor.',
+    description: 'Árbol navideño con tus mejores fotos (14 fotos).',
     icon: <TreePine />,
     color: '#2e7d32',
     content: CHRISTMAS_TREE_TEMPLATE,
-    hasImage: true,
-    hasExtra: true,
-    extraLabel: 'Deseo navideño'
+    hasImage: false,
+    hasItems: true,
+    itemsCount: 14,
+    hasExtra: false
   },
   {
     id: 'new-year',
@@ -1835,7 +1836,7 @@ function App() {
                   {selectedTemplate.hasItems && !selectedTemplate.hasDualImage && (
                     <div className="dynamic-content-container">
                       {/* Batch Mosaic Mode (heart-photo, our-year) */}
-                      {(selectedTemplate.id === 'heart-photo' || selectedTemplate.id === 'our-year') ? (
+                      {(selectedTemplate.id === 'heart-photo' || selectedTemplate.id === 'our-year' || selectedTemplate.id === 'christmas') ? (
                         <div style={{
                           padding: '1.5rem',
                           background: 'rgba(255, 255, 255, 0.04)',
@@ -1849,10 +1850,14 @@ function App() {
                             </div>
                             <div>
                               <h3 style={{ margin: 0, fontSize: '1.1rem' }}>
-                                {selectedTemplate.id === 'our-year' ? 'Resumen Anual (12 Meses)' : 'Mosaico de Fotos (Min. 5)'}
+                                {selectedTemplate.id === 'our-year' ? 'Resumen Anual (12 Meses)' :
+                                  selectedTemplate.id === 'christmas' ? 'Árbol Mágico (14 Fotos)' :
+                                    'Mosaico de Fotos (Min. 5)'}
                               </h3>
                               <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                {selectedTemplate.id === 'our-year' ? 'Selecciona una foto para cada mes del año' : 'Sube tus fotos favoritas (Mínimo 5 para mejores resultados)'}
+                                {selectedTemplate.id === 'our-year' ? 'Selecciona una foto para cada mes del año' :
+                                  selectedTemplate.id === 'christmas' ? 'Selecciona 14 fotos para formar tu árbol' :
+                                    'Sube tus fotos favoritas (Mínimo 5 para mejores resultados)'}
                               </p>
                             </div>
                           </div>
@@ -1926,7 +1931,9 @@ function App() {
                             <p style={{ fontSize: '0.7rem', marginTop: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.3' }}>
                               {selectedTemplate.id === 'our-year'
                                 ? 'Selecciona 12 fotos (una para cada mes). Se repetirán si subes menos.'
-                                : 'Selecciona de 5 a 25 fotos de tu galería. Se repetirán automáticamente para llenar el corazón.'
+                                : selectedTemplate.id === 'christmas'
+                                  ? 'Selecciona 14 fotos para tu árbol. Se repetirán si subes menos.'
+                                  : 'Selecciona de 5 a 25 fotos de tu galería. Se repetirán automáticamente para llenar el corazón.'
                               }
                             </p>
                           </div>
