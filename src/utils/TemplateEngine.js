@@ -142,9 +142,22 @@ const TemplateEngine = {
             .replace(/{{sc_dri}}/g, data.soccer_dri || data.sdr || '0')
             .replace(/{{sc_def}}/g, data.soccer_def || data.se || '0')
             .replace(/{{sc_phy}}/g, data.soccer_phy || data.sy || '0')
-            .replace(/{{sc_img}}/g, fixImageUrl(data.img || data.imageSrc || ''));
+            .replace(/{{sc_img}}/g, fixImageUrl(data.img || data.imageSrc || ''))
+            .replace(/{{drive_folder}}/g, data.driveFolderUrl || '');
 
-        // Dynamic Items logic (for books)
+        // Dynamic Items logic (for books and mosaics)
+        if (data.items && Array.isArray(data.items)) {
+            data.items.forEach((item, idx) => {
+                const url = fixImageUrl(item.content || '');
+                const itemRegex = new RegExp(`{{item_${idx}_url}}`, 'g');
+                finalHtml = finalHtml.replace(itemRegex, url);
+
+                // Fallback for generic item_N
+                const genericRegex = new RegExp(`{{item_${idx}}}`, 'g');
+                finalHtml = finalHtml.replace(genericRegex, url);
+            });
+        }
+
         const tid = data.t || data.templateId;
         const isBookWithStatic = (tid === 'marvel-book' || tid === 'book-love');
         const itemsOffset = data.pageOffset ? parseInt(data.pageOffset) : (isBookWithStatic ? 3 : 2);
