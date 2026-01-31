@@ -642,7 +642,11 @@ function App() {
     soccer_pas: '78',
     soccer_dri: '77',
     soccer_def: '41',
-    soccer_phy: '75'
+    soccer_phy: '75',
+    hasAudio: true, // Audio activado por defecto ✨
+    audioOption: 'youtube',
+    youtubeUrl: '',
+    audioFile: null
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('todos');
@@ -856,8 +860,16 @@ function App() {
       }
     }
 
-    if (selectedTemplate.id === 'musical-sphere' && !formData.youtubeUrl.trim()) {
-      newErrors.youtube = 'Esta plantilla requiere un link de YouTube obligatorio.';
+    if ((selectedTemplate.id === 'musical-sphere' || selectedTemplate.id === 'dedicate-song')) {
+      if (!formData.hasAudio) {
+        newErrors.audio = 'Esta plantilla requiere música. Por favor, activa "Música Mágica".';
+      } else if (!formData.youtubeUrl.trim() && !formData.audioFile) {
+        if (formData.audioOption === 'youtube') {
+          newErrors.youtube = 'Esta plantilla requiere música. Por favor, ingresa un link de YouTube.';
+        } else {
+          newErrors.audio = 'Esta plantilla requiere música. Por favor, sube un archivo de audio.';
+        }
+      }
     }
 
     if (formData.hasAudio) {
@@ -2015,6 +2027,24 @@ function App() {
                     borderRadius: '20px',
                     border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}>
+                    {(errors.audio || errors.youtube) && (
+                      <div style={{
+                        color: '#ff4d94',
+                        fontSize: '0.9rem',
+                        marginBottom: '1rem',
+                        fontWeight: '800',
+                        padding: '0.8rem',
+                        background: 'rgba(255, 77, 148, 0.1)',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(255, 77, 148, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <Music size={16} /> {errors.audio || errors.youtube}
+                      </div>
+                    )}
+
                     <div
                       onClick={() => setFormData({ ...formData, hasAudio: !formData.hasAudio })}
                       style={{
@@ -2069,11 +2099,6 @@ function App() {
                         animate={{ opacity: 1, height: 'auto' }}
                         style={{ overflow: 'hidden' }}
                       >
-                        {errors.audio || errors.youtube ? (
-                          <div style={{ color: 'var(--primary)', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: '500' }}>
-                            ⚠️ {errors.audio || errors.youtube}
-                          </div>
-                        ) : null}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem', marginBottom: '1.2rem' }}>
                           {[
                             { id: 'youtube', label: 'YouTube', help: 'Video' },
