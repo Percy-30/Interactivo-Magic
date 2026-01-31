@@ -97,11 +97,27 @@ const TemplateEngine = {
             .replace(/{{\s*youtube_id\s*}}/g, ytId || '')
             .replace(/{{\s*audio_display\s*}}/g, (data.hasAudio || data.audio) ? 'block' : 'none')
             .replace(/{{\s*audio_src\s*}}/g, audioSrc)
+            .replace(/{{\s*imagen_src\s*}}/g, imageSrc)
             .replace(/{{\s*image_src\s*}}/g, imageSrc)
             .replace(/{{\s*image_display\s*}}/g, (imageSrc || data.img) ? 'block' : 'none')
             .replace(/{{\s*has_audio\s*}}/g, (data.hasAudio || data.audio) ? 'true' : 'false')
             .replace(/{{extra_text}}/g, data.extraText || data.et || '')
-            .replace(/{{extra_text_2}}/g, data.extraText2 || data.et2 || '');
+            .replace(/{{extra_text_2}}/g, data.extraText2 || data.et2 || '')
+            .replace(/{{extra_display}}/g, (data.extraText || data.et) ? 'block' : 'none')
+            .replace(/{{start_date}}/g, data.startDate || data.sd || '')
+            // Variables de Vitaminas Amor
+            .replace(/{{vitamina_a_text}}/g, data.vitamina_a_text || data.va_text || '')
+            .replace(/{{vitamina_a_msg}}/g, data.vitamina_a_msg || data.va_msg || '')
+            .replace(/{{vitamina_a_emoji}}/g, data.vitamina_a_emoji || data.va_emoji || '')
+            .replace(/{{vitamina_b_text}}/g, data.vitamina_b_text || data.vb_text || '')
+            .replace(/{{vitamina_b_msg}}/g, data.vitamina_b_msg || data.vb_msg || '')
+            .replace(/{{vitamina_b_emoji}}/g, data.vitamina_b_emoji || data.vb_emoji || '')
+            .replace(/{{vitamina_c_text}}/g, data.vitamina_c_text || data.vc_text || '')
+            .replace(/{{vitamina_c_msg}}/g, data.vitamina_c_msg || data.vc_msg || '')
+            .replace(/{{vitamina_c_emoji}}/g, data.vitamina_c_emoji || data.vc_emoji || '')
+            .replace(/{{vitamina_d_text}}/g, data.vitamina_d_text || data.vd_text || '')
+            .replace(/{{vitamina_d_msg}}/g, data.vitamina_d_msg || data.vd_msg || '')
+            .replace(/{{vitamina_d_emoji}}/g, data.vitamina_d_emoji || data.vd_emoji || '');
 
         // Dynamic Items logic (for books)
         const tid = data.t || data.templateId;

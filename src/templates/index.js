@@ -9,6 +9,7 @@ import { ENOJONA_TEMPLATE } from './love/enojona';
 import { LOVE_CERTIFICATE_TEMPLATE } from './love/love-certificate';
 import { MUSICAL_SPHERE_TEMPLATE } from './love/musical-sphere';
 import { FLOWERS_BOUQUET_TEMPLATE } from './love/flowers-bouquet';
+import { LOVE_VITAMINS_TEMPLATE } from './love/love-vitamins';
 
 import { BIRTHDAY_TEMPLATE } from './eventos/birthday';
 import { DATE_COUNTER_TEMPLATE } from './eventos/date-counter';
@@ -32,6 +33,7 @@ export {
     LOVE_CERTIFICATE_TEMPLATE,
     MUSICAL_SPHERE_TEMPLATE,
     FLOWERS_BOUQUET_TEMPLATE,
+    LOVE_VITAMINS_TEMPLATE,
     BIRTHDAY_TEMPLATE,
     DATE_COUNTER_TEMPLATE,
     PUZZLE_LOVE_TEMPLATE,
@@ -49,7 +51,7 @@ export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', '¡SÍ, ACE
 export const FLOWERS_RAMO_TEMPLATE = FLOWERS_BOUQUET_TEMPLATE;
 export const COUPLE_INITIALS_TEMPLATE = LOVE_INITIALS_TEMPLATE;
 export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
-export const LOVE_VITAMINS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '💊');
+// LOVE_VITAMINS_TEMPLATE is now imported directly from love-vitamins.js
 export const SOCCER_CARD_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '⚽').replace('#ff4d94', '#4caf50');
 export const DEDICATE_SONG_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🎧');
 export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺').replace('#0a0514', '#03a9f4');
