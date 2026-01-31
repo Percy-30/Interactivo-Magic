@@ -17,7 +17,7 @@ import {
   FLOWERS_RAMO_TEMPLATE, ENOJONA_TEMPLATE, DATE_COUNTER_TEMPLATE,
   LOVE_CERTIFICATE_TEMPLATE, COUPLE_INITIALS_TEMPLATE, ENCHANTED_LETTER_TEMPLATE,
   LOVE_VITAMINS_TEMPLATE, SCRATCH_MESSAGE_TEMPLATE, SOCCER_CARD_TEMPLATE,
-  BIRTHDAY_LAMP_TEMPLATE, DEDICATE_SONG_TEMPLATE, POCOYO_DANCE_TEMPLATE,
+  BIRTHDAY_LAMP_TEMPLATE, DEDICATE_SONG_TEMPLATE,
   BE_MY_BOYFRIEND_TEMPLATE, TE_AMO_TEMPLATE, BE_FRIENDS_TEMPLATE,
   HEART_PHOTO_TEMPLATE, OUR_YEAR_TEMPLATE, CHRISTMAS_TREE_TEMPLATE,
   NEW_YEAR_TEMPLATE, LAST_CHANCE_TEMPLATE, HIDDEN_MESSAGE_TEMPLATE
@@ -296,18 +296,6 @@ const TEMPLATES = [
     hasImage: true,
     hasExtra: true,
     extraLabel: 'Dedicado a...'
-  },
-  {
-    id: 'pocoyo',
-    category: 'divertido',
-    name: 'Pocoyo 🎶',
-    description: 'Haz bailar a Pocoyo interactivo.',
-    icon: <Music />,
-    color: '#03a9f4',
-    content: POCOYO_DANCE_TEMPLATE,
-    hasImage: true,
-    hasExtra: true,
-    extraLabel: 'Frase flotante'
   },
   {
     id: 'be-my-gf',

@@ -25,6 +25,9 @@ import { FORGIVE_ME_PENGUINS_TEMPLATE } from './fun/forgive-me-penguins';
 import { SOCCER_CARD_TEMPLATE } from './fun/soccer-card';
 import { ENCHANTED_LETTER_TEMPLATE } from './halloween/enchanted-letter';
 
+
+import { PROPOSAL_PREMIUM_TEMPLATE } from './love/proposal-premium';
+
 // --- EXPORTS ---
 export {
     LOVE_TEMPLATE,
@@ -46,12 +49,13 @@ export {
     ENCHANTED_LETTER_TEMPLATE,
     FORGIVE_ME_PENGUINS_TEMPLATE,
     SOCCER_CARD_TEMPLATE,
-    DEDICATE_SONG_TEMPLATE
+    DEDICATE_SONG_TEMPLATE,
+    PROPOSAL_PREMIUM_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
 export const GALAXY_GENERATOR_TEMPLATE = GALAXY_TEMPLATE;
-export const PROPOSAL_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', '¡SÍ, ACEPTO! 💍');
+export const PROPOSAL_TEMPLATE = PROPOSAL_PREMIUM_TEMPLATE;
 export const FLOWERS_RAMO_TEMPLATE = FLOWERS_BOUQUET_TEMPLATE;
 export const COUPLE_INITIALS_TEMPLATE = LOVE_INITIALS_TEMPLATE;
 export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
@@ -59,8 +63,7 @@ export const BIRTHDAY_LAMP_TEMPLATE = BIRTHDAY_TEMPLATE;
 // SOCCER_CARD_TEMPLATE is now imported from soccer-card.js
 // DEDICATE_SONG_TEMPLATE is now imported from dedicate-song.js
 export const DEDICATE_SONG_LEGACY_ALIAS = LOVE_TEMPLATE.replace('🎁', '🎧');
-export const POCOYO_DANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🕺').replace('#0a0514', '#03a9f4');
-export const BE_MY_BOYFRIEND_TEMPLATE = LOVE_TEMPLATE.replace('SÍ ❤️', 'SÍ, ¡ACEPTO! 💍');
+export const BE_MY_BOYFRIEND_TEMPLATE = PROPOSAL_TEMPLATE;
 export const TE_AMO_TEMPLATE = GALAXY_TEMPLATE;
 export const BE_FRIENDS_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🤝');
 export const HEART_PHOTO_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '📸');
