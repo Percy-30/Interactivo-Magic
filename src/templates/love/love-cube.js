@@ -107,6 +107,42 @@ export const LOVE_CUBE_TEMPLATE = `<!DOCTYPE html>
             text-shadow: 0 0 20px rgba(255, 77, 148, 0.8);
             margin-bottom: 5px;
         }
+        .sub-header {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 77, 148, 0.2);
+        }
+        .highlight { color: var(--primary); }
+
+        /* Message Card */
+        .message-container {
+            position: absolute;
+            top: 160px;
+            max-width: 80%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease-out;
+        }
+        .message-container p {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: #fff;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Music Player HUD */
         .music-hud {
@@ -209,6 +245,13 @@ export const LOVE_CUBE_TEMPLATE = `<!DOCTYPE html>
 
     <div class="header">
         <h1>{{extra_text}}</h1>
+        <div class="sub-header" id="names-header">
+            De: <span class="highlight">{{sender}}</span> para <span class="highlight">{{name}}</span>
+        </div>
+    </div>
+
+    <div class="message-container" id="message-container">
+        <p>{{message}}</p>
     </div>
 
     <div class="scene">
@@ -271,6 +314,14 @@ export const LOVE_CUBE_TEMPLATE = `<!DOCTYPE html>
             }
         }
         createParticles();
+
+        // -- Data Logic --
+        const nameData = "{{name}}";
+        const senderData = "{{sender}}";
+        const msgData = "{{message}}";
+
+        if (!nameData || nameData.includes('{{')) document.getElementById('names-header').style.display = 'none';
+        if (!msgData || msgData.includes('{{')) document.getElementById('message-container').style.display = 'none';
 
         // -- Audio Logic --
         window.startApp = function() {
