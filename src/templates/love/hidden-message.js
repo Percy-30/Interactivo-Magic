@@ -29,7 +29,8 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
             background-size: cover;
             background-position: center;
             background-image: url('{{image_src}}');
-            filter: brightness(0.6);
+            filter: brightness(0.7);
+            opacity: 1;
         }
 
         /* Interactive Canvas */
@@ -44,7 +45,7 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
         #intro-overlay {
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, #1a0b2e, #0a0514);
+            background: #000;
             z-index: 1000;
             display: flex;
             flex-direction: column;
@@ -75,46 +76,54 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
             50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 77, 148, 0.8); }
         }
 
-        /* Neon Message */
+        /* Neon Message Circle Frame */
         .neon-content {
             position: absolute;
             z-index: 3;
             text-align: center;
-            width: 90%;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 50px rgba(255, 77, 148, 0.6), inset 0 0 30px rgba(255, 77, 148, 0.4);
+            padding: 20px;
+            transition: opacity 1s ease;
         }
-        .neon-content.visible { opacity: 1; }
 
         .neon-text {
-            font-family: 'Dancing Script', cursive;
-            font-size: clamp(3rem, 10vw, 5rem);
-            color: #ff4d94;
-            text-shadow: 0 0 10px #ff4d94, 0 0 20px #ff4d94, 0 0 40px #ff00de;
-            margin-bottom: 20px;
-            transform: rotate(-5deg);
+            font-size: 2.6rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px #ff4d94, 0 0 30px #ff4d94;
         }
 
         .special-message {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 20px;
-            color: #fff;
+            color: #ff4d94;
             font-size: 1.1rem;
-            max-width: 80%;
-            margin: 0 auto;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            max-width: 90%;
+            margin-bottom: 15px;
         }
 
         .sender-info {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 2px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 3px;
             text-transform: uppercase;
+            font-weight: 700;
         }
 
         /* Spotify HUD */
@@ -171,12 +180,12 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
         <button class="btn-open" onclick="startExperience()">Abre la sorpresa 🤭</button>
     </div>
 
-    <div class="reveal-background"></div>
+    <div class="reveal-background" id="reveal-bg"></div>
     
     <div class="neon-content" id="neon-content">
         <div class="neon-text">{{extra_text}}</div>
         <div class="special-message">{{message}}</div>
-        <div class="sender-info">Con amor: {{sender}}</div>
+        <div class="sender-info">CON AMOR: {{sender}}</div>
     </div>
 
     <canvas id="interactive-canvas"></canvas>
@@ -217,13 +226,16 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
                 this.y = Math.random() * height;
                 this.destX = this.x;
                 this.destY = this.y;
-                this.size = Math.random() * 8 + 5;
+                // Maximum size for zero-gap coverage
+                this.size = Math.random() * 8 + 4;
                 this.vx = 0;
                 this.vy = 0;
                 this.acc = 0.05;
                 this.friction = 0.95;
-                this.color = Math.random() > 0.5 ? '#ff4d94' : '#ffffff';
-                this.opacity = Math.random() * 0.5 + 0.3;
+                // Solid vivid colors
+                const colors = ['#ffffff', '#ff4d94', '#ffacce', '#ff0066', '#ff80bf'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = 1.0; // Total opacity to block everything
             }
 
             update() {
@@ -234,8 +246,8 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
                 if (dist < mouse.radius) {
                     let force = (mouse.radius - dist) / mouse.radius;
                     let angle = Math.atan2(dy, dx);
-                    this.vx -= Math.cos(angle) * force * 10;
-                    this.vy -= Math.sin(angle) * force * 10;
+                    this.vx -= Math.cos(angle) * force * 15;
+                    this.vy -= Math.sin(angle) * force * 15;
                 }
 
                 // Drag back to original pos
@@ -249,7 +261,7 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
             }
 
             draw() {
-                ctx.globalAlpha = this.opacity;
+                ctx.globalAlpha = 1.0;
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -266,7 +278,8 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
 
         function initParticles() {
             particles.length = 0;
-            const density = isMobile ? 80 : 180;
+            // Doubled density again as requested: 20k for desktop, 7k for mobile
+            const density = isMobile ? 7000 : 20000;
             for (let i = 0; i < density; i++) {
                 particles.push(new Heart());
             }
@@ -345,7 +358,7 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
         window.startExperience = function() {
             document.getElementById('intro-overlay').classList.add('hidden');
             document.getElementById('music-hud').classList.add('visible');
-            document.getElementById('neon-content').classList.add('visible');
+            document.getElementById('neon-content').style.opacity = 1;
             
             if ('{{has_audio}}' === 'true') {
                 toggleAudio();
@@ -355,6 +368,7 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
         };
 
         const handleInput = (e) => {
+            if(!isStarted) return;
             const pos = e.touches ? e.touches[0] : e;
             mouse.x = pos.clientX;
             mouse.y = pos.clientY;

@@ -412,6 +412,10 @@ const TEMPLATES = [
     color: '#3f51b5',
     content: HIDDEN_MESSAGE_TEMPLATE,
     hasSender: true,
+    hasMessage: true,
+    hasImage: true,
+    hasAudio: true,
+    hasExtra: true,
     extraLabel: 'Mensaje Neon (ej: Te Amo Mi Vida)'
   }
 ];
