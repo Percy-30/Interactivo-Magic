@@ -208,7 +208,7 @@ export const LOVE_CUBE_TEMPLATE = `<!DOCTYPE html>
     <div class="particles" id="particles"></div>
 
     <div class="header">
-        <h1>Te amo mi amor</h1>
+        <h1>{{extra_text}}</h1>
     </div>
 
     <div class="scene">

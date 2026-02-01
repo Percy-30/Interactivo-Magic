@@ -390,14 +390,15 @@ const TEMPLATES = [
     id: 'love-cube',
     category: 'amor',
     name: 'Cubo del Amor 💖',
-    description: 'Cubo 3D giratorio con tus fotos y música.',
+    description: 'Envia este bonito cubo del amor, con las fotos de tu pareja y tu canción favorita (6 fotos).',
     icon: <Disc />,
     color: '#ff4d94',
     content: LOVE_CUBE_TEMPLATE,
     hasImage: false,
     hasItems: true,
     itemsCount: 6,
-    hasExtra: false
+    hasExtra: true,
+    extraLabel: 'Dedicatoria (ej: Te amo mi amor)'
   },
   {
     id: 'hidden-msg',
@@ -1837,7 +1838,7 @@ function App() {
                   {selectedTemplate.hasItems && !selectedTemplate.hasDualImage && (
                     <div className="dynamic-content-container">
                       {/* Batch Mosaic Mode (heart-photo, our-year) */}
-                      {(selectedTemplate.id === 'heart-photo' || selectedTemplate.id === 'our-year' || selectedTemplate.id === 'christmas') ? (
+                      {(selectedTemplate.id === 'heart-photo' || selectedTemplate.id === 'our-year' || selectedTemplate.id === 'christmas' || selectedTemplate.id === 'love-cube') ? (
                         <div style={{
                           padding: '1.5rem',
                           background: 'rgba(255, 255, 255, 0.04)',
@@ -1853,12 +1854,14 @@ function App() {
                               <h3 style={{ margin: 0, fontSize: '1.1rem' }}>
                                 {selectedTemplate.id === 'our-year' ? 'Resumen Anual (12 Meses)' :
                                   selectedTemplate.id === 'christmas' ? 'Árbol Mágico (16 Fotos)' :
-                                    'Mosaico de Fotos (Min. 5)'}
+                                    selectedTemplate.id === 'love-cube' ? 'Cubo 3D (6 Fotos)' :
+                                      'Mosaico de Fotos (Min. 5)'}
                               </h3>
                               <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                                 {selectedTemplate.id === 'our-year' ? 'Selecciona una foto para cada mes del año' :
                                   selectedTemplate.id === 'christmas' ? 'Selecciona 16 fotos para formar tu árbol' :
-                                    'Sube tus fotos favoritas (Mínimo 5 para mejores resultados)'}
+                                    selectedTemplate.id === 'love-cube' ? 'Selecciona 6 fotos para las caras del cubo' :
+                                      'Sube tus fotos favoritas (Mínimo 5 para mejores resultados)'}
                               </p>
                             </div>
                           </div>
@@ -1934,7 +1937,9 @@ function App() {
                                 ? 'Selecciona 12 fotos (una para cada mes). Se repetirán si subes menos.'
                                 : selectedTemplate.id === 'christmas'
                                   ? 'Selecciona 16 fotos para tu árbol (incluye tallo). Se repetirán si subes menos.'
-                                  : 'Selecciona de 5 a 25 fotos de tu galería. Se repetirán automáticamente para llenar el corazón.'
+                                  : selectedTemplate.id === 'love-cube'
+                                    ? 'Selecciona 6 fotos para cubrir todas las caras del cubo.'
+                                    : 'Selecciona de 5 a 25 fotos de tu galería. Se repetirán automáticamente para llenar el corazón.'
                               }
                             </p>
                           </div>
