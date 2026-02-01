@@ -34,6 +34,7 @@ import { OUR_YEAR_COLLAGE_TEMPLATE } from './love/our-year-collage';
 import { LOVE_CUBE_TEMPLATE } from './love/love-cube';
 import { CHRISTMAS_TREE_PHOTOS_TEMPLATE } from './seasonal/christmas-tree-photos';
 import { NEW_YEAR_CELEBRATION_TEMPLATE } from './seasonal/new-year-celebration';
+import { HIDDEN_MESSAGE_TEMPLATE } from './love/hidden-message';
 
 // --- EXPORTS ---
 export {
@@ -64,7 +65,8 @@ export {
     FRIENDS_REQUEST_TEMPLATE,
     CHRISTMAS_TREE_PHOTOS_TEMPLATE,
     NEW_YEAR_CELEBRATION_TEMPLATE,
-    LOVE_CUBE_TEMPLATE
+    LOVE_CUBE_TEMPLATE,
+    HIDDEN_MESSAGE_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
@@ -85,4 +87,3 @@ export const OUR_YEAR_TEMPLATE = OUR_YEAR_COLLAGE_TEMPLATE;
 export const CHRISTMAS_TREE_TEMPLATE = CHRISTMAS_TREE_PHOTOS_TEMPLATE; // Now using dedicated template
 export const NEW_YEAR_TEMPLATE = NEW_YEAR_CELEBRATION_TEMPLATE;
 export const LAST_CHANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🔓'); // Keeping legacy just in case or delete if unused
-export const HIDDEN_MESSAGE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🕵️‍♀️');

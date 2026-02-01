@@ -407,13 +407,12 @@ const TEMPLATES = [
     id: 'hidden-msg',
     category: 'amor',
     name: 'Mensaje Oculto 🤭',
-    description: 'Oculto entre las estrellas.',
-    icon: <Eye />,
+    description: 'Pasa el dedo para revelar la foto y tu mensaje neon oculto.',
+    icon: <Lock />,
     color: '#3f51b5',
     content: HIDDEN_MESSAGE_TEMPLATE,
-    hasImage: false,
-    hasExtra: true,
-    extraLabel: 'Pista del mensaje'
+    hasSender: true,
+    extraLabel: 'Mensaje Neon (ej: Te Amo Mi Vida)'
   }
 ];
 
