@@ -32,6 +32,7 @@ import { TE_AMO_PREMIUM_TEMPLATE } from './love/te-amo-premium';
 import { PHOTO_HEART_COLLAGE_TEMPLATE } from './love/photo-heart-collage';
 import { OUR_YEAR_COLLAGE_TEMPLATE } from './love/our-year-collage';
 import { CHRISTMAS_TREE_PHOTOS_TEMPLATE } from './seasonal/christmas-tree-photos';
+import { NEW_YEAR_CELEBRATION_TEMPLATE } from './seasonal/new-year-celebration';
 
 // --- EXPORTS ---
 export {
@@ -60,7 +61,8 @@ export {
     PHOTO_HEART_COLLAGE_TEMPLATE,
     OUR_YEAR_COLLAGE_TEMPLATE,
     FRIENDS_REQUEST_TEMPLATE,
-    CHRISTMAS_TREE_PHOTOS_TEMPLATE
+    CHRISTMAS_TREE_PHOTOS_TEMPLATE,
+    NEW_YEAR_CELEBRATION_TEMPLATE
 };
 
 // --- ALIASES AND SPECIALIZATIONS ---
@@ -79,6 +81,6 @@ export const BE_FRIENDS_TEMPLATE = FRIENDS_REQUEST_TEMPLATE;
 export const HEART_PHOTO_TEMPLATE = PHOTO_HEART_COLLAGE_TEMPLATE;
 export const OUR_YEAR_TEMPLATE = OUR_YEAR_COLLAGE_TEMPLATE;
 export const CHRISTMAS_TREE_TEMPLATE = CHRISTMAS_TREE_PHOTOS_TEMPLATE; // Now using dedicated template
-export const NEW_YEAR_TEMPLATE = BIRTHDAY_TEMPLATE.replace('🎂', '🥂');
+export const NEW_YEAR_TEMPLATE = NEW_YEAR_CELEBRATION_TEMPLATE;
 export const LAST_CHANCE_TEMPLATE = LOVE_TEMPLATE.replace('🎁', '🔓');
 export const HIDDEN_MESSAGE_TEMPLATE = GALAXY_TEMPLATE.replace('🎁', '🕵️‍♀️');

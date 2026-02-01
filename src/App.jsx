@@ -378,7 +378,7 @@ const TEMPLATES = [
     id: 'new-year',
     category: 'eventos',
     name: 'Feliz Año 💥',
-    description: 'Festeja el inicio de este 2026.',
+    description: 'Festeja el inicio de un nuevo año.',
     icon: <PartyPopper />,
     color: '#fdd835',
     content: NEW_YEAR_TEMPLATE,
