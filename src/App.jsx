@@ -4,7 +4,7 @@ import {
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
   Filter, Gamepad, BookOpen, UserPlus, Image, Music2, Camera, Clock,
   Stamp, Shirt, Ghost, Pill, Layers, RefreshCcw, Smile, PartyPopper,
-  TreePine, Flame, Eye, Lock, Minus, ChevronUp, ChevronDown
+  TreePine, Flame, Eye, Lock, Minus, ChevronUp, ChevronDown, Disc
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
@@ -20,7 +20,7 @@ import {
   BIRTHDAY_LAMP_TEMPLATE, DEDICATE_SONG_TEMPLATE,
   BE_MY_BOYFRIEND_TEMPLATE, TE_AMO_TEMPLATE, BE_FRIENDS_TEMPLATE,
   HEART_PHOTO_TEMPLATE, OUR_YEAR_TEMPLATE, CHRISTMAS_TREE_TEMPLATE,
-  NEW_YEAR_TEMPLATE, LAST_CHANCE_TEMPLATE, HIDDEN_MESSAGE_TEMPLATE
+  NEW_YEAR_TEMPLATE, LOVE_CUBE_TEMPLATE, HIDDEN_MESSAGE_TEMPLATE
 } from './templates';
 import { isNativePlatform, shareContent, shareHTMLFile } from './utils/platformUtils';
 import { getBaseUrl } from './config/appConfig';
@@ -387,16 +387,17 @@ const TEMPLATES = [
     extraLabel: 'Propósito de año nuevo'
   },
   {
-    id: 'last-chance',
+    id: 'love-cube',
     category: 'amor',
-    name: 'Última Oportunidad 😊',
-    description: 'No podrá resistirse al final.',
-    icon: <Lock />,
-    color: '#5d4037',
-    content: LAST_CHANCE_TEMPLATE,
+    name: 'Cubo del Amor 💖',
+    description: 'Cubo 3D giratorio con tus fotos y música.',
+    icon: <Disc />,
+    color: '#ff4d94',
+    content: LOVE_CUBE_TEMPLATE,
     hasImage: false,
-    hasExtra: true,
-    extraLabel: 'Grito desesperado (broma)'
+    hasItems: true,
+    itemsCount: 6,
+    hasExtra: false
   },
   {
     id: 'hidden-msg',
