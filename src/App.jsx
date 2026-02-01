@@ -365,13 +365,13 @@ const TEMPLATES = [
     id: 'christmas',
     category: 'eventos',
     name: 'Arbol Navidad 🎁',
-    description: 'Árbol navideño con tus mejores fotos (14 fotos).',
+    description: 'Árbol navideño con tus mejores fotos (16 fotos).',
     icon: <TreePine />,
     color: '#2e7d32',
     content: CHRISTMAS_TREE_TEMPLATE,
     hasImage: false,
     hasItems: true,
-    itemsCount: 14,
+    itemsCount: 16,
     hasExtra: false
   },
   {
@@ -1851,12 +1851,12 @@ function App() {
                             <div>
                               <h3 style={{ margin: 0, fontSize: '1.1rem' }}>
                                 {selectedTemplate.id === 'our-year' ? 'Resumen Anual (12 Meses)' :
-                                  selectedTemplate.id === 'christmas' ? 'Árbol Mágico (14 Fotos)' :
+                                  selectedTemplate.id === 'christmas' ? 'Árbol Mágico (16 Fotos)' :
                                     'Mosaico de Fotos (Min. 5)'}
                               </h3>
                               <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                                 {selectedTemplate.id === 'our-year' ? 'Selecciona una foto para cada mes del año' :
-                                  selectedTemplate.id === 'christmas' ? 'Selecciona 14 fotos para formar tu árbol' :
+                                  selectedTemplate.id === 'christmas' ? 'Selecciona 16 fotos para formar tu árbol' :
                                     'Sube tus fotos favoritas (Mínimo 5 para mejores resultados)'}
                               </p>
                             </div>
@@ -1932,7 +1932,7 @@ function App() {
                               {selectedTemplate.id === 'our-year'
                                 ? 'Selecciona 12 fotos (una para cada mes). Se repetirán si subes menos.'
                                 : selectedTemplate.id === 'christmas'
-                                  ? 'Selecciona 14 fotos para tu árbol. Se repetirán si subes menos.'
+                                  ? 'Selecciona 16 fotos para tu árbol (incluye tallo). Se repetirán si subes menos.'
                                   : 'Selecciona de 5 a 25 fotos de tu galería. Se repetirán automáticamente para llenar el corazón.'
                               }
                             </p>

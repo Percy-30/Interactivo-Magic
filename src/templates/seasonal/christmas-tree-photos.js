@@ -259,18 +259,20 @@ export const CHRISTMAS_TREE_PHOTOS_TEMPLATE = `<!DOCTYPE html>
             'use strict';
             
             // === PHOTO CONFIGURATION ===
-            const PHOTOS_IN_TREE = 14; // Christmas tree shape
+            const PHOTOS_IN_TREE = 16; // Christmas tree shape + trunk
             const treeData = [
                 // Row 1 - Top (star position, 1 photo)
-                { t: 20, l: 155, w: 70, h: 70 },
+                { t: 0, l: 155, w: 70, h: 70 },
                 // Row 2 - (2 photos)
-                { t: 100, l: 90, w: 75, h: 75 },  { t: 100, l: 215, w: 75, h: 75 },
+                { t: 80, l: 90, w: 75, h: 75 },  { t: 80, l: 215, w: 75, h: 75 },
                 // Row 3 - (3 photos)
-                { t: 190, l: 45, w: 80, h: 80 },  { t: 190, l: 150, w: 80, h: 80 },  { t: 190, l: 255, w: 80, h: 80 },
+                { t: 170, l: 45, w: 80, h: 80 },  { t: 170, l: 150, w: 80, h: 80 },  { t: 170, l: 255, w: 80, h: 80 },
                 // Row 4 - (4 photos)
-                { t: 290, l: 10, w: 75, h: 75 },  { t: 290, l: 100, w: 75, h: 75 },  { t: 290, l: 190, w: 75, h: 75 },  { t: 290, l: 280, w: 75, h: 75 },
+                { t: 270, l: 10, w: 75, h: 75 },  { t: 270, l: 100, w: 75, h: 75 },  { t: 270, l: 190, w: 75, h: 75 },  { t: 270, l: 280, w: 75, h: 75 },
                 // Row 5 - Bottom (4 photos)
-                { t: 390, l: 10, w: 80, h: 80 },  { t: 390, l: 105, w: 80, h: 80 },  { t: 390, l: 200, w: 80, h: 80 },  { t: 390, l: 295, w: 80, h: 80 }
+                { t: 370, l: 10, w: 80, h: 80 },  { t: 370, l: 105, w: 80, h: 80 },  { t: 370, l: 200, w: 80, h: 80 },  { t: 370, l: 295, w: 80, h: 80 },
+                // Row 6 - Trunk (2 photos)
+                { t: 465, l: 110, w: 75, h: 75 }, { t: 465, l: 195, w: 75, h: 75 }
             ];
 
             function idxToUrl(idx) {
