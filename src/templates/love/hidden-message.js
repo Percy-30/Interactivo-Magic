@@ -81,8 +81,10 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
             position: absolute;
             z-index: 3;
             text-align: center;
-            width: 320px;
-            height: 320px;
+            width: 85vw;
+            height: 85vw;
+            max-width: 350px;
+            max-height: 350px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -99,7 +101,7 @@ export const HIDDEN_MESSAGE_TEMPLATE = `<!DOCTYPE html>
         }
 
         .neon-text {
-            font-size: 2.6rem;
+            font-size: clamp(1.8rem, 8vw, 2.6rem);
             font-weight: 900;
             color: #fff;
             text-transform: uppercase;
