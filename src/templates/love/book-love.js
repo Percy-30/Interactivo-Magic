@@ -8,8 +8,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;700;900&display=swap');
         body { margin: 0; background: #0a0514; color: #333; font-family: 'Outfit', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; perspective: 2000px; }
         
-        .book { width: 350px; height: 480px; position: relative; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
+        .book { width: 350px; height: 480px; position: relative; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; margin-left: 0; }
         .book.open { transform: translateX(25%); }
+        
+        @media (max-width: 600px) {
+            .book.open { transform: translateX(0); scale: 0.85; }
+        }
         
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); }
         .page1 { z-index: 5; }
@@ -38,11 +42,23 @@
         #intro-overlay.hidden { opacity: 0; pointer-events: none; }
         .box-container { text-align: center; cursor: pointer; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        /* Navigation UI */
+        .nav-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; z-index: 1500; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn { background: #ff4d94; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: 'Outfit', sans-serif; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(255, 77, 148, 0.3); }
+        .nav-btn:active { transform: scale(0.95); }
+        .page-counter { color: white; font-weight: 600; font-size: 0.85rem; min-width: 80px; text-align: center; letter-spacing: 1px; }
+
         @media (max-width: 600px) {
-            .book { width: 300px; height: 420px; }
-            .cover h1 { font-size: 2.22rem; }
-            .inner-page p { font-size: 1.1rem; }
-            .photo-frame { width: 140px; height: 180px; }
+            body { perspective: 1500px; padding: 10px; }
+            .book { width: 280px; height: 380px; }
+            .book.open { transform: translateX(0) scale(1); } /* Centered on mobile */
+            .cover h1 { font-size: 1.8rem; }
+            .inner-page p { font-size: 1rem; padding: 1rem; }
+            .photo-frame { width: 140px; height: 180px; margin-bottom: 0.8rem; }
+            .front, .back { padding: 1rem; }
+            .cover .emoji { font-size: 4rem; margin-bottom: 0.5rem; }
+            .nav-container { bottom: 110px; width: 90%; justify-content: space-between; padding: 8px 15px; }
+            .nav-btn { padding: 6px 12px; font-size: 0.8rem; }
         }
 
         /* Unified Audio and Overlay Styles */
@@ -78,7 +94,7 @@
         </div>
     </div>
 
-    <div class="book" id="book" onclick="flipPage()">
+    <div class="book" id="book">
         <!-- Page 1: Cover -->
         <div class="page page1" id="page1">
             <div class="front cover">
@@ -106,6 +122,12 @@
 
         {{dynamic_pages}}
     </div>
+
+    <!-- Navigation UI -->
+    <div class="nav-container" id="nav-ui">
+        <button class="nav-btn" id="prev-btn" onclick="prevPage()" style="opacity: 0.5; pointer-events: none;">← Anterior</button>
+        <div class="page-counter" id="page-counter">Cubierta</div>
+        <button class="nav-btn" id="next-btn" onclick="nextPage()">Siguiente →</button>
     </div>
 
     <div class="audio-controls" id="audio-ui" style="display: none;">
@@ -127,6 +149,12 @@
 
     <script>
         let stage = 0;
+        const pages = Array.from(document.querySelectorAll('.page'));
+        const book = document.getElementById('book');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const counter = document.getElementById('page-counter');
+        
         const audio = document.getElementById('bg-audio');
         const youtubeId = "{{youtube_id}}";
         let ytPlayer = null;
@@ -183,48 +211,80 @@
         if (activePlatform === 'native') {
             audio.ontimeupdate = () => {
                 const progress = (audio.currentTime / audio.duration) * 100;
-                document.getElementById('progress-bar').style.width = progress + '%';
+                const pBar = document.getElementById('progress-bar');
+                if (pBar) pBar.style.width = progress + '%';
                 const mins = Math.floor(audio.currentTime / 60);
                 const secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('time-display').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+                const tDisp = document.getElementById('time-display');
+                if (tDisp) tDisp.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
             };
         }
 
-        function flipPage() {
-            const pages = Array.from(document.querySelectorAll('.page'));
-            const book = document.getElementById('book');
-            if (stage < pages.length) {
-                pages[stage].classList.add('flipped');
-                pages.forEach((p, i) => { p.style.zIndex = i < stage ? i + 1 : (i === stage ? 50 : pages.length - i); });
-                if (stage === 0) {
-                    book.classList.add('open');
-                    createHearts();
-                }
-                stage++;
+        function updateNav() {
+            if (stage === 0) {
+                prevBtn.style.opacity = '0.5';
+                prevBtn.style.pointerEvents = 'none';
+                counter.textContent = 'Cubierta';
             } else {
-                pages.forEach((p, i) => { p.classList.remove('flipped'); p.style.zIndex = pages.length - i; });
-                book.classList.remove('open');
-                stage = 0;
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+                counter.textContent = \`Página \${stage} / \${pages.length - 1}\`;
+            }
+
+            if (stage >= pages.length) {
+                nextBtn.textContent = 'Reiniciar ↺';
+            } else {
+                nextBtn.textContent = 'Siguiente →';
             }
         }
 
-        function createHearts() {
-            for(let i=0; i<20; i++) {
-                setTimeout(() => {
-                    const h = document.createElement('div');
-                    h.className = 'floating-heart';
-                    const emojis = ['❤️', '💖', '✨', '💐'];
-                    h.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
-                    h.style.left = (Math.random() * 100) + 'vw';
-                    h.style.top = '110vh';
-                    document.body.appendChild(h);
-                    h.animate([
-                        { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 },
-                        { transform: 'translateY(-120vh) scale(2.5) rotate(360deg)', opacity: 0 }
-                    ], { duration: 4000 + Math.random() * 3000, easing: 'ease-out' }).onfinish = () => h.remove();
-                }, i * 150);
-            }
+function nextPage() {
+    if (stage < pages.length) {
+        pages[stage].classList.add('flipped');
+        pages.forEach((p, i) => {
+            p.style.zIndex = i < stage ? i + 1 : (i === stage ? 50 : pages.length - i);
+        });
+        if (stage === 0) {
+            book.classList.add('open');
+            createHearts();
         }
-    </script>
-</body>
-</html>`;
+        stage++;
+    } else {
+        pages.forEach((p, i) => { p.classList.remove('flipped'); p.style.zIndex = pages.length - i; });
+        book.classList.remove('open');
+        stage = 0;
+    }
+    updateNav();
+}
+
+function prevPage() {
+    if (stage > 0) {
+        stage--;
+        pages[stage].classList.remove('flipped');
+        if (stage === 0) {
+            book.classList.remove('open');
+        }
+        updateNav();
+    }
+}
+
+function createHearts() {
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+            const h = document.createElement('div');
+            h.className = 'floating-heart';
+            const emojis = ['❤️', '💖', '✨', '💐'];
+            h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            h.style.left = (Math.random() * 100) + 'vw';
+            h.style.top = '110vh';
+            document.body.appendChild(h);
+            h.animate([
+                { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 },
+                { transform: 'translateY(-120vh) scale(2.5) rotate(360deg)', opacity: 0 }
+            ], { duration: 4000 + Math.random() * 3000, easing: 'ease-out' }).onfinish = () => h.remove();
+        }, i * 150);
+    }
+}
+    </script >
+</body >
+</html > `;

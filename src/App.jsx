@@ -47,6 +47,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: GALAXY_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasExtra: false
   },
   {
@@ -58,6 +59,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: BOOK_LOVE_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasItems: true,
     pageOffset: 3
   },
@@ -70,6 +72,7 @@ const TEMPLATES = [
     color: '#ed1d24',
     content: MARVEL_BOOK_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasItems: true,
     pageOffset: 3
   },
@@ -82,6 +85,7 @@ const TEMPLATES = [
     color: '#7000ff',
     content: GALAXY_GENERATOR_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Palabras flotantes (separadas por comas)',
     hideRecipientName: false
@@ -95,6 +99,7 @@ const TEMPLATES = [
     color: '#00f2ff',
     content: MUSICAL_SPHERE_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: '✨ Frase en la esfera (si no subes foto)'
   },
@@ -107,6 +112,7 @@ const TEMPLATES = [
     color: '#ff00ff',
     content: PROPOSAL_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Frase bajo la propuesta'
   },
@@ -119,6 +125,7 @@ const TEMPLATES = [
     color: '#ffa500',
     content: FORGIVE_ME_CATS_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Frase final'
   },
@@ -131,6 +138,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: PUZZLE_LOVE_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje al ganar'
   },
@@ -143,6 +151,7 @@ const TEMPLATES = [
     color: '#ff007f',
     content: RULETA_LOVE_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Título de Victoria'
   },
@@ -155,6 +164,7 @@ const TEMPLATES = [
     color: '#0080ff',
     content: FORGIVE_ME_PENGUINS_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasDualImage: true,
     hasExtra: true,
     extraLabel: 'Título de perdón'
@@ -168,6 +178,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: BE_FRIENDS_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje de éxito'
   },
@@ -180,6 +191,7 @@ const TEMPLATES = [
     color: '#ff80bf',
     content: FLOWERS_RAMO_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Nota del ramo'
   },
@@ -192,6 +204,7 @@ const TEMPLATES = [
     color: '#ff4000',
     content: ENOJONA_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Nota final (PD)'
   },
@@ -204,6 +217,7 @@ const TEMPLATES = [
     color: '#00ffcc',
     content: DATE_COUNTER_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasDate: true,
     hideRecipientName: false,
     hideMessage: true,
@@ -219,6 +233,7 @@ const TEMPLATES = [
     color: '#ffd700',
     content: LOVE_CERTIFICATE_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Cargo especial'
   },
@@ -231,6 +246,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: COUPLE_INITIALS_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     hasExtra2: true,
     extraLabel: 'Inicial Ella',
@@ -245,6 +261,7 @@ const TEMPLATES = [
     color: '#ff8000',
     content: ENCHANTED_LETTER_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Post Data (PD)'
   },
@@ -257,6 +274,7 @@ const TEMPLATES = [
     color: '#ff0000',
     content: LOVE_VITAMINS_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasVitamins: true,
     hasExtra: true,
     extraLabel: 'Mensaje final'
@@ -270,6 +288,7 @@ const TEMPLATES = [
     color: '#c0c0c0',
     content: SCRATCH_MESSAGE_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Premio oculto'
   },
@@ -282,8 +301,12 @@ const TEMPLATES = [
     color: '#FFD700',
     content: SOCCER_CARD_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasSoccerStats: true,
-    hasExtra: false
+    hasExtra: false,
+    hideRecipientName: true,
+    hideSender: true,
+    hideMessage: true
   },
   {
     id: 'birthday',
@@ -294,6 +317,7 @@ const TEMPLATES = [
     color: '#ffeb3b',
     content: BIRTHDAY_LAMP_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje en tarjeta'
   },
@@ -306,6 +330,7 @@ const TEMPLATES = [
     color: '#ff4d94',
     content: DEDICATE_SONG_TEMPLATE,
     hasImage: true,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Dedicado a...'
   },
@@ -318,6 +343,7 @@ const TEMPLATES = [
     color: '#e91e63',
     content: BE_MY_BOYFRIEND_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje persuasivo'
   },
@@ -330,6 +356,7 @@ const TEMPLATES = [
     color: '#f44336',
     content: TE_AMO_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Subtítulo'
   },
@@ -342,6 +369,7 @@ const TEMPLATES = [
     color: '#ff4081',
     content: HEART_PHOTO_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasItems: true,
     itemsCount: 25,
     hasExtra: true,
@@ -356,6 +384,7 @@ const TEMPLATES = [
     color: '#ff9a3d',
     content: OUR_YEAR_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasItems: true,
     itemsCount: 12,
     hasExtra: true,
@@ -370,6 +399,7 @@ const TEMPLATES = [
     color: '#2e7d32',
     content: CHRISTMAS_TREE_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasItems: true,
     itemsCount: 16,
     hasExtra: false
@@ -383,6 +413,7 @@ const TEMPLATES = [
     color: '#fdd835',
     content: NEW_YEAR_TEMPLATE,
     hasImage: false,
+    hasAudio: true,
     hasExtra: true,
     extraLabel: 'Propósito de año nuevo'
   },
@@ -398,6 +429,7 @@ const TEMPLATES = [
     hasSender: true,
     hasMessage: true,
     hasImage: false,
+    hasAudio: true,
     hasItems: true,
     itemsCount: 6,
     hasExtra: true,
@@ -1308,8 +1340,15 @@ function App() {
                   transition={{ delay: idx * 0.15 }}
                   className="glass card template-card"
                   onClick={() => {
-                    // Simply select template (ads moved to Generate button for better UX)
+                    // Seleccionar plantilla y sincronizar flags de formData
                     setSelectedTemplate(tpl);
+                    setFormData(prev => ({
+                      ...prev,
+                      hasImage: tpl.hasImage || false,
+                      hasAudio: tpl.hasAudio || false,
+                      hasItems: tpl.hasItems || false
+                    }));
+
                     // Pre-load rewarded ad while user fills the form
                     if (isMobileApp) {
                       prepareRewardedAd();
@@ -1393,25 +1432,27 @@ function App() {
                       {errors.name && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.name}</p>}
                     </div>
                   )}
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Tu Nombre</label>
-                    <input
-                      name="sender"
-                      placeholder="Tu nombre"
-                      value={formData.sender}
-                      onFocus={() => isMobileApp && hideBannerAd()}
-                      onBlur={() => isMobileApp && showBannerAd()}
-                      onChange={(e) => {
-                        setFormData(prev => ({ ...prev, sender: e.target.value }));
-                        if (errors.sender) setErrors(prevErr => ({ ...prevErr, sender: null }));
-                      }}
-                      style={{
-                        borderColor: errors.sender ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
-                        boxShadow: errors.sender ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
-                      }}
-                    />
-                    {errors.sender && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.sender}</p>}
-                  </div>
+                  {!selectedTemplate.hideSender && (
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Tu Nombre</label>
+                      <input
+                        name="sender"
+                        placeholder="Tu nombre"
+                        value={formData.sender}
+                        onFocus={() => isMobileApp && hideBannerAd()}
+                        onBlur={() => isMobileApp && showBannerAd()}
+                        onChange={(e) => {
+                          setFormData(prev => ({ ...prev, sender: e.target.value }));
+                          if (errors.sender) setErrors(prevErr => ({ ...prevErr, sender: null }));
+                        }}
+                        style={{
+                          borderColor: errors.sender ? 'var(--primary)' : 'rgba(255,255,255,0.12)',
+                          boxShadow: errors.sender ? '0 0 15px rgba(255, 77, 148, 0.3)' : 'none'
+                        }}
+                      />
+                      {errors.sender && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>{errors.sender}</p>}
+                    </div>
+                  )}
                   {!selectedTemplate.hideMessage && (
                     <div>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Mensaje Especial</label>
@@ -1625,7 +1666,12 @@ function App() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                         >
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem', marginBottom: '1.2rem' }}>
+                          <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: window.innerWidth < 450 ? '1fr' : 'repeat(2, 1fr)',
+                            gap: '0.6rem',
+                            marginBottom: '1.2rem'
+                          }}>
                             {[
                               { id: 'url', label: 'Link Web', help: 'Pinterest/Google' },
                               { id: 'upload', label: 'Sube foto', help: 'Desde galería' }
@@ -1634,7 +1680,7 @@ function App() {
                                 key={opt.id}
                                 onClick={() => setFormData(prev => ({ ...prev, imageOption: opt.id }))}
                                 style={{
-                                  padding: '0.8rem',
+                                  padding: '0.6rem',
                                   borderRadius: '12px',
                                   border: formData.imageOption === opt.id ? '2px solid #00aaff' : '1px solid rgba(255,255,255,0.1)',
                                   background: formData.imageOption === opt.id ? 'rgba(0, 170, 255, 0.1)' : 'transparent',
@@ -1642,8 +1688,8 @@ function App() {
                                   transition: 'all 0.3s'
                                 }}
                               >
-                                <p style={{ fontWeight: '700', fontSize: '0.9rem', margin: '0 0 2px 0', color: formData.imageOption === opt.id ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
-                                <p style={{ fontSize: '0.65rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
+                                <p style={{ fontWeight: '700', fontSize: '0.85rem', margin: '0 0 1px 0', color: formData.imageOption === opt.id ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
+                                <p style={{ fontSize: '0.6rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
                               </button>
                             ))}
                           </div>
@@ -2134,74 +2180,116 @@ function App() {
                                           key={item.id}
                                           initial={{ opacity: 0, y: 10 }}
                                           animate={{ opacity: 1, y: 0 }}
-                                          className="dynamic-item-entry"
+                                          style={{
+                                            padding: '1.5rem',
+                                            background: 'rgba(255, 255, 255, 0.03)',
+                                            borderRadius: '20px',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            marginBottom: '1.5rem',
+                                            position: 'relative'
+                                          }}
                                         >
-                                          <div className="item-entry-header">
-                                            <span className="item-entry-label">Foto {idx + 1}</span>
+                                          <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            marginBottom: '1.2rem',
+                                            padding: '0.8rem 1rem',
+                                            background: 'rgba(77, 148, 255, 0.1)',
+                                            borderRadius: '15px'
+                                          }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                              <div style={{
+                                                width: '35px',
+                                                height: '35px',
+                                                borderRadius: '10px',
+                                                background: '#00aaff',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                              }}>
+                                                <Camera size={18} color="white" />
+                                              </div>
+                                              <span style={{ fontWeight: '800', fontSize: '1rem', color: 'white' }}>Foto {idx + 1}</span>
+                                            </div>
                                             <button
-                                              className="item-entry-remove"
                                               onClick={() => {
                                                 const newItems = [...formData.items];
                                                 newItems.splice(realIndex, 1);
                                                 setFormData({ ...formData, items: newItems });
                                               }}
+                                              style={{
+                                                background: 'rgba(255, 0, 0, 0.1)',
+                                                border: 'none',
+                                                color: '#ff4d4d',
+                                                padding: '4px 10px',
+                                                borderRadius: '8px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '700',
+                                                cursor: 'pointer'
+                                              }}
                                             >
-                                              <Minus size={14} /> Quitar
+                                              <Minus size={12} /> Quitar
                                             </button>
                                           </div>
 
-                                          <div className="item-photo-refinement">
-                                            <div className="mini-tabs-row">
+                                          <div style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: window.innerWidth < 450 ? '1fr' : 'repeat(2, 1fr)',
+                                            gap: '0.6rem',
+                                            marginBottom: '1rem'
+                                          }}>
+                                            {[
+                                              { id: 'url', label: 'Link Web', help: 'Pinterest/Google' },
+                                              { id: 'upload', label: 'Sube foto', help: 'Desde galería' }
+                                            ].map(opt => (
                                               <button
-                                                className={`mini-tab ${(!item.option || item.option === 'url') ? 'active' : ''}`}
+                                                key={opt.id}
                                                 onClick={() => {
                                                   const newItems = [...formData.items];
-                                                  newItems[realIndex].option = 'url';
+                                                  newItems[realIndex].option = opt.id;
                                                   setFormData({ ...formData, items: newItems });
                                                 }}
-                                              >
-                                                <div className="tab-label">Link Web</div>
-                                                <div className="tab-hint">Pinterest/Google</div>
-                                              </button>
-                                              <button
-                                                className={`mini-tab ${item.option === 'upload' ? 'active' : ''}`}
-                                                onClick={() => {
-                                                  const newItems = [...formData.items];
-                                                  newItems[realIndex].option = 'upload';
-                                                  setFormData({ ...formData, items: newItems });
+                                                style={{
+                                                  padding: '0.6rem',
+                                                  borderRadius: '12px',
+                                                  border: item.option === opt.id || (!item.option && opt.id === 'url') ? '2px solid #00aaff' : '1px solid rgba(255,255,255,0.1)',
+                                                  background: item.option === opt.id || (!item.option && opt.id === 'url') ? 'rgba(0, 170, 255, 0.1)' : 'transparent',
+                                                  cursor: 'pointer',
+                                                  transition: 'all 0.3s'
                                                 }}
                                               >
-                                                <div className="tab-label">Sube foto</div>
-                                                <div className="tab-hint">Desde galería</div>
+                                                <p style={{ fontWeight: '700', fontSize: '0.85rem', margin: '0 0 1px 0', color: item.option === opt.id || (!item.option && opt.id === 'url') ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
+                                                <p style={{ fontSize: '0.6rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
                                               </button>
-                                            </div>
+                                            ))}
+                                          </div>
 
-                                            <div className="item-hint-box">
-                                              <p>💡 <strong>Sube foto:</strong> Se comprime para compartir. <strong>Link Web:</strong> Usar para mejores resultados.</p>
-                                            </div>
-
-                                            {(!item.option || item.option === 'url') ? (
-                                              <div className="item-url-input-group">
-                                                <input
-                                                  className="item-text-input micro"
-                                                  style={{ marginTop: '0.5rem' }}
-                                                  placeholder="Pega link de la foto aquí..."
-                                                  value={item.content}
-                                                  onFocus={() => isMobileApp && hideBannerAd()}
-                                                  onBlur={() => isMobileApp && showBannerAd()}
-                                                  onChange={(e) => {
-                                                    const newItems = [...formData.items];
-                                                    newItems[realIndex].content = e.target.value;
-                                                    setFormData({ ...formData, items: newItems });
-                                                  }}
-                                                />
-                                              </div>
-                                            ) : (
-                                              <div className="item-upload-zone">
-                                                {item.content ? (
-                                                  <div className="item-preview-stack">
-                                                    <img src={item.content} alt="Preview" />
-                                                    <button className="item-image-replace" onClick={() => {
+                                          {(!item.option || item.option === 'url') ? (
+                                            <input
+                                              placeholder="Pega link de la foto aquí..."
+                                              value={item.content}
+                                              onFocus={() => isMobileApp && hideBannerAd()}
+                                              onBlur={() => isMobileApp && showBannerAd()}
+                                              onChange={(e) => {
+                                                const newItems = [...formData.items];
+                                                newItems[realIndex].content = e.target.value;
+                                                setFormData({ ...formData, items: newItems });
+                                              }}
+                                              style={{ fontSize: '0.85rem', padding: '0.8rem' }}
+                                            />
+                                          ) : (
+                                            <div style={{
+                                              padding: '1rem',
+                                              border: '1px dashed rgba(255,255,255,0.2)',
+                                              borderRadius: '12px',
+                                              textAlign: 'center'
+                                            }}>
+                                              {item.content ? (
+                                                <div style={{ position: 'relative', width: '80px', height: '80px', margin: '0 auto' }}>
+                                                  <img src={item.content} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                                                  <button
+                                                    onClick={() => {
                                                       const input = document.createElement('input');
                                                       input.type = 'file';
                                                       input.accept = 'image/*';
@@ -2217,10 +2305,13 @@ function App() {
                                                         }
                                                       };
                                                       input.click();
-                                                    }}>Cambiar Imagen</button>
-                                                  </div>
-                                                ) : (
-                                                  <button className="btn-upload-placeholder" onClick={() => {
+                                                    }}
+                                                    style={{ position: 'absolute', bottom: -5, right: -5, background: '#00aaff', border: 'none', borderRadius: '50%', width: '24px', height: '24px', color: 'white' }}
+                                                  >✎</button>
+                                                </div>
+                                              ) : (
+                                                <button
+                                                  onClick={() => {
                                                     const input = document.createElement('input');
                                                     input.type = 'file';
                                                     input.accept = 'image/*';
@@ -2236,14 +2327,15 @@ function App() {
                                                       }
                                                     };
                                                     input.click();
-                                                  }}>
-                                                    <Camera size={20} />
-                                                    <span>Seleccionar Foto</span>
-                                                  </button>
-                                                )}
-                                              </div>
-                                            )}
-                                          </div>
+                                                  }}
+                                                  className="btn glass"
+                                                  style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem', width: '100%', justifyContent: 'center' }}
+                                                >
+                                                  <Camera size={18} /> Seleccionar Foto
+                                                </button>
+                                              )}
+                                            </div>
+                                          )}
                                         </motion.div>
                                       );
                                     })}
