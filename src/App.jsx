@@ -1668,8 +1668,8 @@ function App() {
                         >
                           <div style={{
                             display: 'grid',
-                            gridTemplateColumns: window.innerWidth < 450 ? '1fr' : 'repeat(2, 1fr)',
-                            gap: '0.6rem',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                            gap: '0.8rem',
                             marginBottom: '1.2rem'
                           }}>
                             {[
@@ -1680,16 +1680,21 @@ function App() {
                                 key={opt.id}
                                 onClick={() => setFormData(prev => ({ ...prev, imageOption: opt.id }))}
                                 style={{
-                                  padding: '0.6rem',
+                                  padding: '1rem',
                                   borderRadius: '12px',
                                   border: formData.imageOption === opt.id ? '2px solid #00aaff' : '1px solid rgba(255,255,255,0.1)',
                                   background: formData.imageOption === opt.id ? 'rgba(0, 170, 255, 0.1)' : 'transparent',
                                   cursor: 'pointer',
-                                  transition: 'all 0.3s'
+                                  transition: 'all 0.3s',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  minHeight: '65px'
                                 }}
                               >
-                                <p style={{ fontWeight: '700', fontSize: '0.85rem', margin: '0 0 1px 0', color: formData.imageOption === opt.id ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
-                                <p style={{ fontSize: '0.6rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
+                                <p style={{ fontWeight: '700', fontSize: '1rem', margin: '0 0 2px 0', color: formData.imageOption === opt.id ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
+                                <p style={{ fontSize: '0.75rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
                               </button>
                             ))}
                           </div>
@@ -2235,8 +2240,8 @@ function App() {
 
                                           <div style={{
                                             display: 'grid',
-                                            gridTemplateColumns: window.innerWidth < 450 ? '1fr' : 'repeat(2, 1fr)',
-                                            gap: '0.6rem',
+                                            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                                            gap: '0.8rem',
                                             marginBottom: '1rem'
                                           }}>
                                             {[
@@ -2251,16 +2256,21 @@ function App() {
                                                   setFormData({ ...formData, items: newItems });
                                                 }}
                                                 style={{
-                                                  padding: '0.6rem',
+                                                  padding: '0.8rem',
                                                   borderRadius: '12px',
                                                   border: item.option === opt.id || (!item.option && opt.id === 'url') ? '2px solid #00aaff' : '1px solid rgba(255,255,255,0.1)',
                                                   background: item.option === opt.id || (!item.option && opt.id === 'url') ? 'rgba(0, 170, 255, 0.1)' : 'transparent',
                                                   cursor: 'pointer',
-                                                  transition: 'all 0.3s'
+                                                  transition: 'all 0.3s',
+                                                  display: 'flex',
+                                                  flexDirection: 'column',
+                                                  alignItems: 'center',
+                                                  justifyContent: 'center',
+                                                  minHeight: '60px'
                                                 }}
                                               >
-                                                <p style={{ fontWeight: '700', fontSize: '0.85rem', margin: '0 0 1px 0', color: item.option === opt.id || (!item.option && opt.id === 'url') ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
-                                                <p style={{ fontSize: '0.6rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
+                                                <p style={{ fontWeight: '700', fontSize: '0.9rem', margin: '0 0 2px 0', color: item.option === opt.id || (!item.option && opt.id === 'url') ? 'white' : 'var(--text-muted)' }}>{opt.label}</p>
+                                                <p style={{ fontSize: '0.7rem', margin: 0, color: 'var(--text-muted)' }}>{opt.help}</p>
                                               </button>
                                             ))}
                                           </div>
