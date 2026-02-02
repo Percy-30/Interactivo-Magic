@@ -15,11 +15,7 @@
             .book.open { transform: translateX(0); scale: 0.85; }
         }
         
-        .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); }
-        .page1 { z-index: 5; }
-        .page2 { z-index: 4; }
-        .page3 { z-index: 3; }
-        .page4 { z-index: 2; }
+        .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); z-index: 1; }
         
         .front, .back { width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem; box-sizing: border-box; border-radius: 0 15px 15px 0; }
         .back { transform: rotateY(180deg); }
@@ -83,6 +79,19 @@
             min-height: 100px;
         }
         .photo-frame img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #ddd; }
+        .decorative-back {
+            background: linear-gradient(135deg, #fff9e6 0%, #f0ead6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid rgba(0,0,0,0.05);
+        }
+        .logo-back {
+            font-size: 3rem;
+            opacity: 0.15;
+            filter: grayscale(1);
+            transform: rotate(-10deg);
+        }
     </style>
 </head>
 <body>
@@ -106,17 +115,38 @@
                 <div class="names">{{sender}} & {{name}}</div>
                 <div style="margin-top: 2.5rem; opacity: 0.6; font-size: 0.8rem; letter-spacing: 3px; font-weight: 900; color: white !important;">UN VIAJE DE SENTIMIENTOS</div>
             </div>
-            <div class="back inner-page">
-                <p>En este libro encontrarás pedacitos de mi alma, dedicados solo a ti. ❤️</p>
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">❤️</div>
             </div>
         </div>
 
+        <!-- Page 2: Intro -->
         <div class="page page2" id="page2">
+            <div class="front inner-page">
+                <p>En este libro encontrarás pedacitos de mi alma, dedicados solo a ti. ❤️</p>
+            </div>
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">❤️</div>
+            </div>
+        </div>
+
+        <!-- Page 3: Message 1 -->
+        <div class="page page3" id="page3">
             <div class="front inner-page">
                 <p>Cada momento a tu lado es un regalo que atesoro con todo mi ser.</p>
             </div>
-            <div class="back inner-page">
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">❤️</div>
+            </div>
+        </div>
+
+        <!-- Page 4: Message 2 -->
+        <div class="page page4" id="page4">
+            <div class="front inner-page">
                 <p>Eres mi pensamiento favorito al despertar y mi último deseo al dormir.</p>
+            </div>
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">❤️</div>
             </div>
         </div>
 
@@ -220,6 +250,11 @@
             };
         }
 
+        // Initialize z-indices
+        pages.forEach((p, i) => {
+            p.style.zIndex = pages.length - i;
+        });
+
         function updateNav() {
             if (stage === 0) {
                 prevBtn.style.opacity = '0.5';
@@ -228,14 +263,14 @@
             } else {
                 prevBtn.style.opacity = '1';
                 prevBtn.style.pointerEvents = 'auto';
-                counter.textContent = \`Página \${stage} / \${pages.length - 1}\`;
+                counter.textContent = \`Página \${stage} / \${pages.length}\`;
             }
 
-            if (stage >= pages.length) {
-                nextBtn.textContent = 'Reiniciar ↺';
-            } else {
-                nextBtn.textContent = 'Siguiente →';
-            }
+if (stage >= pages.length) {
+    nextBtn.textContent = 'Reiniciar ↺';
+} else {
+    nextBtn.textContent = 'Siguiente →';
+}
         }
 
 function nextPage() {

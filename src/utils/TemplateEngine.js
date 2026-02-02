@@ -181,7 +181,12 @@ const TemplateEngine = {
 
         const tid = data.t || data.templateId;
         const isBookWithStatic = (tid === 'marvel-book' || tid === 'book-love');
-        const itemsOffset = data.pageOffset ? parseInt(data.pageOffset) : (isBookWithStatic ? 3 : 2);
+        let itemsOffset = data.pageOffset ? parseInt(data.pageOffset) : (isBookWithStatic ? 3 : 2);
+
+        // Book Love now has 4 fixed faces separated into 4 physical pages
+        if (tid === 'book-love' && !data.pageOffset) {
+            itemsOffset = 5;
+        }
 
         if (data.items && Array.isArray(data.items)) {
             let dynamicHtml = '';
@@ -213,7 +218,9 @@ const TemplateEngine = {
                     dynamicHtml += `
                         <div class="page page${actualPageNum}" id="page${actualPageNum}">
                             <div class="front inner-page">${itemHtml}</div>
-                            <div class="back inner-page"></div>
+                            <div class="back inner-page decorative-back">
+                                <div class="logo-back">❤️</div>
+                            </div>
                         </div>
                     `;
                 }
