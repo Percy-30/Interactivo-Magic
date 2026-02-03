@@ -896,7 +896,8 @@ function App() {
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const max_size = formData.items.length > 15 ? 100 : (formData.items.length > 6 ? 120 : 150);
+          // Size based on image count: more photos = smaller size to fit payload
+          const max_size = formData.items.length > 20 ? 120 : (formData.items.length > 10 ? 180 : 250);
 
           if (width > height) {
             if (width > max_size) {
@@ -915,8 +916,8 @@ function App() {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Quality based on batch size
-          const quality = formData.items.length > 15 ? 0.2 : 0.3;
+          // Quality based on batch size - even more aggressive for many photos
+          const quality = formData.items.length > 20 ? 0.15 : (formData.items.length > 10 ? 0.25 : 0.4);
           resolve(canvas.toDataURL('image/jpeg', quality));
         };
       };
