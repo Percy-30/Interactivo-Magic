@@ -493,45 +493,7 @@ const STEPS = [
   }
 ];
 
-const AdSlot = ({ label = 'Publicidad', adSlot, adFormat = 'auto', adLayout, fullWidthResponsive = 'true', style = {} }) => {
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
-    }
-  }, []);
 
-  return (
-    <div className="ad-slot-wrapper" style={{ margin: '1rem auto', textAlign: 'center', ...style }}>
-      {label && <p style={{
-        color: 'var(--text-muted)',
-        fontSize: '0.65rem',
-        textTransform: 'uppercase',
-        letterSpacing: '2px',
-        marginBottom: '0.5rem',
-        opacity: 0.5
-      }}>{label}</p>}
-      <div className="glass" style={{
-        padding: '0.5rem',
-        background: 'rgba(255,255,255,0.02)',
-        minHeight: '100px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden'
-      }}>
-        <ins className="adsbygoogle"
-          style={{ display: 'block', width: '100%', minWidth: '160px' }}
-          data-ad-client={getAdSenseClientId()}
-          data-ad-slot={adSlot}
-          data-ad-format={adFormat}
-          data-ad-layout={adLayout}
-          data-full-width-responsive={fullWidthResponsive}></ins>
-      </div>
-    </div>
-  );
-};
 
 const LegalModal = ({ type, onClose }) => {
   const content = {
