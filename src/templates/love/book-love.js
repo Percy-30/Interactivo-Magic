@@ -178,9 +178,10 @@
     </div>
 
     <script>
-        // Detect if running in mobile app
-        const isMobileApp = window.Capacitor || navigator.userAgent.toLowerCase().includes('capacitor');
-        if (isMobileApp) {
+        // Detect if running on mobile device (phone/tablet) - show nav buttons on mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                      || window.innerWidth <= 768;
+        if (isMobile) {
             document.getElementById('nav-ui').style.display = 'flex';
         }
 
