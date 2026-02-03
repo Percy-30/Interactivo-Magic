@@ -153,8 +153,8 @@
         {{dynamic_pages}}
     </div>
 
-    <!-- Navigation UI -->
-    <div class="nav-container" id="nav-ui">
+    <!-- Navigation UI (Only visible in mobile app) -->
+    <div class="nav-container" id="nav-ui" style="display: none;">
         <button class="nav-btn" id="prev-btn" onclick="prevPage()" style="opacity: 0.5; pointer-events: none;">← Anterior</button>
         <div class="page-counter" id="page-counter">Cubierta</div>
         <button class="nav-btn" id="next-btn" onclick="nextPage()">Siguiente →</button>
@@ -178,6 +178,12 @@
     </div>
 
     <script>
+        // Detect if running in mobile app
+        const isMobileApp = window.Capacitor || navigator.userAgent.toLowerCase().includes('capacitor');
+        if (isMobileApp) {
+            document.getElementById('nav-ui').style.display = 'flex';
+        }
+
         let stage = 0;
         const pages = Array.from(document.querySelectorAll('.page'));
         const book = document.getElementById('book');
