@@ -1094,7 +1094,9 @@ function App() {
         if (response.ok) {
           const result = await response.json();
           if (result.id) {
-            const internalLink = `${window.location.origin}${window.location.pathname}?v=${result.id}`;
+            // Use the base URL helper to ensure we get the correct production domain
+            const base = getBaseUrl();
+            const internalLink = `${base}${window.location.pathname}?v=${result.id}`;
             setGeneratedUrl(internalLink);
             console.log("[App] SUCCESS: ID-based link generated:", internalLink);
           } else {
@@ -1103,7 +1105,7 @@ function App() {
         } else {
           console.warn("[App] Custom shortener failed, status:", response.status);
           const shortUrl = await shortenUrl(longUrl);
-          setGeneratedUrl(shortUrl);
+          setGeneratedUrl(shortUrl || longUrl);
         }
       } catch (shortenerErr) {
         console.error("[App] Shortener fetch error:", shortenerErr);
