@@ -236,7 +236,10 @@ const TemplateEngine = {
         }
 
         // Check if we should wrap with Gift Box
-        const needsGiftWrap = !finalHtml.includes('id="intro-overlay"') && !finalHtml.includes('id="wall"');
+        const needsGiftWrap = !finalHtml.includes('id="intro-overlay"') &&
+            !finalHtml.includes('id="wall"') &&
+            !finalHtml.includes('id="splash-wall"') &&
+            !finalHtml.includes('id="welcome-overlay"');
 
         if (needsGiftWrap) {
             const giftStyle = `
@@ -316,9 +319,14 @@ const TemplateEngine = {
             // 1. Handle specialized template triggers
             if (typeof startApp === 'function') startApp();
             if (typeof openBox === 'function') openBox();
+            if (typeof ignite === 'function') ignite();
             
             // 2. Comprehensive Audio Trigger (Native + YouTube)
+            const hasAudioSetting = ${(data.hasAudio || data.audio) ? 'true' : 'false'};
+            
             const tryPlay = () => {
+                if (!hasAudioSetting) return;
+
                 // Try YouTube Global Player (common in project)
                 if (window.ytPlayer && typeof window.ytPlayer.playVideo === 'function') {
                     window.ytPlayer.playVideo();
@@ -328,6 +336,7 @@ const TemplateEngine = {
                 const audios = [
                     document.getElementById('bg-audio'),
                     document.getElementById('player'),
+                    document.getElementById('core-player'),
                     document.querySelector('audio')
                 ].filter(Boolean);
                 
@@ -339,6 +348,7 @@ const TemplateEngine = {
             tryPlay();
             // Retry once after transition for late-loading players
             setTimeout(tryPlay, 500);
+            setTimeout(tryPlay, 1500); // Third attempt for slow networks
         }
     </script>`;
 

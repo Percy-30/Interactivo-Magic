@@ -22,10 +22,12 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: center; 
+            justify-content: flex-start; /* Permite scroll natural */
             min-height: 100vh; 
-            overflow: hidden;
+            overflow-y: auto; 
+            overflow-x: hidden;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         /* Hearts background */
@@ -76,9 +78,9 @@
             width: 100%;
         }
 
-        .top-section { text-align: center; margin-bottom: 2rem; }
-        .top-section h1 { font-size: 2.5rem; font-weight: 900; margin: 0; letter-spacing: -1px; }
-        .top-section p { color: rgba(0,0,0,0.4); font-size: 1.1rem; margin-top: 5px; font-weight: 500; }
+        .top-section { text-align: center; margin-bottom: 2rem; padding-top: 1rem; }
+        .top-section h1 { font-size: 2.2rem; font-weight: 900; margin: 0; letter-spacing: -1px; }
+        .top-section p { color: rgba(0,0,0,0.4); font-size: 1rem; margin-top: 5px; font-weight: 500; padding: 0 10px; }
 
         /* The Roulette */
         .wheel-shell {
@@ -260,18 +262,34 @@
         /* Audio HUD */
         .audio-hud {
             position: fixed;
-            bottom: 40px;
-            width: 85%;
+            bottom: 30px;
+            width: 90%;
             max-width: 400px;
-            background: #fff;
-            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
             border-radius: 35px;
-            box-shadow: 0 10px 45px rgba(0,0,0,0.06);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             gap: 15px;
             z-index: 1000;
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Media Queries for Small Screens */
+        @media (max-width: 400px) or (max-height: 700px) {
+            .wheel-shell { width: 280px; height: 280px; }
+            .top-section h1 { font-size: 1.8rem; }
+            .action-spin-btn { margin-top: 2rem; padding: 0.9rem 3.5rem; font-size: 1.1rem; }
+            .audio-hud { bottom: 20px; padding: 10px 15px; }
+        }
+
+        /* Extra Space when Audio is active */
+        .main-container {
+            padding-bottom: 150px; /* Margen de seguridad para el HUD fijo */
         }
         .play-toggle {
             width: 48px; height: 48px;
