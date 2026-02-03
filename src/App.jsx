@@ -820,16 +820,26 @@ function App() {
         const decoded = JSON.parse(decodedString);
         const tpl = TEMPLATES.find(t => t.id === decoded.t);
         if (tpl) {
-          // Ensure audioOption is reconstructed correctly from data
-          const reconstructedAudioOption = decoded.yt ? 'youtube' : (decoded.src === 'uploaded' ? 'upload' : 'default');
-          setViewData({
+          // Backward compatibility for short keys
+          const normalizedData = {
             ...decoded,
+            name: decoded.n || decoded.name || '',
+            sender: decoded.s || decoded.sender || '',
+            message: decoded.m || decoded.message || '',
+            hasAudio: (decoded.a !== undefined) ? (decoded.a === 1) : (decoded.audio !== undefined ? decoded.audio : false)
+          };
+
+          // Ensure audioOption is reconstructed correctly from normalizedData
+          const reconstructedAudioOption = normalizedData.yt ? 'youtube' : (normalizedData.src === 'uploaded' ? 'upload' : 'default');
+
+          setViewData({
+            ...normalizedData,
             html: tpl.content,
             audioOption: reconstructedAudioOption,
-            audioSrc: decoded.asrc || '',
-            imageSrc: decoded.img || '',
-            extraText: decoded.et || '',
-            extraText2: decoded.et2 || ''
+            audioSrc: normalizedData.asrc || '',
+            imageSrc: normalizedData.img || '',
+            extraText: normalizedData.et || '',
+            extraText2: normalizedData.et2 || ''
           });
         }
       } catch (e) {
@@ -849,7 +859,7 @@ function App() {
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const max_size = 250; // Balanced for quality and URL limits
+          const max_size = 150; // Reduced for multiple images in URLs
 
           if (width > height) {
             if (width > max_size) {
@@ -867,7 +877,7 @@ function App() {
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.5)); // 50% quality JPEG
+          resolve(canvas.toDataURL('image/jpeg', 0.3)); // Lower quality for URL safety
         };
       };
     });
@@ -895,47 +905,58 @@ function App() {
 
   const getShareUrl = () => {
     const dataObj = {
-      name: formData.name,
-      sender: formData.sender,
-      message: formData.message,
+      n: formData.name,
+      s: formData.sender,
+      m: formData.message,
       t: selectedTemplate.id,
-      audio: formData.hasAudio,
-      src: formData.audioOption === 'upload' ? 'uploaded' : (formData.audioOption === 'default' ? 'default' : null),
-      yt: formData.audioOption === 'youtube' ? extractSocialId(formData.youtubeUrl, 'youtube') : null,
-      img: formData.imageSrc || null,
-      img2: formData.imageSrc2 || null,
-      et: formData.extraText || null,
-      et2: formData.extraText2 || null,
-      sd: formData.startDate || null,
-      it: (formData.items && formData.items.length > 0) ? formData.items : null,
-      asrc: formData.audioOption === 'upload' ? formData.audioSrc : null,
-      // Parámetros de Vitaminas
-      va_text: formData.vitamina_a_text || null,
-      va_msg: formData.vitamina_a_msg || null,
-      va_emoji: formData.vitamina_a_emoji || null,
-      va_img: formData.vitamina_a_img || null,
-      vb_text: formData.vitamina_b_text || null,
-      vb_msg: formData.vitamina_b_msg || null,
-      vb_emoji: formData.vitamina_b_emoji || null,
-      vb_img: formData.vitamina_b_img || null,
-      vc_text: formData.vitamina_c_text || null,
-      vc_msg: formData.vitamina_c_msg || null,
-      vc_emoji: formData.vitamina_c_emoji || null,
-      vc_img: formData.vitamina_c_img || null,
-      vd_img: formData.vitamina_d_img || null,
-      // Parámetros de Tarjeta Futbolista
-      sr: selectedTemplate.id === 'soccer-card' ? formData.soccer_rating : null,
-      sp: selectedTemplate.id === 'soccer-card' ? formData.soccer_pos : null,
-      sn: selectedTemplate.id === 'soccer-card' ? formData.soccer_name : null,
-      si: selectedTemplate.id === 'soccer-card' ? formData.soccer_info : null,
-      sa: selectedTemplate.id === 'soccer-card' ? formData.soccer_pac : null,
-      ss: selectedTemplate.id === 'soccer-card' ? formData.soccer_sho : null,
-      sl: selectedTemplate.id === 'soccer-card' ? formData.soccer_pas : null,
-      sdr: selectedTemplate.id === 'soccer-card' ? formData.soccer_dri : null,
-      se: selectedTemplate.id === 'soccer-card' ? formData.soccer_def : null,
-      sy: selectedTemplate.id === 'soccer-card' ? formData.soccer_phy : null,
-      sf: selectedTemplate.id === 'soccer-card' ? formData.soccer_flag : null
+      a: formData.hasAudio ? 1 : 0,
     };
+
+    // Add optional properties only if they exist to save space
+    if (formData.audioOption === 'upload') dataObj.src = 'uploaded';
+    else if (formData.audioOption === 'default') dataObj.src = 'default';
+
+    if (formData.audioOption === 'youtube') dataObj.yt = extractSocialId(formData.youtubeUrl, 'youtube');
+    if (formData.imageSrc) dataObj.img = formData.imageSrc;
+    if (formData.imageSrc2) dataObj.img2 = formData.imageSrc2;
+    if (formData.extraText) dataObj.et = formData.extraText;
+    if (formData.extraText2) dataObj.et2 = formData.extraText2;
+    if (formData.startDate) dataObj.sd = formData.startDate;
+    if (formData.items && formData.items.length > 0) dataObj.it = formData.items;
+    if (formData.audioOption === 'upload' && formData.audioSrc) dataObj.asrc = formData.audioSrc;
+
+    // Compact Vitamin Data
+    if (formData.vitamina_a_text) dataObj.va_t = formData.vitamina_a_text;
+    if (formData.vitamina_a_msg) dataObj.va_m = formData.vitamina_a_msg;
+    if (formData.vitamina_a_emoji) dataObj.va_e = formData.vitamina_a_emoji;
+    if (formData.vitamina_a_img) dataObj.va_i = formData.vitamina_a_img;
+
+    if (formData.vitamina_b_text) dataObj.vb_t = formData.vitamina_b_text;
+    if (formData.vitamina_b_msg) dataObj.vb_m = formData.vitamina_b_msg;
+    if (formData.vitamina_b_emoji) dataObj.vb_e = formData.vitamina_b_emoji;
+    if (formData.vitamina_b_img) dataObj.vb_i = formData.vitamina_b_img;
+
+    if (formData.vitamina_c_text) dataObj.vc_t = formData.vitamina_c_text;
+    if (formData.vitamina_c_msg) dataObj.vc_m = formData.vitamina_c_msg;
+    if (formData.vitamina_c_emoji) dataObj.vc_e = formData.vitamina_c_emoji;
+    if (formData.vitamina_c_img) dataObj.vc_i = formData.vitamina_c_img;
+
+    if (formData.vitamina_d_img) dataObj.vd_i = formData.vitamina_d_img;
+
+    // Soccer card parameters
+    if (selectedTemplate.id === 'soccer-card') {
+      dataObj.sr = formData.soccer_rating;
+      dataObj.sp = formData.soccer_pos;
+      dataObj.sn = formData.soccer_name;
+      dataObj.si = formData.soccer_info;
+      dataObj.sa = formData.soccer_pac;
+      dataObj.ss = formData.soccer_sho;
+      dataObj.sl = formData.soccer_pas;
+      dataObj.sdr = formData.soccer_dri;
+      dataObj.se = formData.soccer_def;
+      dataObj.sy = formData.soccer_phy;
+      dataObj.sf = formData.soccer_flag;
+    }
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
     const baseUrl = getBaseUrl();
