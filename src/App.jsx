@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
+// Version: 1.0.5 - URI_TOO_LONG ID-Based Fix
 import confetti from 'canvas-confetti';
 import {
   GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE,
