@@ -819,17 +819,32 @@ function App() {
     const msgData = params.get('msg');
     const vId = params.get('v');
 
-    const processData = (decodedString) => {
+    const processData = (decodedStringOrObj) => {
       try {
-        const decoded = JSON.parse(decodedString);
-        const tpl = TEMPLATES.find(t => t.id === decoded.t);
+        let decoded;
+        if (typeof decodedStringOrObj === 'string') {
+          // It's a JSON string (possibly from B64 or direct JSON string)
+          decoded = JSON.parse(decodedStringOrObj);
+        } else {
+          // It's already an object
+          decoded = decodedStringOrObj;
+        }
+
+        console.log("[App] Processing decoded data:", decoded);
+        const tpl = TEMPLATES.find(t => t.id === decoded.t || t.id === decoded.template);
         if (tpl) {
           const normalizedData = {
             ...decoded,
-            name: decoded.n || decoded.name || '',
-            sender: decoded.s || decoded.sender || '',
-            message: decoded.m || decoded.message || '',
-            hasAudio: (decoded.a !== undefined) ? (decoded.a === 1) : (decoded.audio !== undefined ? decoded.audio : false)
+            t: decoded.t || tpl.id,
+            n: decoded.n || decoded.name || '',
+            s: decoded.s || decoded.sender || '',
+            m: decoded.m || decoded.message || '',
+            hasAudio: (decoded.a !== undefined) ? (decoded.a === 1) : (decoded.audio !== undefined ? decoded.audio : false),
+            // Ensure compatibility with internal shortener fields
+            imageSrc: decoded.img || decoded.imageSrc || '',
+            yt: decoded.yt || decoded.youtubeId || null,
+            et: decoded.et || decoded.extraText || '',
+            et2: decoded.et2 || decoded.extraText2 || ''
           };
 
           const reconstructedAudioOption = normalizedData.yt ? 'youtube' : (normalizedData.src === 'uploaded' ? 'upload' : 'default');
@@ -839,10 +854,13 @@ function App() {
             html: tpl.content,
             audioOption: reconstructedAudioOption,
             audioSrc: normalizedData.asrc || '',
-            imageSrc: normalizedData.img || '',
+            imageSrc: normalizedData.img || normalizedData.imageSrc || '',
             extraText: normalizedData.et || '',
             extraText2: normalizedData.et2 || ''
           });
+
+          // CRITICAL: Ensure view mode is active
+          console.log("[App] SUCCESS: viewData set from ID/msg");
         }
       } catch (e) {
         console.error("Error decoding message:", e);
@@ -863,20 +881,25 @@ function App() {
         .then(result => {
           if (result.url) {
             console.log("[App] Data recovered from backend");
-            try {
-              const url = new URL(result.url);
-              const urlParams = new URLSearchParams(url.search);
-              const nestedData = urlParams.get('msg');
-              if (nestedData) {
-                const decodedString = decodeURIComponent(escape(atob(nestedData)));
-                processData(decodedString);
-              } else {
-                // Si no hay msg, intentar procesar el objeto completo si el backend guardó el JSON directo
+
+            // Try to see if it's a full URL or a JSON payload
+            if (typeof result.url === 'string' && result.url.startsWith('http')) {
+              try {
+                const url = new URL(result.url);
+                const urlParams = new URLSearchParams(url.search);
+                const nestedData = urlParams.get('msg');
+                if (nestedData) {
+                  const decodedString = decodeURIComponent(escape(atob(nestedData)));
+                  processData(decodedString);
+                } else {
+                  // Fallback: If no msg param, maybe it's just the URL but we need data
+                  processData(result.url);
+                }
+              } catch (e) {
                 processData(result.url);
               }
-            } catch (e) {
-              console.error("Error parsing recovered URL:", e);
-              // Fallback: tratar la URL recuperada como el string JSON si falló el parseo de URL
+            } else {
+              // It's already an object or a direct JSON string
               processData(result.url);
             }
           }
