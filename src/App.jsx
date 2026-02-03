@@ -1396,7 +1396,7 @@ function App() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="glass"
-            style={{ padding: '2.5rem', width: '100%' }}
+            style={{ padding: isMobileApp ? '1.5rem 1.2rem' : '2.5rem', width: '100%' }}
           >
             {!showResult ? (
               <>
@@ -1605,7 +1605,7 @@ function App() {
                   {/* Image Section */}
                   {selectedTemplate.hasImage && (
                     <div style={{
-                      padding: '1.5rem',
+                      padding: isMobileApp ? '1rem' : '1.5rem',
                       background: 'rgba(255, 255, 255, 0.03)',
                       borderRadius: '20px',
                       border: errors.image ? '1px solid var(--primary)' : '1px solid rgba(255, 255, 255, 0.1)',
@@ -1668,7 +1668,7 @@ function App() {
                         >
                           <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))',
                             gap: '0.8rem',
                             marginBottom: '1.2rem'
                           }}>
@@ -3313,7 +3313,7 @@ function App() {
                           const safeS = (formData.sender || 'tu').replace(/[^a-z0-9]/gi, '_').toLowerCase();
                           const fileName = `${selectedTemplate.id}_${safeS}_para_${safeN}.html`;
                           const redHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=${generatedUrl}"><title>Magic ✨</title></head><body><script>window.location.href="${generatedUrl}";</script></body></html>`;
-                          await shareHTMLFile(fileName, redHtml, "Mira lo que preparé para ti ✨");
+                          await shareHTMLFile({ fileName, htmlContent: redHtml });
                         }}
                         style={{
                           justifyContent: 'center',
