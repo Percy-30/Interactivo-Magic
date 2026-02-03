@@ -22,10 +22,19 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         .cover-sticker { background: #ffd700; padding: 10px 20px; border-radius: 5px; color: #ed1d24; font-weight: 900; font-size: 1.2rem; transform: rotate(-2deg); margin-bottom: 2rem; border: 2px solid #ed1d24; }
         .marvel-logo-area { width: 180px; height: 160px; border: 4px solid #fff; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .marvel-logo-area img { width: 100%; height: 100%; object-fit: contain; }
+        
         .inner-page { background: #fffcf0; color: #1a1a1a !important; box-shadow: inset 5px 0 15px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); padding: 2rem; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .comic-title { font-family: 'Bangers', cursive; color: #ed1d24 !important; font-size: 2rem; margin-bottom: 1rem; }
         .comic-text { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem; text-align: center; color: #1a1a1a !important; background: #fffb00; padding: 8px 12px; box-shadow: 4px 4px 0 #000; border: 2px solid #000; margin: 10px 0; }
         .page.flipped { transform: rotateY(-180deg); }
+
+        .decorative-back {
+            background: linear-gradient(135deg, #fffcf0 0%, #e8e1cf 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid rgba(0,0,0,0.05);
+        }
+        .logo-back { font-size: 3rem; opacity: 0.15; filter: grayscale(1); transform: rotate(-10deg); color: #ed1d24; }
 
         #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 3000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; cursor: pointer; }
         #intro-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -43,6 +52,9 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
         .song-title { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; color: #ffd700; text-transform: uppercase; letter-spacing: 1px; }
 
+        .pixel-frame { width: 220px; height: 220px; border: 8px solid #000; background: #fff; padding: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transform: rotate(-2deg); margin-bottom: 1.5rem; display: block; }
+        .pixel-frame img { width: 100%; height: 100%; object-fit: contain; }
+
         @media (max-width: 600px) {
             .nav-container { bottom: 110px; width: 90%; justify-content: space-between; padding: 8px 15px; }
             .nav-btn { padding: 6px 12px; font-size: 0.8rem; }
@@ -58,6 +70,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
     </div>
 
     <div class="book" id="book">
+        <!-- Page 1: Cover -->
         <div class="page page1" id="page1">
             <div class="front cover">
                 <h1>{{message}}</h1>
@@ -65,17 +78,38 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
                 <div class="marvel-logo-area" style="display: {{image_display}}"><img src="{{image_src}}" alt="Cover" onerror="this.src='https://i.imgur.com/rN7Yv4T.png'"></div>
                 <div style="margin-top: 2rem; font-family: 'Bangers'; font-size: 1.2rem; color: #ffd700; letter-spacing: 2px;">{{sender}} & {{name}}</div>
             </div>
-            <div class="back inner-page">
-                <div class="comic-text">¡Alerta Roja! Se ha detectado un sentimiento nivel Vengador en el sector de mi corazón.</div>
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">🛡️</div>
             </div>
         </div>
 
+        <!-- Page 2: Static 1 -->
         <div class="page page2" id="page2">
+            <div class="front inner-page">
+                <div class="comic-text">¡Alerta Roja! Se ha detectado un sentimiento nivel Vengador en el sector de mi corazón.</div>
+            </div>
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">🛡️</div>
+            </div>
+        </div>
+
+        <!-- Page 3: Static 2 -->
+        <div class="page page3" id="page3">
             <div class="front inner-page">
                 <div class="comic-text">Ni siquiera las Gemas del Infinito tienen tanto poder como tu sonrisa.</div>
             </div>
-            <div class="back inner-page">
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">🛡️</div>
+            </div>
+        </div>
+
+        <!-- Page 4: Static 3 -->
+        <div class="page page4" id="page4">
+            <div class="front inner-page">
                 <div class="comic-text">Eres mi superhéroe favorito en este y en todos los multiversos.</div>
+            </div>
+            <div class="back inner-page decorative-back">
+                <div class="logo-back">🛡️</div>
             </div>
         </div>
 
@@ -166,7 +200,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
             } else {
                 prevBtn.style.opacity = '1';
                 prevBtn.style.pointerEvents = 'auto';
-                counter.textContent = 'Página ' + stage + ' / ' + pages.length;
+                counter.textContent = 'Hoja ' + stage + ' / ' + pages.length;
             }
             nextBtn.textContent = (stage >= pages.length) ? 'Reiniciar ↺' : 'Siguiente →';
         }
