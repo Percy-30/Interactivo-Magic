@@ -69,7 +69,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         </div>
     </div>
 
-    <div class="book" id="book">
+    <div class="book" id="book" onclick="nextPage()">
         <!-- Page 1: Cover -->
         <div class="page page1" id="page1">
             <div class="front cover">
@@ -116,7 +116,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         {{dynamic_pages}}
     </div>
 
-    <div class="nav-container" id="nav-ui" style="display: none;">
+    <div class="nav-container" id="nav-ui">
         <button class="nav-btn" id="prev-btn" onclick="event.stopPropagation(); prevPage()" style="opacity: 0.5; pointer-events: none;">← Anterior</button>
         <div class="page-counter" id="page-counter">Cubierta</div>
         <button class="nav-btn" id="next-btn" onclick="event.stopPropagation(); nextPage()">Siguiente →</button>
@@ -143,11 +143,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         let playOnReady = false;
         let activePlatform = (youtubeId && youtubeId.length > 2) ? 'youtube' : 'native';
 
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                      || window.innerWidth <= 768;
-        if (isMobile) {
-            document.getElementById('nav-ui').style.display = 'flex';
-        }
+        document.getElementById('nav-ui').style.display = 'flex';
 
         if (activePlatform === 'youtube' && !window.YT_API_LOADED) {
             const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
