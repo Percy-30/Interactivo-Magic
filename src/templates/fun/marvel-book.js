@@ -9,6 +9,11 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         body { margin: 0; background: #0a0514; color: #333; font-family: 'Outfit', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; perspective: 2000px; }
         .book { width: 360px; height: 500px; position: relative; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; z-index: 10; }
         .book.open { transform: translateX(25%); }
+        
+        @media (max-width: 600px) {
+            .book.open { transform: translateX(0); scale: 0.85; }
+        }
+
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); z-index: 1; }
         .front, .back { width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; box-sizing: border-box; border-radius: 0 15px 15px 0; }
         .back { transform: rotateY(180deg); }
@@ -26,14 +31,22 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         #intro-overlay.hidden { opacity: 0; pointer-events: none; }
         .marvel-btn { background: #ed1d24; color: white; padding: 15px 40px; font-family: 'Bangers', cursive; font-size: 2rem; border: 4px solid #fff; box-shadow: 8px 8px 0 #000; cursor: pointer; letter-spacing: 2px; }
 
+        /* Navigation UI */
+        .nav-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; z-index: 1500; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn { background: #ed1d24; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: 'Outfit', sans-serif; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(237, 29, 36, 0.3); }
+        .nav-btn:active { transform: scale(0.95); }
+        .page-counter { color: white; font-weight: 600; font-size: 0.85rem; min-width: 80px; text-align: center; letter-spacing: 1px; }
+
         .audio-controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 350px; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); padding: 12px 20px; border-radius: 25px; border: 2px solid #ed1d24; display: flex; align-items: center; gap: 15px; z-index: 1000; color: white; }
         .play-btn { width: 40px; height: 40px; background: #ed1d24; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; color: white !important; font-weight: bold; }
         .progress-bar { width: 0%; height: 100%; background: #ffd700; border-radius: 2px; }
         .progress-bar-container { flex-grow: 1; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
         .song-title { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; color: #ffd700; text-transform: uppercase; letter-spacing: 1px; }
 
-        .pixel-frame { width: 220px; height: 220px; border: 8px solid #000; background: #fff; padding: 5px; position: relative; margin-bottom: 1rem; }
-        .pixel-frame img { width: 100%; height: 100%; object-fit: contain; }
+        @media (max-width: 600px) {
+            .nav-container { bottom: 110px; width: 90%; justify-content: space-between; padding: 8px 15px; }
+            .nav-btn { padding: 6px 12px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -44,7 +57,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         </div>
     </div>
 
-    <div class="book" id="book" onclick="flipPage()">
+    <div class="book" id="book">
         <div class="page page1" id="page1">
             <div class="front cover">
                 <h1>{{message}}</h1>
@@ -69,6 +82,12 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         {{dynamic_pages}}
     </div>
 
+    <div class="nav-container" id="nav-ui" style="display: none;">
+        <button class="nav-btn" id="prev-btn" onclick="event.stopPropagation(); prevPage()" style="opacity: 0.5; pointer-events: none;">← Anterior</button>
+        <div class="page-counter" id="page-counter">Cubierta</div>
+        <button class="nav-btn" id="next-btn" onclick="event.stopPropagation(); nextPage()">Siguiente →</button>
+    </div>
+
     <div class="audio-controls" style="display: none;" id="audio-ui">
         <div class="song-title">Marvel Theme</div>
         <div class="play-btn" id="play-btn">
@@ -82,7 +101,7 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
 
     <script>
         const hasAudio = '{{has_audio}}' === 'true';
-        const youtubeId = "{{ youtube_id }}".replace(/[{}]/g, '');
+        const youtubeId = "{{youtube_id}}".replace(/[{}]/g, '');
         let stage = 0;
         let audio = document.getElementById('bg-audio');
         let ytPlayer = null;
@@ -90,11 +109,15 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         let playOnReady = false;
         let activePlatform = (youtubeId && youtubeId.length > 2) ? 'youtube' : 'native';
 
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                      || window.innerWidth <= 768;
+        if (isMobile) {
+            document.getElementById('nav-ui').style.display = 'flex';
+        }
+
         if (activePlatform === 'youtube' && !window.YT_API_LOADED) {
             const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
             document.head.appendChild(tag); window.YT_API_LOADED = true;
-        } else if (activePlatform === 'youtube' && window.YT && window.YT.Player) {
-            setTimeout(() => { if (typeof window.onYouTubeIframeAPIReady === 'function') window.onYouTubeIframeAPIReady(); }, 500);
         }
 
         window.onYouTubeIframeAPIReady = function() {
@@ -130,8 +153,25 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
         };
 
         const book = document.getElementById('book');
-        function flipPage() {
-            const pages = Array.from(document.querySelectorAll('.page'));
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const counter = document.getElementById('page-counter');
+        const pages = Array.from(document.querySelectorAll('.page'));
+
+        function updateNav() {
+            if (stage === 0) {
+                prevBtn.style.opacity = '0.5';
+                prevBtn.style.pointerEvents = 'none';
+                counter.textContent = 'Cubierta';
+            } else {
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+                counter.textContent = 'Página ' + stage + ' / ' + pages.length;
+            }
+            nextBtn.textContent = (stage >= pages.length) ? 'Reiniciar ↺' : 'Siguiente →';
+        }
+
+        function nextPage() {
             if (stage < pages.length) {
                 pages[stage].classList.add('flipped');
                 pages.forEach((p, i) => { p.style.zIndex = i < stage ? i + 1 : (i === stage ? 50 : pages.length - i); });
@@ -142,17 +182,29 @@ export const MARVEL_BOOK_TEMPLATE = `<!DOCTYPE html>
                 book.classList.remove('open');
                 stage = 0;
             }
+            updateNav();
+        }
+
+        function prevPage() {
+            if (stage > 0) {
+                stage--;
+                pages[stage].classList.remove('flipped');
+                if (stage === 0) book.classList.remove('open');
+                updateNav();
+            }
         }
 
         (function initPages() { document.querySelectorAll('.page').forEach((p, i, a) => p.style.zIndex = a.length - i); })();
+        
         document.getElementById('play-btn').onclick = (e) => {
             e.stopPropagation();
             if (activePlatform === 'youtube' && ytPlayer) {
                 if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
             } else { if (audio.paused) audio.play(); else audio.pause(); }
         };
+
         if (activePlatform === 'native') {
-            audio.ontimeupdate = () => { if(document.getElementById('progress-bar')) document.getElementById('progress-bar').style.width = (audio.currentTime / audio.duration) * 100 + '%'; };
+            audio.ontimeupdate = () => { if (document.getElementById('progress-bar')) document.getElementById('progress-bar').style.width = (audio.currentTime / audio.duration) * 100 + '%'; };
         }
     </script>
 </body>
