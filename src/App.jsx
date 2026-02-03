@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
-// Version: 1.0.5 - URI_TOO_LONG ID-Based Fix
+// Version: 1.1.0 - Adsterra Integration & Cleanup
 import confetti from 'canvas-confetti';
 import {
   GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE,
@@ -1275,7 +1275,11 @@ function App() {
       <UpdateNotification />
 
       {/* SLOT A: Header Ad - Display (Web only) */}
-      {!isMobileApp && <AdSlot label="Banner Superior" adSlot="4095225502" />}
+      {!isMobileApp && (
+        <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+          <AdsterraBanner728x90 />
+        </div>
+      )}
 
       {/* Hero Section (Web only) */}
       {!selectedTemplate && !isMobileApp && (
@@ -1348,9 +1352,11 @@ function App() {
           </motion.div>
 
           {/* SLOT B: Mid Landing Ad - In-article */}
-          <div style={{ marginTop: '4rem' }}>
-            <AdSlot label="Publicidad" adSlot="5051701068" adFormat="fluid" adLayout="in-article" />
-          </div>
+          {!isMobileApp && (
+            <div style={{ marginTop: '2rem', marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+              <AdsterraNativeBanner />
+            </div>
+          )}
 
           {/* Animated Icons */}
           <motion.div

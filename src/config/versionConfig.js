@@ -1,5 +1,5 @@
 // Versión actual de la aplicación (DEBE COINCIDIR con package.json)
-export const CURRENT_VERSION = '1.0.0';
+export const CURRENT_VERSION = '1.1.0';
 
 // URL donde se verifica la última versión disponible
 export const VERSION_CHECK_URL = 'https://interactivomagic.ftydownloader.com/version.json';
