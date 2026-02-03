@@ -28,6 +28,8 @@ import { getBaseUrl, SHORTENER_API } from './config/appConfig';
 import { shortenUrl } from './utils/urlShortener';
 import { initializeAdMob, showBannerAd, showRewardedAd, showInterstitial, prepareRewardedAd, hideBannerAd } from './utils/admobUtils';
 import { getAdSenseClientId } from './config/adsenseConfig';
+import UpdateNotification from './components/UpdateNotification';
+import { DOWNLOAD_LINKS } from './config/versionConfig';
 import './styles/index.css';
 
 const CATEGORIES = [
@@ -1206,6 +1208,7 @@ function App() {
 
   return (
     <div className="App">
+      <UpdateNotification />
       <div className="gradient-bg" />
 
       {/* Header Navigation */}
@@ -1266,6 +1269,9 @@ function App() {
         </AnimatePresence>
       </header>
 
+      {/* Version Update Notification */}
+      <UpdateNotification />
+
       {/* SLOT A: Header Ad - Display (Web only) */}
       {!isMobileApp && <AdSlot label="Banner Superior" adSlot="4095225502" />}
 
@@ -1297,6 +1303,46 @@ function App() {
             <button className="btn btn-primary" onClick={scrollToTemplates} style={{ fontSize: '1.2rem', padding: '1.2rem 2.5rem' }}>
               <Sparkles size={24} /> Comenzar ahora
             </button>
+
+            {/* Download Buttons */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              marginTop: '1.5rem',
+              flexWrap: 'wrap',
+              justifyContent: 'center'
+            }}>
+              <a
+                href={DOWNLOAD_LINKS.apkDirect}
+                className="btn btn-secondary"
+                style={{
+                  fontSize: '1rem',
+                  padding: '0.8rem 1.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  textDecoration: 'none'
+                }}
+              >
+                <Download size={20} /> Descargar APK
+              </a>
+              <a
+                href={DOWNLOAD_LINKS.playStore}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                style={{
+                  fontSize: '1rem',
+                  padding: '0.8rem 1.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  textDecoration: 'none'
+                }}
+              >
+                <Download size={20} /> Google Play
+              </a>
+            </div>
           </motion.div>
 
           {/* SLOT B: Mid Landing Ad - In-article */}

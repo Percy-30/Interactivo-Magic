@@ -1,0 +1,16 @@
+{
+    "version": "1.0.0",
+    "releaseDate": "2026-02-03",
+    "whatsNew": [
+        "🎉 Lanzamiento inicial de InteractivoMagic",
+        "💖 40+ plantillas interactivas de amor",
+        "🎮 Juegos como Ruleta del Amor y Puzzle",
+        "🎵 Soporte para música de YouTube",
+        "📱 App nativa para Android"
+    ],
+    "minRequiredVersion": "1.0.0",
+    "downloadLinks": {
+        "playStore": "#",
+        "apkDirect": "https://interactivomagic.ftydownloader.com/downloads/app-release.apk"
+    }
+}
