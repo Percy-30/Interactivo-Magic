@@ -30,6 +30,8 @@ import { initializeAdMob, showBannerAd, showRewardedAd, showInterstitial, prepar
 import { getAdSenseClientId } from './config/adsenseConfig';
 import UpdateNotification from './components/UpdateNotification';
 import { DOWNLOAD_LINKS } from './config/versionConfig';
+import AdsterraNativeBanner from './components/AdsterraNativeBanner';
+import AdsterraBanner728x90 from './components/AdsterraBanner728x90';
 import './styles/index.css';
 
 const CATEGORIES = [
@@ -1529,6 +1531,12 @@ function App() {
               ))}
           </div>
 
+          {!isMobileApp && (
+            <div style={{ margin: '4rem auto 2rem', width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <AdsterraNativeBanner className="container" />
+            </div>
+          )}
+
           {isMobileApp && (
             <div style={{ textAlign: 'center', marginTop: '3rem', opacity: 0.6 }}>
               <button
@@ -1563,6 +1571,11 @@ function App() {
           >
             {!showResult ? (
               <>
+                {!isMobileApp && (
+                  <div style={{ marginBottom: '2rem', width: '100%' }}>
+                    <AdsterraNativeBanner />
+                  </div>
+                )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
                   <button
                     onClick={() => setSelectedTemplate(null)}
@@ -3399,6 +3412,13 @@ function App() {
                 }}>
                   ¡Tu mensaje mágico está listo!
                 </h2>
+
+                {!isMobileApp && (
+                  <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+                    <AdsterraNativeBanner />
+                  </div>
+                )}
+
                 <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', fontSize: '1.1rem', lineHeight: '1.6' }}>
                   Abre la vista previa, comparte el link por WhatsApp o descarga el archivo HTML para enviarlo directamente.
                 </p>
@@ -3636,11 +3656,11 @@ function App() {
       }
 
       {/* SLOT D: Footer Ad - Display */}
-      {
-        !selectedTemplate && !isMobileApp && (
-          <AdSlot label="Recomendado para ti" adSlot="4095225502" />
-        )
-      }
+      {!selectedTemplate && !isMobileApp && (
+        <div style={{ margin: '4rem auto', display: 'flex', justifyContent: 'center' }}>
+          <AdsterraBanner728x90 />
+        </div>
+      )}
 
       {/* Footer */}
       {
