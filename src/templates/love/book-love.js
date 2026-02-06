@@ -153,8 +153,8 @@
         {{dynamic_pages}}
     </div>
 
-    <!-- Navigation UI (Only visible in mobile app) -->
-    <div class="nav-container" id="nav-ui" style="display: none;">
+    <!-- Navigation UI -->
+    <div class="nav-container" id="nav-ui" style="display: flex;">
         <button class="nav-btn" id="prev-btn" onclick="prevPage()" style="opacity: 0.5; pointer-events: none;">← Anterior</button>
         <div class="page-counter" id="page-counter">Cubierta</div>
         <button class="nav-btn" id="next-btn" onclick="nextPage()">Siguiente →</button>
@@ -178,12 +178,8 @@
     </div>
 
     <script>
-        // Detect if running on mobile device (phone/tablet) - show nav buttons on mobile
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                      || window.innerWidth <= 768;
-        if (isMobile) {
-            document.getElementById('nav-ui').style.display = 'flex';
-        }
+        // Show nav buttons on all devices
+        document.getElementById('nav-ui').style.display = 'flex';
 
         let stage = 0;
         const pages = Array.from(document.querySelectorAll('.page'));
@@ -197,6 +193,22 @@
         let ytPlayer = null;
         let activePlatform = youtubeId ? 'youtube' : 'native';
         let isPlaying = false;
+
+        // Allow clicking the book itself to flip
+        book.addEventListener('click', (e) => {
+            const rect = book.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            // On cover, any click flips
+            if (stage === 0) {
+                nextPage();
+                return;
+            }
+            if (x > rect.width / 2) {
+                nextPage();
+            } else {
+                prevPage();
+            }
+        });
 
         if (activePlatform === 'youtube') {
             const tag = document.createElement('script');
@@ -247,6 +259,7 @@
 
         if (activePlatform === 'native') {
             audio.ontimeupdate = () => {
+                if (!audio.duration) return;
                 const progress = (audio.currentTime / audio.duration) * 100;
                 const pBar = document.getElementById('progress-bar');
                 if (pBar) pBar.style.width = progress + '%';
@@ -273,60 +286,60 @@
                 counter.textContent = \`Página \${stage} / \${pages.length}\`;
             }
 
-if (stage >= pages.length) {
-    nextBtn.textContent = 'Reiniciar ↺';
-} else {
-    nextBtn.textContent = 'Siguiente →';
-}
+            if (stage >= pages.length) {
+                nextBtn.textContent = 'Reiniciar ↺';
+            } else {
+                nextBtn.textContent = 'Siguiente →';
+            }
         }
 
-function nextPage() {
-    if (stage < pages.length) {
-        pages[stage].classList.add('flipped');
-        pages.forEach((p, i) => {
-            p.style.zIndex = i < stage ? i + 1 : (i === stage ? 50 : pages.length - i);
-        });
-        if (stage === 0) {
-            book.classList.add('open');
-            createHearts();
+        function nextPage() {
+            if (stage < pages.length) {
+                pages[stage].classList.add('flipped');
+                pages.forEach((p, i) => {
+                    p.style.zIndex = i < stage ? i + 1 : (i === stage ? 50 : pages.length - i);
+                });
+                if (stage === 0) {
+                    book.classList.add('open');
+                    createHearts();
+                }
+                stage++;
+            } else {
+                pages.forEach((p, i) => { p.classList.remove('flipped'); p.style.zIndex = pages.length - i; });
+                book.classList.remove('open');
+                stage = 0;
+            }
+            updateNav();
         }
-        stage++;
-    } else {
-        pages.forEach((p, i) => { p.classList.remove('flipped'); p.style.zIndex = pages.length - i; });
-        book.classList.remove('open');
-        stage = 0;
-    }
-    updateNav();
-}
 
-function prevPage() {
-    if (stage > 0) {
-        stage--;
-        pages[stage].classList.remove('flipped');
-        if (stage === 0) {
-            book.classList.remove('open');
+        function prevPage() {
+            if (stage > 0) {
+                stage--;
+                pages[stage].classList.remove('flipped');
+                if (stage === 0) {
+                    book.classList.remove('open');
+                }
+                updateNav();
+            }
         }
-        updateNav();
-    }
-}
 
-function createHearts() {
-    for (let i = 0; i < 20; i++) {
-        setTimeout(() => {
-            const h = document.createElement('div');
-            h.className = 'floating-heart';
-            const emojis = ['❤️', '💖', '✨', '💐'];
-            h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-            h.style.left = (Math.random() * 100) + 'vw';
-            h.style.top = '110vh';
-            document.body.appendChild(h);
-            h.animate([
-                { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 },
-                { transform: 'translateY(-120vh) scale(2.5) rotate(360deg)', opacity: 0 }
-            ], { duration: 4000 + Math.random() * 3000, easing: 'ease-out' }).onfinish = () => h.remove();
-        }, i * 150);
-    }
-}
-    </script >
-</body >
-</html > `;
+        function createHearts() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'floating-heart';
+                    const emojis = ['❤️', '💖', '✨', '💐'];
+                    h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    h.style.left = (Math.random() * 100) + 'vw';
+                    h.style.top = '110vh';
+                    document.body.appendChild(h);
+                    h.animate([
+                        { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 },
+                        { transform: 'translateY(-120vh) scale(2.5) rotate(360deg)', opacity: 0 }
+                    ], { duration: 4000 + Math.random() * 3000, easing: 'ease-out' }).onfinish = () => h.remove();
+                }, i * 150);
+            }
+        }
+    </script>
+</body>
+</html> \`;
