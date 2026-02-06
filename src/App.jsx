@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User,
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
@@ -32,6 +32,7 @@ import UpdateNotification from './components/UpdateNotification';
 import { DOWNLOAD_LINKS } from './config/versionConfig';
 import AdsterraNativeBanner from './components/AdsterraNativeBanner';
 import AdsterraBanner728x90 from './components/AdsterraBanner728x90';
+import EzoicAd from './components/EzoicAd';
 import './styles/index.css';
 
 const CATEGORIES = [
@@ -53,7 +54,8 @@ const TEMPLATES = [
     content: GALAXY_TEMPLATE,
     hasImage: false,
     hasAudio: true,
-    hasExtra: false
+    hasExtra: false,
+    preview: '/previews/1. Galaxia de Amor.jpeg'
   },
   {
     id: 'book-love',
@@ -66,7 +68,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasItems: true,
-    pageOffset: 3
+    pageOffset: 3,
+    preview: '/previews/2. Libro de Amor.jpeg'
   },
   {
     id: 'marvel-book',
@@ -79,7 +82,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasItems: true,
-    pageOffset: 3
+    pageOffset: 3,
+    preview: '/previews/3. Libro Marvel.jpeg'
   },
   {
     id: 'galaxy-gen',
@@ -94,6 +98,8 @@ const TEMPLATES = [
     hasExtra: true,
     extraLabel: 'Palabras flotantes (separadas por comas)',
     hideRecipientName: false
+    ,
+    preview: '/previews/4. Generador Galaxia.jpeg'
   },
   {
     id: 'musical-sphere',
@@ -107,6 +113,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: '✨ Frase en la esfera (si no subes foto)'
+    ,
+    preview: '/previews/5. Esfera Musical.jpeg'
   },
   {
     id: 'proposal',
@@ -120,6 +128,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Frase bajo la propuesta'
+    ,
+    preview: '/previews/6. Propuesta.jpeg'
   },
   {
     id: 'forgive-cats',
@@ -133,6 +143,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Frase final'
+    ,
+    preview: '/previews/7. Me perdonas.jpeg'
   },
   {
     id: 'puzzle-love',
@@ -146,6 +158,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje al ganar'
+    ,
+    preview: '/previews/8. Puzzle de Amor.jpeg'
   },
   {
     id: 'ruleta-love',
@@ -159,6 +173,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Título de Victoria'
+    ,
+    preview: '/previews/9. Roldeta del amor.jpeg'
   },
   {
     id: 'forgive-penguins',
@@ -173,6 +189,7 @@ const TEMPLATES = [
     hasDualImage: true,
     hasExtra: true,
     extraLabel: 'Título de perdón'
+
   },
   {
     id: 'be-friends',
@@ -186,6 +203,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje de éxito'
+    ,
+    preview: '/previews/11. Amigos.jpeg'
   },
   {
     id: 'flowers-ramo',
@@ -199,6 +218,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Nota del ramo'
+    ,
+    preview: '/previews/12. Ramo de Flores.jpeg'
   },
   {
     id: 'enojona',
@@ -212,6 +233,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Nota final (PD)'
+    ,
+    preview: '/previews/13. Me enojona.jpeg'
   },
   {
     id: 'date-counter',
@@ -228,6 +251,8 @@ const TEMPLATES = [
     hideMessage: true,
     hasExtra: true,
     extraLabel: 'Título del evento'
+    ,
+    preview: '/previews/14. Contador Especial.jpeg'
   },
   {
     id: 'love-cert',
@@ -241,6 +266,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Cargo especial'
+    ,
+    previews: ['/previews/15. Certificado Amor.jpeg', '/previews/15.1 Certificado Amor.jpeg']
   },
   {
     id: 'initials',
@@ -256,6 +283,8 @@ const TEMPLATES = [
     hasExtra2: true,
     extraLabel: 'Inicial Ella',
     extra2Label: 'Inicial Él'
+    ,
+    preview: '/previews/16.  Iniciales Pareja.jpeg'
   },
   {
     id: 'enchanted-letter',
@@ -269,6 +298,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Post Data (PD)'
+    ,
+    preview: '/previews/17. Carta Encantada.jpeg'
   },
   {
     id: 'vitamins',
@@ -283,6 +314,8 @@ const TEMPLATES = [
     hasVitamins: true,
     hasExtra: true,
     extraLabel: 'Mensaje final'
+    ,
+    preview: '/previews/18. Vitaminas Amor.jpeg'
   },
   {
     id: 'scratch',
@@ -296,6 +329,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Premio oculto'
+    ,
+    preview: '/previews/19. Mensaje Raspa.jpeg'
   },
   {
     id: 'soccer-card',
@@ -312,6 +347,7 @@ const TEMPLATES = [
     hideRecipientName: true,
     hideSender: true,
     hideMessage: true
+
   },
   {
     id: 'birthday',
@@ -325,6 +361,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje en tarjeta'
+    ,
+    preview: '/previews/21. Feliz Cumpleaños.jpeg'
   },
   {
     id: 'dedicate-song',
@@ -338,6 +376,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Dedicado a...'
+    ,
+    preview: '/previews/22.  Te la Dedico.jpeg'
   },
   {
     id: 'be-my-gf',
@@ -351,6 +391,7 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje persuasivo'
+
   },
   {
     id: 'te-amo',
@@ -364,6 +405,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Subtítulo'
+    ,
+    preview: '/previews/24. Te Amo.jpeg'
   },
   {
     id: 'heart-photo',
@@ -379,6 +422,8 @@ const TEMPLATES = [
     itemsCount: 25,
     hasExtra: true,
     extraLabel: 'Título del collage'
+    ,
+    preview: '/previews/25. Crear Corazon.jpeg'
   },
   {
     id: 'our-year',
@@ -394,6 +439,8 @@ const TEMPLATES = [
     itemsCount: 12,
     hasExtra: true,
     extraLabel: 'Año (ej: 2025)'
+    ,
+    preview: '/previews/26. Nuestro Año.jpeg'
   },
   {
     id: 'christmas',
@@ -408,6 +455,7 @@ const TEMPLATES = [
     hasItems: true,
     itemsCount: 16,
     hasExtra: false
+
   },
   {
     id: 'new-year',
@@ -421,6 +469,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Propósito de año nuevo'
+    ,
+    previews: ['/previews/28. Feliz Año.jpeg', '/previews/28.1 Feliz Año.jpeg']
   },
   {
     id: 'love-cube',
@@ -439,6 +489,8 @@ const TEMPLATES = [
     itemsCount: 6,
     hasExtra: true,
     extraLabel: 'Dedicatoria (ej: Te amo mi amor)'
+    ,
+    preview: '/previews/29. Cubo del Amor.jpeg'
   },
   {
     id: 'hidden-msg',
@@ -462,6 +514,8 @@ const FEATURES = [
     icon: <Sparkles size={32} />,
     title: '100% Real',
     description: 'Mensajes animados e interactivos que funcionan en cualquier dispositivo.'
+    ,
+    preview: '/previews/30. Mensaje Oculto..jpeg'
   },
   {
     icon: <Zap size={32} />,
@@ -1487,8 +1541,47 @@ function App() {
                       prepareRewardedAd();
                     }
                   }}
-                  style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem' }}
+                  style={{ cursor: 'pointer', textAlign: 'left', padding: '2rem', position: 'relative' }}
                 >
+                  {/* Preview Image(s) in Upper-Right Corner */}
+                  {(tpl.preview || tpl.previews) && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '1.5rem',
+                      right: '1.5rem',
+                      display: 'flex',
+                      gap: '0.5rem'
+                    }}>
+                      {/* Support for both single preview and multiple previews */}
+                      {(tpl.previews || [tpl.preview]).map((previewSrc, previewIdx) => (
+                        <div key={previewIdx} style={{
+                          width: '80px',
+                          height: '80px',
+                          borderRadius: '16px',
+                          overflow: 'hidden',
+                          border: '2px solid rgba(255,255,255,0.15)',
+                          background: 'rgba(0,0,0,0.3)',
+                          backdropFilter: 'blur(10px)',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                        }}>
+                          <img
+                            src={previewSrc}
+                            alt={`Preview ${tpl.name} ${previewIdx + 1}`}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                            onError={(e) => {
+                              // Fallback: hide image if it doesn't exist
+                              e.target.parentElement.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <div style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'white' }}>{tpl.icon}</div>
                   <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', color: 'white' }}>{tpl.name}</h3>
                   <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1rem' }}>{tpl.description}</p>
@@ -1528,7 +1621,7 @@ function App() {
         }} className="form-layout-grid">
           {/* Ad Lateral Izquierdo (Desktop) */}
           <div className="side-ad-form left-ad" style={{ display: 'none' }}>
-            <AdSlot label="Sponsor" adSlot="4095225502" adFormat="vertical" fullWidthResponsive="false" />
+            {!isMobileApp && <EzoicAd id="101" />}
           </div>
 
           <motion.div
@@ -3354,6 +3447,13 @@ function App() {
                       </>
                     )}
                   </button>
+
+                  {/* Form Bottom Ezoic Ad */}
+                  {!isMobileApp && (
+                    <div style={{ marginTop: '2rem', marginBottom: '1rem', textAlign: 'center' }}>
+                      <EzoicAd id="104" />
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -3382,8 +3482,9 @@ function App() {
                 </h2>
 
                 {!isMobileApp && (
-                  <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+                  <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                     <AdsterraNativeBanner />
+                    <EzoicAd id="105" />
                   </div>
                 )}
 
@@ -3502,8 +3603,8 @@ function App() {
           </motion.div>
 
           {/* Ad Lateral Derecho (Desktop) */}
-          <div className="side-ad-form right-ad" style={{ display: 'none' }}>
-            <AdSlot label="Sponsor" adSlot="4095225502" adFormat="vertical" fullWidthResponsive="false" />
+          <div className="side-ad-form right-ad" style={{ display: isMobileApp ? 'none' : 'block' }}>
+            {!isMobileApp && <EzoicAd id="102" />}
           </div>
         </div>
       )
@@ -3605,18 +3706,8 @@ function App() {
           <div className="container" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
             <div className="glass" style={{ padding: '1rem', textAlign: 'center', borderStyle: 'dashed', background: 'rgba(255,255,255,0.02)' }}>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>Publicidad</p>
-              <div style={{ minHeight: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* 
-                  Actual AdSense Unit:
-                  <ins className="adsbygoogle"
-                       style={{ display: 'block' }}
-                       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                       data-ad-slot="XXXXXXXXXX"
-                       data-ad-format="auto"
-                       data-full-width-responsive="true"></ins>
-                  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                */}
-                <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.9rem' }}>Anuncio Horizontal (FTY Style)</span>
+              <div style={{ minHeight: '100px', display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center', gap: '0.5rem' }}>
+                <EzoicAd id="103" />
               </div>
             </div>
           </div>

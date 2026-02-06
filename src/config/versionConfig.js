@@ -36,20 +36,39 @@ export function compareVersions(v1, v2) {
  */
 export async function checkForUpdates() {
     try {
+        console.log('[Version Check] Iniciando verificación de versión...');
+        console.log('[Version Check] Versión actual:', CURRENT_VERSION);
+        console.log('[Version Check] URL de verificación:', VERSION_CHECK_URL);
+
         const response = await fetch(VERSION_CHECK_URL, {
-            cache: 'no-store' // Evitar cache para siempre obtener la versión más reciente
+            cache: 'no-store', // Evitar cache para siempre obtener la versión más reciente
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+            }
         });
 
         if (!response.ok) {
+            console.error('[Version Check] Error HTTP:', response.status);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
         const latestVersion = data.version;
 
-        const comparison = compareVersions(CURRENT_VERSION, latestVersion);
+        console.log('[Version Check] Versión del servidor:', latestVersion);
 
-        return {
+        // Validar que ambas versiones sean válidas
+        if (!latestVersion || !CURRENT_VERSION) {
+            console.error('[Version Check] Versión inválida detectada');
+            return null;
+        }
+
+        const comparison = compareVersions(CURRENT_VERSION, latestVersion);
+        console.log('[Version Check] Resultado de comparación:', comparison);
+        console.log('[Version Check] ¿Hay actualización?:', comparison === -1);
+
+        const result = {
             hasUpdate: comparison === -1,
             currentVersion: CURRENT_VERSION,
             latestVersion,
@@ -57,8 +76,11 @@ export async function checkForUpdates() {
             whatsNew: data.whatsNew || [],
             downloadLinks: DOWNLOAD_LINKS
         };
+
+        console.log('[Version Check] Resultado final:', result);
+        return result;
     } catch (error) {
-        console.error('Error checking for updates:', error);
+        console.error('[Version Check] Error checking for updates:', error);
         return null;
     }
 }

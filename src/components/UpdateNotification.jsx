@@ -59,19 +59,23 @@ const UpdateNotification = () => {
                     left: '50%',
                     transform: 'translateX(-50%)',
                     zIndex: 9999,
-                    maxWidth: '90%',
-                    width: '400px'
+                    maxWidth: 'min(90vw, 400px)',
+                    width: '100%',
+                    padding: '0 10px',
+                    boxSizing: 'border-box'
                 }}
             >
                 <div
                     className="glass"
                     style={{
-                        padding: '1.5rem',
+                        padding: '1.2rem',
                         borderRadius: '16px',
                         background: 'linear-gradient(135deg, rgba(255,77,148,0.2), rgba(124,58,237,0.2))',
                         border: '2px solid var(--primary)',
                         boxShadow: '0 10px 40px rgba(255,77,148,0.3)',
-                        backdropFilter: 'blur(20px)'
+                        backdropFilter: 'blur(20px)',
+                        width: '100%',
+                        boxSizing: 'border-box'
                     }}
                 >
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
@@ -91,21 +95,23 @@ const UpdateNotification = () => {
                         <div style={{ flex: 1 }}>
                             <h3 style={{
                                 margin: '0 0 0.5rem 0',
-                                fontSize: '1.1rem',
+                                fontSize: 'clamp(0.95rem, 4vw, 1.1rem)',
                                 fontWeight: '800',
-                                color: 'white'
+                                color: 'white',
+                                wordBreak: 'break-word'
                             }}>
                                 Nueva Versión Disponible 🎉
                             </h3>
                             <p style={{
                                 margin: '0 0 1rem 0',
-                                fontSize: '0.9rem',
+                                fontSize: 'clamp(0.8rem, 3.5vw, 0.9rem)',
                                 color: 'rgba(255,255,255,0.8)',
-                                lineHeight: '1.4'
+                                lineHeight: '1.5',
+                                wordBreak: 'break-word'
                             }}>
-                                Versión <strong style={{ color: 'var(--primary)' }}>{updateInfo.latestVersion}</strong> disponible.
-                                {' '}
-                                Estás usando <strong>{updateInfo.currentVersion}</strong>
+                                Versión <strong style={{ color: 'var(--primary)', whiteSpace: 'nowrap' }}>{updateInfo.latestVersion}</strong> disponible.
+                                <br />
+                                Estás usando <strong style={{ whiteSpace: 'nowrap' }}>{updateInfo.currentVersion}</strong>
                             </p>
 
                             {updateInfo.whatsNew && updateInfo.whatsNew.length > 0 && (
@@ -114,7 +120,9 @@ const UpdateNotification = () => {
                                     padding: '0.8rem',
                                     background: 'rgba(0,0,0,0.2)',
                                     borderRadius: '8px',
-                                    fontSize: '0.85rem'
+                                    fontSize: 'clamp(0.75rem, 3vw, 0.85rem)',
+                                    overflowY: 'auto',
+                                    maxHeight: '150px'
                                 }}>
                                     <strong style={{ color: 'white', marginBottom: '0.3rem', display: 'block' }}>
                                         ✨ Novedades:
@@ -132,24 +140,28 @@ const UpdateNotification = () => {
                                 </div>
                             )}
 
-                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', width: '100%' }}>
                                 <button
                                     onClick={handleUpdate}
                                     style={{
                                         display: 'inline-flex',
                                         alignItems: 'center',
+                                        justifyContent: 'center',
                                         gap: '0.5rem',
-                                        padding: '0.7rem 1.2rem',
+                                        padding: '0.7rem 1rem',
                                         background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
                                         border: 'none',
                                         borderRadius: '10px',
                                         color: 'white',
                                         textDecoration: 'none',
-                                        fontSize: '0.9rem',
+                                        fontSize: 'clamp(0.8rem, 3.5vw, 0.9rem)',
                                         fontWeight: '700',
                                         cursor: 'pointer',
                                         transition: 'transform 0.2s',
-                                        boxShadow: '0 4px 12px rgba(255,77,148,0.3)'
+                                        boxShadow: '0 4px 12px rgba(255,77,148,0.3)',
+                                        flex: '1 1 auto',
+                                        minWidth: '140px',
+                                        whiteSpace: 'nowrap'
                                     }}
                                     onMouseDown={(e) => {
                                         e.target.style.transform = 'scale(0.95)';
@@ -165,15 +177,18 @@ const UpdateNotification = () => {
                                 <button
                                     onClick={() => setDismissed(true)}
                                     style={{
-                                        padding: '0.7rem 1.2rem',
+                                        padding: '0.7rem 1rem',
                                         background: 'rgba(255,255,255,0.1)',
                                         border: '1px solid rgba(255,255,255,0.2)',
                                         borderRadius: '10px',
                                         color: 'white',
-                                        fontSize: '0.9rem',
+                                        fontSize: 'clamp(0.8rem, 3.5vw, 0.9rem)',
                                         fontWeight: '600',
                                         cursor: 'pointer',
-                                        transition: 'all 0.2s'
+                                        transition: 'all 0.2s',
+                                        flex: '0 1 auto',
+                                        minWidth: '100px',
+                                        whiteSpace: 'nowrap'
                                     }}
                                 >
                                     Más tarde
