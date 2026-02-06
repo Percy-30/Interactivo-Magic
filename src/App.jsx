@@ -190,7 +190,7 @@ const TEMPLATES = [
     hasDualImage: true,
     hasExtra: true,
     extraLabel: 'Título de perdón',
-    preview: '/previews/10. Perdon mi Amor.png'
+    previews: ['/previews/10. Perdon mi Amor.png', '/previews/10.1 Perdon mi Amor.png']
   },
   {
     id: 'be-friends',
@@ -218,9 +218,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Nota del ramo'
-    ,
-    preview: '/previews/12. Ramo de Flores.jpeg'
+    extraLabel: 'Nota del ramo',
+    previews: ['/previews/12. Ramo de Flores.jpeg', '/previews/12.1 Ramo de Flores.png']
   },
   {
     id: 'enojona',
@@ -297,9 +296,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Post Data (PD)'
-    ,
-    preview: '/previews/17. Carta Encantada.jpeg'
+    extraLabel: 'Post Data (PD)',
+    previews: ['/previews/17. Carta Encantada.jpeg', '/previews/17.1 Carta Encantada.png']
   },
   {
     id: 'vitamins',
@@ -389,8 +387,8 @@ const TEMPLATES = [
     hasImage: false,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Mensaje persuasivo'
-
+    extraLabel: 'Mensaje persuasivo',
+    preview: '/previews/23. Quieres ser Novio.png'
   },
   {
     id: 'te-amo',
