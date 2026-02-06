@@ -70,7 +70,7 @@ const TEMPLATES = [
     hasAudio: true,
     hasItems: true,
     pageOffset: 3,
-    preview: '/previews/2. Libro de Amor.jpeg'
+    previews: ['/previews/2. Libro de Amor.jpeg', '/previews/2.1. Libro de Amor.png']
   },
   {
     id: 'marvel-book',
@@ -84,7 +84,7 @@ const TEMPLATES = [
     hasAudio: true,
     hasItems: true,
     pageOffset: 3,
-    preview: '/previews/3. Libro Marvel.jpeg'
+    previews: ['/previews/3. Libro Marvel.jpeg', '/previews/3.1 Libro Marvel.png']
   },
   {
     id: 'galaxy-gen',
@@ -189,8 +189,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasDualImage: true,
     hasExtra: true,
-    extraLabel: 'Título de perdón'
-
+    extraLabel: 'Título de perdón',
+    preview: '/previews/10. Perdon mi Amor.png'
   },
   {
     id: 'be-friends',
@@ -233,9 +233,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Nota final (PD)'
-    ,
-    preview: '/previews/13. Me enojona.jpeg'
+    extraLabel: 'Nota final (PD)',
+    previews: ['/previews/13. Me enojona.jpeg', '/previews/13.1 Me enojona.png']
   },
   {
     id: 'date-counter',
@@ -347,8 +346,8 @@ const TEMPLATES = [
     hasExtra: false,
     hideRecipientName: true,
     hideSender: true,
-    hideMessage: true
-
+    hideMessage: true,
+    previews: ['/previews/20. Tarjeta Futbolista.png', '/previews/20.1 Tarjeta Futbolista.png']
   },
   {
     id: 'birthday',
@@ -361,9 +360,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Mensaje en tarjeta'
-    ,
-    preview: '/previews/21. Feliz Cumpleaños.jpeg'
+    extraLabel: 'Mensaje en tarjeta',
+    previews: ['/previews/21. Feliz Cumpleaños.jpeg', '/previews/21.1 Feliz Cumpleaños.png']
   },
   {
     id: 'dedicate-song',
@@ -455,8 +453,8 @@ const TEMPLATES = [
     hasAudio: true,
     hasItems: true,
     itemsCount: 16,
-    hasExtra: false
-
+    hasExtra: false,
+    preview: '/previews/27. Arbol Navidad.png'
   },
   {
     id: 'new-year',
@@ -506,7 +504,8 @@ const TEMPLATES = [
     hasImage: true,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Mensaje Neon (ej: Te Amo Mi Vida)'
+    extraLabel: 'Mensaje Neon (ej: Te Amo Mi Vida)',
+    preview: '/previews/30. Mensaje Oculto..jpeg'
   }
 ];
 
@@ -515,8 +514,6 @@ const FEATURES = [
     icon: <Sparkles size={32} />,
     title: '100% Real',
     description: 'Mensajes animados e interactivos que funcionan en cualquier dispositivo.'
-    ,
-    preview: '/previews/30. Mensaje Oculto..jpeg'
   },
   {
     icon: <Zap size={32} />,
