@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
-// Version: 1.1.0 - Adsterra Integration & Cleanup
+// Version: 1.2.0 - UI Updates & New Template Previews
 import confetti from 'canvas-confetti';
 import {
   GALAXY_TEMPLATE, LOVE_TEMPLATE, BIRTHDAY_TEMPLATE,
@@ -388,7 +388,7 @@ const TEMPLATES = [
     hasAudio: true,
     hasExtra: true,
     extraLabel: 'Mensaje persuasivo',
-    preview: '/previews/23. Quieres ser Novio.png'
+    previews: ['/previews/23. Quieres ser Novio.png', '/previews/23.1 Quieres ser Novia.png']
   },
   {
     id: 'te-amo',
@@ -465,9 +465,8 @@ const TEMPLATES = [
     hasImage: false,
     hasAudio: true,
     hasExtra: true,
-    extraLabel: 'Propósito de año nuevo'
-    ,
-    previews: ['/previews/28. Feliz Año.jpeg', '/previews/28.1 Feliz Año.jpeg']
+    extraLabel: 'Propósito de año nuevo',
+    previews: ['/previews/28. Feliz Año.jpeg', '/previews/28.1 Feliz Año.png']
   },
   {
     id: 'love-cube',

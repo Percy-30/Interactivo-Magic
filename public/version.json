@@ -1,13 +1,11 @@
 {
-    "version": "1.1.0",
-    "releaseDate": "2026-02-03",
+    "version": "1.2.0",
+    "releaseDate": "2026-02-05",
     "whatsNew": [
-        "🎉 Lanzamiento inicial de InteractivoMagic",
-        "💖 40+ plantillas interactivas de amor",
-        "🎮 Juegos como Ruleta del Amor y Puzzle",
-        "🎵 Soporte para música de YouTube",
-        "📱 App nativa para Android",
-        "🚀 Integración de anuncios Adsterra para web"
+        "✨ Nuevas vistas previas en alta calidad (PNG)",
+        "📖 Mejoras en la navegación del Libro del Amor",
+        "🚀 Optimización de carga y corrección de errores",
+        "💖 Más plantillas activadas con fotos reales"
     ],
     "minRequiredVersion": "1.0.0",
     "downloadLinks": {
