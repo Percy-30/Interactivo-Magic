@@ -4,7 +4,8 @@ import {
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
   Filter, Gamepad, BookOpen, UserPlus, Image, Music2, Camera, Clock,
   Stamp, Shirt, Ghost, Pill, Layers, RefreshCcw, Smile, PartyPopper,
-  TreePine, Flame, Eye, Lock, Minus, ChevronUp, ChevronDown, Disc
+  TreePine, Flame, Eye, Lock, Minus, ChevronUp, ChevronDown, Disc,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TemplateEngine from './utils/TemplateEngine';
@@ -596,6 +597,144 @@ const LegalModal = ({ type, onClose }) => {
   );
 };
 
+const PreviewLightbox = ({ template, initialIndex, onClose, onSelect }) => {
+  const images = template.previews || [template.preview];
+  const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
+
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="modal-overlay"
+      onClick={onClose}
+      style={{ zIndex: 10000 }}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="glass"
+        onClick={e => e.stopPropagation()}
+        style={{
+          padding: '1.5rem',
+          maxWidth: '800px',
+          width: '95%',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1.5rem',
+          position: 'relative',
+          borderRadius: '24px',
+          border: '1px solid rgba(255,255,255,0.1)'
+        }}
+      >
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0, color: 'white' }}>{template.name} - Vista Previa</h3>
+          <button className="btn-icon" onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)' }}><X /></button>
+        </div>
+
+        <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', overflow: 'hidden' }}>
+          {images.length > 1 && (
+            <button
+              onClick={handlePrev}
+              style={{
+                position: 'absolute',
+                left: '10px',
+                zIndex: 10,
+                background: 'rgba(0,0,0,0.5)',
+                border: 'none',
+                color: 'white',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                backdropFilter: 'blur(5px)'
+              }}
+            >
+              <ChevronLeft />
+            </button>
+          )}
+
+          <img
+            src={images[currentIndex]}
+            alt={template.name}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '60vh',
+              objectFit: 'contain',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+            }}
+          />
+
+          {images.length > 1 && (
+            <button
+              onClick={handleNext}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                zIndex: 10,
+                background: 'rgba(0,0,0,0.5)',
+                border: 'none',
+                color: 'white',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                backdropFilter: 'blur(5px)'
+              }}
+            >
+              <ChevronRight />
+            </button>
+          )}
+        </div>
+
+        {images.length > 1 && (
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {images.map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: i === currentIndex ? 'var(--primary)' : 'rgba(255,255,255,0.2)',
+                  transition: 'all 0.3s'
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <div style={{ width: '100%', display: 'flex', gap: '1rem' }}>
+          <button className="btn btn-secondary" onClick={onClose} style={{ flex: 1 }}>Cerrar</button>
+          <button className="btn btn-primary" onClick={() => { onSelect(template); onClose(); }} style={{ flex: 2 }}>
+            Comenzar con esta plantilla
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+
 // Ultra-aggressive image compression for URL sharing
 const compressImage = (file) => {
   return new Promise((resolve) => {
@@ -648,6 +787,8 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileApp, setIsMobileApp] = useState(false);
   const [errors, setErrors] = useState({});
+  const [activeLightbox, setActiveLightbox] = useState(null); // { template, initialIndex }
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [giftOpened, setGiftOpened] = useState(false);
   const [searchTermFlag, setSearchTermFlag] = useState('Argentina');
@@ -1554,16 +1695,24 @@ function App() {
                     }}>
                       {/* Support for both single preview and multiple previews */}
                       {(tpl.previews || [tpl.preview]).map((previewSrc, previewIdx) => (
-                        <div key={previewIdx} style={{
-                          width: '80px',
-                          height: '80px',
-                          borderRadius: '16px',
-                          overflow: 'hidden',
-                          border: '2px solid rgba(255,255,255,0.15)',
-                          background: 'rgba(0,0,0,0.3)',
-                          backdropFilter: 'blur(10px)',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                        }}>
+                        <div key={previewIdx}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveLightbox({ template: tpl, initialIndex: previewIdx });
+                          }}
+                          style={{
+                            width: '80px',
+                            height: '80px',
+                            borderRadius: '16px',
+                            overflow: 'hidden',
+                            border: '2px solid rgba(255,255,255,0.15)',
+                            background: 'rgba(0,0,0,0.3)',
+                            backdropFilter: 'blur(10px)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                            cursor: 'zoom-in',
+                            position: 'relative'
+                          }}
+                        >
                           <img
                             src={previewSrc}
                             alt={`Preview ${tpl.name} ${previewIdx + 1}`}
@@ -1577,6 +1726,20 @@ function App() {
                               e.target.parentElement.style.display = 'none';
                             }}
                           />
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            right: '4px',
+                            background: 'rgba(0,0,0,0.5)',
+                            borderRadius: '50%',
+                            width: '20px',
+                            height: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <Eye size={12} color="white" />
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -3775,6 +3938,23 @@ function App() {
 
       <AnimatePresence>
         {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
+        {activeLightbox && (
+          <PreviewLightbox
+            template={activeLightbox.template}
+            initialIndex={activeLightbox.initialIndex}
+            onClose={() => setActiveLightbox(null)}
+            onSelect={(tpl) => {
+              setSelectedTemplate(tpl);
+              setFormData(prev => ({
+                ...prev,
+                hasImage: tpl.hasImage || false,
+                hasAudio: tpl.hasAudio || false,
+                hasItems: tpl.hasItems || false
+              }));
+              if (isMobileApp) prepareRewardedAd();
+            }}
+          />
+        )}
       </AnimatePresence>
     </div >
   );
