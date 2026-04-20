@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Heart, Send, Gift, Sparkles, Download, ArrowRight, Music, Calendar, User,
   Link as LinkIcon, Check, Menu, X, Star, Zap, Users, Share2, Search,
@@ -1284,13 +1284,20 @@ function App() {
           }
         } else {
           console.warn("[App] Custom shortener failed, status:", response.status);
+          const errorData = await response.json().catch(() => ({}));
+          console.error("[App] Shortener Error Detail:", errorData);
+          
           const shortUrl = await shortenUrl(longUrl);
           setGeneratedUrl(shortUrl || longUrl);
+          
+          if (!shortUrl || shortUrl === longUrl) {
+            alert("⚠️ El acortador personalizado está en mantenimiento. Se ha generado un link largo, pero podría no funcionar bien en algunas aplicaciones. Por favor, intenta de nuevo en unos minutos.");
+          }
         }
       } catch (shortenerErr) {
         console.error("[App] Shortener fetch error:", shortenerErr);
         const shortUrl = await shortenUrl(longUrl);
-        setGeneratedUrl(shortUrl);
+        setGeneratedUrl(shortUrl || longUrl);
       }
 
       setShowResult(true);
@@ -1353,7 +1360,12 @@ function App() {
         <iframe
           title="Mensaje Interactivo"
           srcDoc={finalHtml}
-          style={{ width: '100%', height: '100%', border: 'none' }}
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            border: 'none',
+            background: '#000' // Dark mode fix: ensure iframe container is black
+          }}
         />
       </div>
     );

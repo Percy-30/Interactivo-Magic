@@ -3,6 +3,21 @@ import { saveAs } from 'file-saver';
 const TemplateEngine = {
     render: (templateHtml, data) => {
         let finalHtml = templateHtml;
+        
+        // Dark Mode / White Screen Fix: Force dark color-scheme and background
+        const darkModeFix = `
+    <meta name="color-scheme" content="dark only">
+    <style>
+        :root { color-scheme: dark only; }
+        html, body { background-color: #000 !important; color: white !important; }
+    </style>
+        `;
+        
+        if (finalHtml.includes('</head>')) {
+            finalHtml = finalHtml.replace('</head>', darkModeFix + '</head>');
+        } else if (finalHtml.includes('<head>')) {
+            finalHtml = finalHtml.replace('<head>', '<head>' + darkModeFix);
+        }
 
         // Specific image URL fixing logic
         const fixImageUrl = (url) => {
