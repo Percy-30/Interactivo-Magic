@@ -1026,7 +1026,9 @@ function App() {
 
     if (msgData) {
       try {
-        const decodedString = decodeURIComponent(escape(atob(msgData)));
+        // Fix: replace spaces back to '+' — URLSearchParams decodes '+' as space, corrupting base64
+        const cleanMsg = msgData.replace(/ /g, '+');
+        const decodedString = decodeURIComponent(escape(atob(cleanMsg)));
         processData(decodedString);
       } catch (e) {
         console.error("Error decoding B64 data:", e);
@@ -1047,7 +1049,9 @@ function App() {
                 const urlParams = new URLSearchParams(url.search);
                 const nestedData = urlParams.get('msg');
                 if (nestedData) {
-                  const decodedString = decodeURIComponent(escape(atob(nestedData)));
+                  // Fix: replace spaces back to '+' — URLSearchParams decodes '+' as space
+                  const cleanMsg = nestedData.replace(/ /g, '+');
+                  const decodedString = decodeURIComponent(escape(atob(cleanMsg)));
                   processData(decodedString);
                 } else {
                   processData(result.url);
@@ -1188,7 +1192,8 @@ function App() {
     const jsonStr = JSON.stringify(dataObj);
     const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
     const baseUrl = getBaseUrl();
-    return `${baseUrl}/?msg=${encoded}`;
+    // IMPORTANT: URL-encode the base64 to prevent '+' being decoded as spaces by URLSearchParams
+    return `${baseUrl}/?msg=${encodeURIComponent(encoded)}`;
   };
 
   const handleCopyLink = () => {
