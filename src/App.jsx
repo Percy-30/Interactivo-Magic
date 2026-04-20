@@ -774,6 +774,8 @@ const compressImage = (file) => {
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [viewData, setViewData] = useState(null);
+  const [isLoadingView, setIsLoadingView] = useState(false);
+  const [viewError, setViewError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [generatedUrl, setGeneratedUrl] = useState('');
@@ -1031,6 +1033,7 @@ function App() {
       }
     } else if (vId) {
       console.log(`[App] Loading data by ID: ${vId}`);
+      setIsLoadingView(true);
       fetch(`${SHORTENER_API}/api/v1/get/${vId}`)
         .then(res => res.json())
         .then(result => {
@@ -1047,19 +1050,25 @@ function App() {
                   const decodedString = decodeURIComponent(escape(atob(nestedData)));
                   processData(decodedString);
                 } else {
-                  // Fallback: If no msg param, maybe it's just the URL but we need data
                   processData(result.url);
                 }
               } catch (e) {
                 processData(result.url);
               }
             } else {
-              // It's already an object or a direct JSON string
               processData(result.url);
             }
+          } else {
+            // ID not found in database
+            console.warn('[App] ID not found in DB:', vId);
+            setViewError('expired');
           }
         })
-        .catch(err => console.error("Error fetching data by ID:", err));
+        .catch(err => {
+          console.error("Error fetching data by ID:", err);
+          setViewError('network');
+        })
+        .finally(() => setIsLoadingView(false));
     }
   }, []);
 
@@ -1314,6 +1323,66 @@ function App() {
   const scrollToTemplates = () => {
     document.getElementById('templates-section')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Loading screen while fetching from short link
+  if (isLoadingView) {
+    return (
+      <div style={{
+        width: '100vw', height: '100vh', background: '#000',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: '1.5rem', color: 'white', fontFamily: 'sans-serif'
+      }}>
+        <div style={{ fontSize: '3rem', animation: 'pulse 1.5s infinite' }}>🪄</div>
+        <div style={{ fontSize: '1.2rem', opacity: 0.8 }}>Cargando tu sorpresa mágica...</div>
+        <div style={{
+          width: '200px', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden'
+        }}>
+          <div style={{
+            width: '60%', height: '100%',
+            background: 'linear-gradient(90deg, #ff00ff, #ff4d94)',
+            animation: 'slideLoader 1.5s ease-in-out infinite',
+            borderRadius: '4px'
+          }} />
+        </div>
+        <style>{`
+          @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+          @keyframes slideLoader { 0%{transform:translateX(-100%)} 100%{transform:translateX(250px)} }
+        `}</style>
+      </div>
+    );
+  }
+
+  // Error screen when ID expired or network failed
+  if (viewError) {
+    const isExpired = viewError === 'expired';
+    return (
+      <div style={{
+        width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #0d0d0d 0%, #1a0030 100%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: '1.5rem', color: 'white', fontFamily: 'sans-serif', textAlign: 'center', padding: '2rem'
+      }}>
+        <div style={{ fontSize: '4rem' }}>{isExpired ? '⏳' : '📡'}</div>
+        <h1 style={{ fontSize: '1.6rem', margin: 0 }}>
+          {isExpired ? 'Esta sorpresa expiró' : 'Error de conexión'}
+        </h1>
+        <p style={{ opacity: 0.7, maxWidth: '320px', lineHeight: 1.6 }}>
+          {isExpired
+            ? 'El link mágico que recibiste ya no está disponible (los links duran 30 días). Pídele a quien te lo envió que genere uno nuevo. 💌'
+            : 'No pudimos conectar con el servidor. Verifica tu conexión a internet e intenta de nuevo.'}
+        </p>
+        <button
+          onClick={() => { setViewError(null); window.history.replaceState({}, '', window.location.pathname); }}
+          style={{
+            marginTop: '1rem', padding: '0.8rem 2rem', borderRadius: '2rem',
+            background: 'linear-gradient(135deg, #ff00ff, #ff4d94)',
+            border: 'none', color: 'white', fontSize: '1rem', cursor: 'pointer', fontWeight: '700'
+          }}
+        >
+          Ir al inicio
+        </button>
+      </div>
+    );
+  }
 
   // If in View Mode, show the template inside an iframe
   if (viewData) {
